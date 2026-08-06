@@ -1,19 +1,30 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
 <meta charset="UTF-8">
-    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>uxxxu.studio</title>
 
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
+
 <style>
-body{
+
+*{
     margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
     display:flex;
     justify-content:center;
     align-items:center;
-    height:100vh;
+    min-height:100vh;
     background:#fff;
-    font-family: "Pretendard", -apple-system, BlinkMacSystemFont, sans-serif;
+    color:#111;
+    font-family:"Pretendard",-apple-system,BlinkMacSystemFont,sans-serif;
 }
 
 .container{
@@ -21,42 +32,60 @@ body{
 }
 
 h1{
-    font-size:72px;
-    margin-bottom:18px;
+    font-size:clamp(64px,8vw,92px);
     font-weight:800;
-    letter-spacing:-0.04em;
-    opacity: 0;
-    animation: fadeUp .8s ease forwards;
+    letter-spacing:-0.05em;
+    margin-bottom:22px;
+
+    opacity:0;
+    animation:fadeUp .8s ease forwards;
 }
 
 a{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+
     text-decoration:none;
     color:#111;
+
     font-size:22px;
     font-weight:500;
-    transition:.2s;
-    display:inline-block;
+
     opacity:0;
-    animation: fadeUp .8s ease forwards;
+    animation:fadeUp .8s ease forwards;
     animation-delay:.25s;
+
+    transition:opacity .25s ease;
 }
 
 a:hover{
-    opacity:.6;
-    a:hover{
+    opacity:.55;
+}
+
+a span{
+    display:inline-block;
+    transition:transform .25s ease;
+}
+
+a:hover span{
     transform:translateX(6px);
 }
-}
-    @keyframes fadeUp{
+
+@keyframes fadeUp{
+
     from{
         opacity:0;
         transform:translateY(18px);
     }
+
     to{
         opacity:1;
         transform:translateY(0);
     }
+
 }
+
 </style>
 
 </head>
@@ -67,9 +96,17 @@ a:hover{
 
 <h1>uxxxu.studio</h1>
 
-<a href="https://psychedelic-decimal-282.notion.site/PORTFOLIO-15fbb729673a4b218efac2ce73e56788" target="_blank" rel="noopener">View Portfolio →</a>
+<a href="https://psychedelic-decimal-282.notion.site/PORTFOLIO-15fbb729673a4b218efac2ce73e56788"
+target="_blank"
+rel="noopener noreferrer">
+
+View Portfolio
+<span>→</span>
+
+</a>
 
 </div>
 
 </body>
+
 </html>
