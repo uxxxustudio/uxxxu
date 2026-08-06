@@ -25,6 +25,8 @@ h1{
     margin-bottom:18px;
     font-weight:800;
     letter-spacing:-0.04em;
+    opacity: 0;
+    animation: fadeUp .8s ease forwards;
 }
 
 a{
@@ -33,10 +35,27 @@ a{
     font-size:22px;
     font-weight:500;
     transition:.2s;
+    display:inline-block;
+    opacity:0;
+    animation: fadeUp .8s ease forwards;
+    animation-delay:.25s;
 }
 
 a:hover{
     opacity:.6;
+    a:hover{
+    transform:translateX(6px);
+}
+}
+    @keyframes fadeUp{
+    from{
+        opacity:0;
+        transform:translateY(18px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
 }
 </style>
 
