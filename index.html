@@ -25,7 +25,8 @@ box-sizing:border-box;
 html{
 
 scroll-behavior:smooth;
-
+overflow-x:hidden;
+width:100%;
 }
 
 body{
@@ -37,6 +38,9 @@ background:#ffffff;
 color:#111;
 
 overflow-x:hidden;
+
+width:100%;
+position:relative;
 
 -webkit-font-smoothing:antialiased;
 
@@ -55,7 +59,13 @@ text-decoration:none;
 color:inherit;
 
 }
+img{
 
+display:block;
+max-width:100%;
+height:auto;
+
+}
 /* ------------------------------ */
 
 header{
@@ -136,6 +146,7 @@ padding:0 64px;
 max-width:1200px;
 
 width:100%;
+min-width:0;
 
 }
 
@@ -307,6 +318,8 @@ padding:180px 64px;
 .container{
 
 max-width:1280px;
+
+width:100%;
 
 margin:auto;
 
