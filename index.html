@@ -2,88 +2,414 @@
 <html lang="ko">
 
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>uxxxu.studio</title>
+<title>uxxxu</title>
 
-<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
+<meta name="description" content="UX/UI Design Partner">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
 
 <style>
 
 *{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+html{
+
+scroll-behavior:smooth;
+
 }
 
 body{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    min-height:100vh;
-    background:#fff;
-    color:#111;
-    font-family:"Pretendard",-apple-system,BlinkMacSystemFont,sans-serif;
+
+font-family:"Pretendard",-apple-system,BlinkMacSystemFont,sans-serif;
+
+background:#ffffff;
+
+color:#111;
+
+overflow-x:hidden;
+
+-webkit-font-smoothing:antialiased;
+
 }
 
-.container{
-    text-align:center;
-}
+::selection{
 
-h1{
-    font-size:clamp(64px,8vw,92px);
-    font-weight:800;
-    letter-spacing:-0.05em;
-    margin-bottom:22px;
+background:#111;
+color:#fff;
 
-    opacity:0;
-    animation:fadeUp .8s ease forwards;
 }
 
 a{
-    display:inline-flex;
-    align-items:center;
-    gap:8px;
 
-    text-decoration:none;
-    color:#111;
+text-decoration:none;
+color:inherit;
 
-    font-size:22px;
-    font-weight:500;
-
-    opacity:0;
-    animation:fadeUp .8s ease forwards;
-    animation-delay:.25s;
-
-    transition:all .25s ease;
 }
 
-a:hover{
-    opacity:.6;
-    transform:translateX(6px);
+/* ------------------------------ */
+
+header{
+
+position:fixed;
+
+top:0;
+left:0;
+
+width:100%;
+
+padding:34px 64px;
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+z-index:999;
+
+transition:.35s;
+
 }
 
-a span{
-    display:inline-block;
-    transition:transform .25s ease;
+header.active{
+
+background:rgba(255,255,255,.82);
+
+backdrop-filter:blur(20px);
+
+border-bottom:1px solid rgba(0,0,0,.05);
+
 }
 
-a:hover span{
-    transform:translateX(6px);
+.logo{
+
+font-size:22px;
+
+font-weight:800;
+
+letter-spacing:-.04em;
+
 }
 
-@keyframes fadeUp{
+nav{
 
-    from{
-        opacity:0;
-        transform:translateY(18px);
-    }
+display:flex;
 
-    to{
-        opacity:1;
-        transform:translateY(0);
-    }
+gap:44px;
+
+}
+
+nav a{
+
+font-size:15px;
+
+font-weight:500;
+
+opacity:1;
+
+transition:.25s;
+
+}
+
+nav a:hover{
+
+opacity:.45;
+
+}
+
+/* ------------------------------ */
+
+.hero{
+
+height:100vh;
+
+display:flex;
+
+align-items:center;
+
+padding:0 64px;
+
+}
+
+.hero-inner{
+
+max-width:1200px;
+
+width:100%;
+
+}
+
+.eyebrow{
+
+font-size:14px;
+
+font-weight:600;
+
+letter-spacing:.18em;
+
+text-transform:uppercase;
+
+color:#999;
+
+margin-bottom:28px;
+
+opacity:0;
+
+transform:translateY(30px);
+
+animation:fade .8s forwards;
+
+}
+
+.hero h1{
+
+font-size:clamp(64px,8vw,120px);
+
+line-height:.95;
+
+letter-spacing:-.08em;
+
+font-weight:800;
+
+margin-bottom:34px;
+
+opacity:0;
+
+transform:translateY(40px);
+
+animation:fade .8s .15s forwards;
+
+}
+
+.subtitle{
+
+font-size:30px;
+
+font-weight:600;
+
+letter-spacing:-.03em;
+
+color:#444;
+
+margin-bottom:26px;
+
+opacity:0;
+
+transform:translateY(30px);
+
+animation:fade .8s .35s forwards;
+
+}
+
+.description{
+
+max-width:650px;
+
+font-size:20px;
+
+line-height:1.9;
+
+color:#666;
+
+opacity:0;
+
+transform:translateY(30px);
+
+animation:fade .8s .55s forwards;
+
+}
+
+.hero-action{
+
+margin-top:70px;
+
+display:flex;
+
+align-items:center;
+
+gap:36px;
+
+opacity:0;
+
+transform:translateY(30px);
+
+animation:fade .8s .75s forwards;
+
+}
+
+.cta{
+
+font-size:16px;
+
+font-weight:700;
+
+display:flex;
+
+align-items:center;
+
+gap:10px;
+
+}
+
+.cta span{
+
+transition:.25s;
+
+}
+
+.cta:hover span{
+
+transform:translateX(8px);
+
+}
+
+.portfolio{
+
+font-size:16px;
+
+color:#888;
+
+transition:.25s;
+
+}
+
+.portfolio:hover{
+
+color:#111;
+
+}
+
+.scroll{
+
+position:absolute;
+
+left:64px;
+
+bottom:44px;
+
+font-size:12px;
+
+letter-spacing:.18em;
+
+text-transform:uppercase;
+
+color:#999;
+
+animation:float 2s infinite;
+
+}
+
+/* ------------------------------ */
+
+section{
+
+padding:180px 64px;
+
+}
+
+.container{
+
+max-width:1280px;
+
+margin:auto;
+
+}
+
+/* ------------------------------ */
+
+@keyframes fade{
+
+to{
+
+opacity:1;
+
+transform:translateY(0);
+
+}
+
+}
+
+@keyframes float{
+
+0%,100%{
+
+transform:translateY(0);
+
+}
+
+50%{
+
+transform:translateY(8px);
+
+}
+
+}
+
+/* ------------------------------ */
+
+@media(max-width:980px){
+
+header{
+
+padding:26px;
+
+}
+
+nav{
+
+display:none;
+
+}
+
+.hero{
+
+padding:0 26px;
+
+}
+
+.subtitle{
+
+font-size:22px;
+
+}
+
+.description{
+
+font-size:17px;
+
+}
+
+.hero-action{
+
+flex-direction:column;
+
+align-items:flex-start;
+
+gap:18px;
+
+}
+
+.scroll{
+
+left:26px;
+
+}
+
+section{
+
+padding:120px 26px;
+
+}
 
 }
 
@@ -93,20 +419,941 @@ a:hover span{
 
 <body>
 
-<div class="container">
+<header id="header">
 
-<h1>uxxxu.studio</h1>
+<div class="logo">
 
-<a href="https://psychedelic-decimal-282.notion.site/PORTFOLIO-15fbb729673a4b218efac2ce73e56788"
-target="_blank"
-rel="noopener noreferrer">
+uxxxu
 
-Selected Portfolio
-<span>→</span>
+</div>
+
+<nav>
+
+<a href="#service">Service</a>
+
+<a href="https://uxxxu-studio.com">Portfolio</a>
+
+<a href="#about">About</a>
+
+<a href="#contact">Contact</a>
+
+</nav>
+
+</header>
+
+<section class="hero">
+
+<div class="hero-inner">
+
+<div class="eyebrow">
+
+UX / UI DESIGN PARTNER
+
+</div>
+
+<h1>
+
+From Complexity<br>
+to Clarity.
+
+</h1>
+
+<div class="subtitle">
+
+Designing Better Products.
+
+</div>
+
+<div class="description">
+
+복잡한 서비스를 누구나 이해하기 쉬운 경험으로 설계합니다.<br>
+운영 중인 제품의 UX/UI 개선부터 AI 서비스와 정부 R&D 프로젝트까지,<br>
+브랜드와 제품이 함께 성장하는 디자인을 만듭니다.
+
+</div>
+
+<div class="hero-action">
+
+<a href="#contact" class="cta">
+
+Let's Talk <span>→</span>
+
+</a>
+
+<a href="https://uxxxu-studio.com" class="portfolio">
+
+View Portfolio
 
 </a>
 
 </div>
+
+</div>
+
+<div class="scroll">
+
+SCROLL ↓
+
+</div>
+
+</section>
+
+<script>
+
+window.addEventListener("scroll",()=>{
+
+const header=document.getElementById("header");
+
+if(window.scrollY>30){
+
+header.classList.add("active");
+
+}else{
+
+header.classList.remove("active");
+
+}
+
+});
+
+</script>
+
+<!-- =========================
+SERVICE
+========================= -->
+
+<section id="service">
+
+<div class="container">
+
+<div class="section-title">
+
+Service
+
+</div>
+
+<div class="service-list">
+
+<div class="service-item">
+
+<div class="number">
+
+01
+
+</div>
+
+<div>
+
+<h3>
+
+UX/UI Design
+
+</h3>
+
+<p>
+
+웹 · 모바일 · SaaS · 관리자 시스템<br>
+사용자 중심의 UX 설계와 직관적인 UI 디자인
+
+</p>
+
+</div>
+
+</div>
+
+<div class="service-item">
+
+<div class="number">
+
+02
+
+</div>
+
+<div>
+
+<h3>
+
+Design Upgrade
+
+</h3>
+
+<p>
+
+운영 중인 서비스 개선<br>
+신규 기능 설계 · 화면 고도화 · UX 개선
+
+</p>
+
+</div>
+
+</div>
+
+<div class="service-item">
+
+<div class="number">
+
+03
+
+</div>
+
+<div>
+
+<h3>
+
+AI Product Design
+
+</h3>
+
+<p>
+
+AI 서비스 · 챗봇 · Agent · LLM UX/UI 설계
+
+</p>
+
+</div>
+
+</div>
+
+<div class="service-item">
+
+<div class="number">
+
+04
+
+</div>
+
+<div>
+
+<h3>
+
+Government R&D
+
+</h3>
+
+<p>
+
+정부 R&D 프로젝트 UX/UI<br>
+PoC · 실증사업 · 프로토타입
+
+</p>
+
+</div>
+
+</div>
+
+<div class="service-item">
+
+<div class="number">
+
+05
+
+</div>
+
+<div>
+
+<h3>
+
+Design Partner
+
+</h3>
+
+<p>
+
+기업을 위한 UX/UI 디자인 파트너<br>
+월 단위 디자인 운영 및 유지보수
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<style>
+
+.section-title{
+
+font-size:14px;
+
+letter-spacing:.18em;
+
+text-transform:uppercase;
+
+color:#999;
+
+margin-bottom:80px;
+
+font-weight:600;
+
+}
+
+.service-list{
+
+display:flex;
+
+flex-direction:column;
+
+gap:70px;
+
+}
+
+.service-item{
+
+display:grid;
+
+grid-template-columns:80px 1fr;
+
+padding-bottom:60px;
+
+border-bottom:1px solid #ececec;
+
+transition:.35s;
+
+}
+
+.service-item:hover{
+
+transform:translateX(8px);
+
+}
+
+.number{
+
+font-size:13px;
+
+font-weight:600;
+
+color:#999;
+
+padding-top:10px;
+
+}
+
+.service-item h3{
+
+font-size:42px;
+
+font-weight:700;
+
+letter-spacing:-.04em;
+
+margin-bottom:18px;
+
+}
+
+.service-item p{
+
+font-size:18px;
+
+line-height:1.8;
+
+color:#666;
+
+}
+
+@media(max-width:980px){
+
+.service-item{
+
+grid-template-columns:1fr;
+
+gap:16px;
+
+}
+
+.service-item h3{
+
+font-size:30px;
+
+}
+
+.service-item p{
+
+font-size:16px;
+
+}
+
+}
+
+</style>
+
+<!-- =========================
+PORTFOLIO
+========================= -->
+
+<section id="portfolio">
+
+<div class="container">
+
+<div class="section-title">
+
+Selected Work
+
+</div>
+
+<div class="portfolio-grid">
+
+<a href="https://uxxxu-studio.com" class="project">
+
+<div class="project-category">
+
+AI SERVICE
+
+</div>
+
+<h2>
+
+AI Space Temperature Control
+
+</h2>
+
+<p>
+
+AI 기반 공간 온도 제어 플랫폼 UX/UI
+
+</p>
+
+<div class="arrow">
+
+View Project →
+
+</div>
+
+</a>
+
+<a href="https://uxxxu-studio.com" class="project">
+
+<div class="project-category">
+
+WEARABLE
+
+</div>
+
+<h2>
+
+Smart Glasses
+
+</h2>
+
+<p>
+
+시청각 장애인을 위한 웨어러블 UX/UI
+
+</p>
+
+<div class="arrow">
+
+View Project →
+
+</div>
+
+</a>
+
+<a href="https://uxxxu-studio.com" class="project">
+
+<div class="project-category">
+
+GOVERNMENT R&D
+
+</div>
+
+<h2>
+
+Government Projects
+
+</h2>
+
+<p>
+
+정부 R&D UX/UI 및 서비스 설계
+
+</p>
+
+<div class="arrow">
+
+View Project →
+
+</div>
+
+</a>
+
+<a href="https://uxxxu-studio.com" class="project">
+
+<div class="project-category">
+
+PRODUCT
+
+</div>
+
+<h2>
+
+Product Experience
+
+</h2>
+
+<p>
+
+제품 서비스 UX/UI 및 디자인 시스템
+
+</p>
+
+<div class="arrow">
+
+View Project →
+
+</div>
+
+</a>
+
+</div>
+
+</div>
+
+</section>
+
+<style>
+
+.portfolio-grid{
+
+display:grid;
+
+grid-template-columns:repeat(2,1fr);
+
+gap:32px;
+
+}
+
+.project{
+
+padding:56px;
+
+border:1px solid #ececec;
+
+border-radius:28px;
+
+transition:.35s;
+
+background:#fff;
+
+display:flex;
+
+flex-direction:column;
+
+min-height:340px;
+
+}
+
+.project:hover{
+
+transform:translateY(-8px);
+
+border-color:#111;
+
+}
+
+.project-category{
+
+font-size:13px;
+
+letter-spacing:.15em;
+
+color:#999;
+
+margin-bottom:28px;
+
+font-weight:600;
+
+}
+
+.project h2{
+
+font-size:34px;
+
+line-height:1.2;
+
+letter-spacing:-.04em;
+
+margin-bottom:18px;
+
+}
+
+.project p{
+
+font-size:18px;
+
+line-height:1.8;
+
+color:#666;
+
+margin-bottom:auto;
+
+}
+
+.arrow{
+
+margin-top:42px;
+
+font-size:15px;
+
+font-weight:600;
+
+}
+
+@media(max-width:980px){
+
+.portfolio-grid{
+
+grid-template-columns:1fr;
+
+}
+
+.project{
+
+padding:36px;
+
+min-height:auto;
+
+}
+
+.project h2{
+
+font-size:28px;
+
+}
+
+.project p{
+
+font-size:16px;
+
+}
+
+}
+
+</style>
+
+<!-- =========================
+ABOUT
+========================= -->
+
+<section id="about">
+
+<div class="container about-wrap">
+
+<div class="section-title">
+
+About
+
+</div>
+
+<div class="about-content">
+
+<h2>
+
+20+ years of crafting<br>
+digital experiences.
+
+</h2>
+
+<p>
+
+브랜드 사이트부터 웹·모바일 서비스, 관리자 시스템,
+정부 R&D 프로젝트, AI 기반 서비스까지
+20년 이상의 UX/UI 실무 경험을 바탕으로
+복잡한 서비스를 명확하고 사용하기 쉬운 경험으로 설계합니다.
+
+</p>
+
+<p>
+
+단순히 화면을 디자인하는 것이 아니라
+비즈니스와 사용자의 흐름을 함께 고민하며
+오랫동안 사용할 수 있는 제품을 만듭니다.
+
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+<style>
+
+.about-wrap{
+
+display:grid;
+
+grid-template-columns:180px 1fr;
+
+gap:80px;
+
+}
+
+.about-content h2{
+
+font-size:56px;
+
+line-height:1.15;
+
+letter-spacing:-.05em;
+
+margin-bottom:42px;
+
+font-weight:800;
+
+}
+
+.about-content p{
+
+font-size:20px;
+
+line-height:2;
+
+color:#666;
+
+max-width:760px;
+
+margin-bottom:30px;
+
+}
+
+@media(max-width:980px){
+
+.about-wrap{
+
+grid-template-columns:1fr;
+
+gap:40px;
+
+}
+
+.about-content h2{
+
+font-size:38px;
+
+}
+
+.about-content p{
+
+font-size:17px;
+
+}
+
+}
+
+</style>
+
+<!-- =========================
+CONTACT
+========================= -->
+
+<section id="contact">
+
+<div class="container contact-wrap">
+
+<div class="section-title">
+
+Contact
+
+</div>
+
+<h2>
+
+Let's build<br>
+something better.
+
+</h2>
+
+<p>
+
+프로젝트 문의 및 협업은 언제든지 환영합니다.
+
+</p>
+
+<div class="contact-links">
+
+<a href="mailto:hello@uxxxu.co.kr">
+
+hello@uxxxu.co.kr
+
+</a>
+
+<a href="https://uxxxu-studio.com">
+
+Portfolio →
+
+</a>
+
+</div>
+
+</div>
+
+</section>
+
+<style>
+
+.contact-wrap{
+
+padding:120px 0;
+
+border-top:1px solid #ececec;
+
+}
+
+.contact-wrap h2{
+
+font-size:72px;
+
+line-height:1.05;
+
+letter-spacing:-.06em;
+
+margin:26px 0;
+
+}
+
+.contact-wrap p{
+
+font-size:20px;
+
+color:#666;
+
+margin-bottom:60px;
+
+}
+
+.contact-links{
+
+display:flex;
+
+gap:36px;
+
+flex-wrap:wrap;
+
+}
+
+.contact-links a{
+
+font-size:22px;
+
+font-weight:600;
+
+transition:.25s;
+
+}
+
+.contact-links a:hover{
+
+opacity:.45;
+
+}
+
+@media(max-width:980px){
+
+.contact-wrap h2{
+
+font-size:42px;
+
+}
+
+.contact-wrap p{
+
+font-size:17px;
+
+}
+
+.contact-links{
+
+flex-direction:column;
+
+gap:18px;
+
+}
+
+.contact-links a{
+
+font-size:18px;
+
+}
+
+}
+
+</style>
+
+<footer>
+
+<div class="footer-inner">
+
+<div>
+
+© 2026 uxxxu
+
+</div>
+
+<div>
+
+From Complexity to Clarity.
+
+</div>
+
+</div>
+
+</footer>
+
+<style>
+
+footer{
+
+padding:40px 64px;
+
+border-top:1px solid #ececec;
+
+}
+
+.footer-inner{
+
+max-width:1280px;
+
+margin:auto;
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+font-size:14px;
+
+color:#888;
+
+}
+
+@media(max-width:980px){
+
+footer{
+
+padding:30px 26px;
+
+}
+
+.footer-inner{
+
+flex-direction:column;
+
+align-items:flex-start;
+
+gap:12px;
+
+}
+
+}
+
+</style>
 
 </body>
 
