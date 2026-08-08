@@ -68,23 +68,13 @@ window.addEventListener("scroll", () => {
 
 window.addEventListener("click", (e) => {
 
-const button = document.querySelector(".menu-toggle");
-const nav = document.querySelector("header nav");
-const header = document.querySelector("#header > header");
+    const button = document.querySelector(".menu-toggle");
+    const nav = document.querySelector("header nav");
 
-if (!button || !nav || !header) return;
+    if (!button || !nav) return;
 
-if (e.target.closest(".menu-toggle")) {
-
-    if (!nav.classList.contains("open")) {
-        header.classList.remove("active");
+    if (e.target.closest(".menu-toggle")) {
+        nav.classList.toggle("open");
     }
 
-    nav.classList.toggle("open");
-
-    if (!nav.classList.contains("open") && window.scrollY > 30) {
-        header.classList.add("active");
-    }
-
-}
 });
