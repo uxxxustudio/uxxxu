@@ -885,7 +885,7 @@ footer{
 
     height:42px;
 
-    border:0;
+    border:none;
 
     background:transparent;
     appearance:none;
@@ -905,7 +905,7 @@ footer{
 
     height:2px;
 
-    background:#transparent;
+    background:#111;
 
     margin:5px auto;
 
