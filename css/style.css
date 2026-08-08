@@ -736,6 +736,13 @@ footer{
 
     nav{
         display:none;
+
+}
+   .menu-toggle{
+
+    display:block;
+
+}
     }
 
 
@@ -865,5 +872,41 @@ footer{
         align-items:flex-start;
         gap:12px;
     }
+
+}
+
+/* ------------------ Mobile Menu -------------- */
+
+.menu-toggle{
+
+    display:none;
+
+    width:42px;
+
+    height:42px;
+
+    border:0;
+
+    background:none;
+
+    cursor:pointer;
+
+    padding:0;
+
+}
+
+.menu-toggle span{
+
+    display:block;
+
+    width:24px;
+
+    height:2px;
+
+    background:#111;
+
+    margin:5px auto;
+
+    transition:.3s;
 
 }
