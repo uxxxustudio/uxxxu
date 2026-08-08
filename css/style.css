@@ -735,7 +735,31 @@ footer{
     }
 
     nav{
-        display:none;
+
+    display:none;
+
+    position:absolute;
+
+    top:100%;
+
+    left:0;
+
+    width:100%;
+
+    background:#fff;
+
+    padding:24px 26px;
+
+    flex-direction:column;
+
+    gap:20px;
+
+    border-top:1px solid #eee;
+
+}
+   nav.open{
+
+    display:flex;
 
 }
    .menu-toggle{
