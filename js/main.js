@@ -46,6 +46,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 window.addEventListener("scroll", () => {
 
     const header = document.querySelector("#header > header");
+    const nav = document.querySelector("header nav");
 
     if (!header) return;
 
@@ -53,6 +54,10 @@ window.addEventListener("scroll", () => {
         header.classList.add("active");
     } else {
         header.classList.remove("active");
+    }
+
+    if (nav) {
+        nav.classList.remove("open");
     }
 
 });
