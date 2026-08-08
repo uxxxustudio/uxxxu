@@ -64,18 +64,22 @@ header{
 
     z-index:999;
 
-    transition:.35s;
+   transition:
+    background .35s ease,
+    backdrop-filter .35s ease,
+   -webkit-backdrop-filter .35s ease,
+   border-color .35s ease;
 
 }
 
 header.active{
 
-    background:rgba(255,255,255,.82);
+  background:rgba(255,255,255,.82);
 
-    backdrop-filter:blur(20px);
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
 
     border-bottom:1px solid rgba(0,0,0,.05);
-
 }
 
 .logo{
@@ -768,7 +772,7 @@ footer{
 }
 
 nav{
-    display:none;
+      display:none;
 
     position:fixed;
     top:92px;
@@ -776,9 +780,10 @@ nav{
 
     width:100%;
 
-    background:rgba(255,255,255,.88);
-    backdrop-filter:blur(14px);
-    -webkit-backdrop-filter:blur(14px);
+    background:rgba(255,255,255,.82);
+
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
 
     padding:24px 26px;
 
@@ -788,6 +793,12 @@ nav{
     border-top:1px solid rgba(0,0,0,.05);
 
     z-index:998;
+
+    transition:
+        background .35s ease,
+        backdrop-filter .35s ease,
+        -webkit-backdrop-filter .35s ease;
+
 }
 
 nav.open{
