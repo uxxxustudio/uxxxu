@@ -26,3 +26,21 @@ window.addEventListener("DOMContentLoaded", async () => {
     await loadComponent("footer", "components/footer.html");
 
 });
+
+
+window.addEventListener("scroll",()=>{
+
+const header=document.getElementById("header");
+
+if(window.scrollY>30){
+
+header.classList.add("active");
+
+}else{
+
+header.classList.remove("active");
+
+}
+
+});
+
