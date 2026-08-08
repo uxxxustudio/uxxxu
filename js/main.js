@@ -30,7 +30,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
 window.addEventListener("scroll", () => {
 
-    const header = document.querySelector("#header header");
+    const header = document.querySelector("#header > header");
 
     if (!header) return;
 
