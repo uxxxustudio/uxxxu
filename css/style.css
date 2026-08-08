@@ -734,7 +734,7 @@ footer{
         padding:26px;
     }
 
-    nav{
+   nav{
 
     display:none;
 
@@ -744,18 +744,21 @@ footer{
 
     width:100%;
 
-    background:#fff;
+    background:rgba(255,255,255,.75);
+    backdrop-filter:blur(24px);
+    -webkit-backdrop-filter:blur(24px);
 
     padding:24px 26px;
 
     flex-direction:column;
-
     gap:20px;
 
-    border-top:1px solid #eee;
+    border-top:1px solid rgba(0,0,0,.05);
+
+    z-index:998;
 
 }
-   nav.open{
+ nav.open{
 
     display:flex;
 
