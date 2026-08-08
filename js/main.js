@@ -76,11 +76,13 @@ if (!button || !nav || !header) return;
 
 if (e.target.closest(".menu-toggle")) {
 
+    if (!nav.classList.contains("open")) {
+        header.classList.remove("active");
+    }
+
     nav.classList.toggle("open");
 
-    if (nav.classList.contains("open")) {
-        header.classList.remove("active");
-    } else if (window.scrollY > 30) {
+    if (!nav.classList.contains("open") && window.scrollY > 30) {
         header.classList.add("active");
     }
 
