@@ -887,7 +887,9 @@ footer{
 
     border:0;
 
-    background:none;
+    background:transparent;
+    appearance:none;
+    -webkit-appearance:none;
 
     cursor:pointer;
 
@@ -903,7 +905,7 @@ footer{
 
     height:2px;
 
-    background:#111;
+    background:#transparent;
 
     margin:5px auto;
 
