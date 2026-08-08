@@ -54,6 +54,8 @@ header{
 
     width:100%;
 
+    overflow:visible;
+
     padding:34px 64px;
 
     display:flex;
@@ -83,16 +85,7 @@ header.active{
 
 }
 
-header:has(nav.open){
 
-    background:transparent;
-
-    backdrop-filter:none;
-    -webkit-backdrop-filter:none;
-
-    border-bottom:none;
-
-}
 
 .logo{
 
