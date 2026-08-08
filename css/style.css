@@ -97,7 +97,7 @@ header.active{
 
 }
 
-header nav{
+nav{
 
     display:flex;
 
@@ -776,7 +776,7 @@ footer{
     padding:26px;
 }
 
-.mobile-nav{
+nav{
 
     display:none;
 
@@ -804,7 +804,7 @@ footer{
 
 }
 
-.mobile-nav.open{
+nav.open{
     display:flex;
 }
 
