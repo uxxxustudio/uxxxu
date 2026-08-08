@@ -744,11 +744,11 @@ footer{
 
     width:100%;
 
-    background:rgba(255,255,255,.75);
-    backdrop-filter:blur(24px);
-    -webkit-backdrop-filter:blur(24px);
-
-    padding:24px 26px;
+   background:rgba(255,255,255,.88);
+   backdrop-filter:blur(14px);
+   -webkit-backdrop-filter:blur(14px);
+    
+      padding:24px 26px;
 
     flex-direction:column;
     gap:20px;
