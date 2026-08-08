@@ -1,4 +1,9 @@
+/* =========================================================
+   Component Loader
+========================================================= */
+
 async function loadComponent(id, file) {
+
     const res = await fetch(file);
 
     if (!res.ok) {
@@ -7,7 +12,13 @@ async function loadComponent(id, file) {
     }
 
     document.getElementById(id).innerHTML = await res.text();
+
 }
+
+
+/* =========================================================
+   Initialize
+========================================================= */
 
 window.addEventListener("DOMContentLoaded", async () => {
 
@@ -28,6 +39,10 @@ window.addEventListener("DOMContentLoaded", async () => {
 });
 
 
+/* =========================================================
+   Header Scroll
+========================================================= */
+
 window.addEventListener("scroll", () => {
 
     const header = document.querySelector("#header > header");
@@ -41,4 +56,3 @@ window.addEventListener("scroll", () => {
     }
 
 });
-
