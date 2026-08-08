@@ -97,7 +97,7 @@ header.active{
 
 }
 
-nav{
+header nav{
 
     display:flex;
 
@@ -776,33 +776,35 @@ footer{
     padding:26px;
 }
 
-nav{
-    
+.mobile-nav{
+
     display:none;
 
     position:fixed;
+
     top:92px;
     left:0;
 
     width:100%;
 
-    background: rgba(255,255,255,.72);
+    background:rgba(255,255,255,.72);
 
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+
     padding:24px 26px;
 
     flex-direction:column;
+
     gap:20px;
 
     border-top:1px solid rgba(0,0,0,.05);
 
     z-index:998;
 
-
 }
 
-nav.open{
+.mobile-nav.open{
     display:flex;
 }
 
