@@ -722,6 +722,39 @@ footer{
 }
 
 
+/* ------------------ Mobile Menu -------------- */
+
+.menu-toggle{
+
+    display:none;
+
+    width:42px;
+    height:42px;
+
+    border:none;
+    background:transparent;
+
+    cursor:pointer;
+
+    padding:0;
+}
+
+.menu-toggle span{
+
+    display:block;
+
+    width:24px;
+    height:2px;
+
+    background:#111;
+
+    margin:5px auto;
+
+    transition:.3s;
+}
+
+
+
 /* =========================================================
    RESPONSIVE
 ========================================================= */
@@ -896,33 +929,3 @@ nav.open{
 
 }
 
-/* ------------------ Mobile Menu -------------- */
-
-.menu-toggle{
-
-    display:none;
-
-    width:42px;
-    height:42px;
-
-    border:none;
-    background:transparent;
-
-    cursor:pointer;
-
-    padding:0;
-}
-
-.menu-toggle span{
-
-    display:block;
-
-    width:24px;
-    height:2px;
-
-    background:#111;
-
-    margin:5px auto;
-
-    transition:.3s;
-}
