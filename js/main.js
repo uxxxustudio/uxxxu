@@ -28,19 +28,17 @@ window.addEventListener("DOMContentLoaded", async () => {
 });
 
 
-window.addEventListener("scroll",()=>{
+window.addEventListener("scroll", () => {
 
-const header=document.getElementById("header");
+    const header = document.querySelector("#header header");
 
-if(window.scrollY>30){
+    if (!header) return;
 
-header.classList.add("active");
-
-}else{
-
-header.classList.remove("active");
-
-}
+    if (window.scrollY > 30) {
+        header.classList.add("active");
+    } else {
+        header.classList.remove("active");
+    }
 
 });
 
