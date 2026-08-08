@@ -738,10 +738,8 @@ footer{
 
     display:none;
 
-    position:absolute;
-
-    top:100%;
-
+    position:fixed;
+    top:92px;
     left:0;
 
     width:100%;
