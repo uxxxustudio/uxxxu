@@ -781,10 +781,10 @@ nav{
 
     width:100%;
 
-    background:rgba(255,255,255,.72);
+    background: transparent;
 
-    backdrop-filter:blur(20px);
-    -webkit-backdrop-filter:blur(20px);
+    backdrop-filter: inherit;
+   -webkit-backdrop-filter: inherit;
 
     padding:24px 26px;
 
