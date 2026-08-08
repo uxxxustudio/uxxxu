@@ -46,7 +46,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 window.addEventListener("scroll", () => {
 
     const header = document.querySelector("#header > header");
-    const nav = document.querySelector(".mobile-nav");
+    const nav = document.querySelector("header nav");
 
     if (!header) return;
 
@@ -69,8 +69,8 @@ window.addEventListener("scroll", () => {
 window.addEventListener("click", (e) => {
 
     const button = document.querySelector(".menu-toggle");
-    const nav = document.querySelector(".mobile-nav");
-
+    const nav = document.querySelector("header nav");
+   
     if (!button || !nav) return;
 
     if (e.target.closest(".menu-toggle")) {
