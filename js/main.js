@@ -56,3 +56,20 @@ window.addEventListener("scroll", () => {
     }
 
 });
+
+/* =========================================================
+   Mobile Menu
+========================================================= */
+
+window.addEventListener("click", (e) => {
+
+    const button = document.querySelector(".menu-toggle");
+    const nav = document.querySelector("header nav");
+
+    if (!button || !nav) return;
+
+    if (e.target.closest(".menu-toggle")) {
+        nav.classList.toggle("open");
+    }
+
+});
