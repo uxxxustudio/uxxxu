@@ -8,20 +8,10 @@
     box-sizing:border-box;
 }
 
-html{
-    scroll-behavior:smooth;
-    overflow-x:hidden;
-    width:100%;
-}
-
-body{
-    font-family:"Pretendard",-apple-system,BlinkMacSystemFont,sans-serif;
-    background:#fff;
-    color:#111;
-    overflow-x:hidden;
-    width:100%;
-    position:relative;
-    -webkit-font-smoothing:antialiased;
+html, body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: clip; /* hidden 대신 clip 사용 (iOS backdrop-filter 깨짐 방지) */
 }
 
 ::selection{
@@ -783,37 +773,41 @@ footer{
     }
 
     /* 2. 모바일 메뉴 nav 수정 */
-    nav{
-        display: none;
+  nav{
+        /* display: none; 삭제! */
         position: fixed;
-        top: 80px; /* 기존 92px에서 header 높이에 맞게 조절 */
+        top: 80px; 
         left: 0;
         width: 100%;
-        
-        /* [중요] 알파값을 0.4~0.5 정도로 낮추고 다크니스 블러를 강하게 줍니다 */
-        background: rgba(255, 255, 255, 0.45) !important;
-        
-        /* [중요] iOS Safari 및 모바일 블러 효과 필수 적용 */
-        -webkit-backdrop-filter: blur(25px) saturate(180%);
-        backdrop-filter: blur(25px) saturate(180%);
-        
-        /* [중요] iOS 모바일 렌더링 깨짐 방지 */
-        -webkit-transform: translateZ(0);
-        transform: translateZ(0);
-
         padding: 30px 26px;
         flex-direction: column;
         gap: 20px;
-        border-top: 1px solid rgba(0, 0, 0, 0.05);
-        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        border-top: 1px solid rgba(0,0,0,.05);
+        border-bottom: 1px solid rgba(0,0,0,.05);
         z-index: 998;
 
-        /* 그림자를 살짝 주어 흰 배경 영역 위에서도 영역 구분이 되게 함 */
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+        /* 글래스모피즘 설정 */
+        background: rgba(255, 255, 255, 0.6) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        backdrop-filter: blur(20px) !important;
+
+        /* display: none 대신 opacity 처리 */
+        opacity: 0;
+        pointer-events: none;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+        
+        /* Safari 그래픽 가속 유도 */
+        will-change: transform, opacity;
+        transform: translate3d(0, 0, 0);
     }
 
+    /* 메뉴 열렸을 때 */
     nav.open{
-        display: flex;
+        display: flex; /* 혹시 기존 JS가 inline style로 display 제어할까봐 유지 */
+        opacity: 1;
+        pointer-events: auto;
+        visibility: visible;
     }
 
     .menu-toggle{
