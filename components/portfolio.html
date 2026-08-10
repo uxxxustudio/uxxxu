@@ -12,9 +12,13 @@ Selected Work
 
 </div>
 
+
 <div class="portfolio-grid">
 
-<a href="case/seedN.html" class="project-card">
+
+<!-- 01. AI SPACE -->
+
+<a href="case/seedN.html" class="project">
 
 <div class="project-category">
 
@@ -41,31 +45,48 @@ View Project →
 </div>
 
 </a>
-<a href="/case/wearable.html" class="project">
-    <div class="project-category">
-        WEARABLE
-    </div>
 
-    <h2>
-        AI Smart Glasses
-    </h2>
 
-    <p>
-        시청각 장애인을 위한 AI 웨어러블 스마트 글래스 UX/UI
-    </p>
 
-    <div class="arrow">
-        View Case Study →
-    </div>
+<!-- 02. AI SMART GLASSES -->
 
-</a>
-
-    
-<a href="https://uxxxu-studio.com" class="project">
+<a href="case/wearable.html" class="project">
 
 <div class="project-category">
 
-GOVERNMENT R&D
+WEARABLE
+
+</div>
+
+<h2>
+
+AI Smart Glasses
+
+</h2>
+
+<p>
+
+시청각 장애인을 위한 AI 웨어러블 스마트 글래스 UX/UI
+
+</p>
+
+<div class="arrow">
+
+View Case Study →
+
+</div>
+
+</a>
+
+
+
+<!-- 03. GOVERNMENT R&D -->
+
+<a href="#" class="project">
+
+<div class="project-category">
+
+GOVERNMENT R&amp;D
 
 </div>
 
@@ -77,7 +98,7 @@ Government Projects
 
 <p>
 
-정부 R&D UX/UI 및 서비스 설계
+정부 R&amp;D UX/UI 및 서비스 설계
 
 </p>
 
@@ -89,7 +110,11 @@ View Project →
 
 </a>
 
-<a href="https://uxxxu-studio.com" class="project">
+
+
+<!-- 04. PRODUCT -->
+
+<a href="#" class="project">
 
 <div class="project-category">
 
@@ -117,9 +142,144 @@ View Project →
 
 </a>
 
+
 </div>
 
 </div>
 
 </section>
 
+
+<style>
+
+/* =========================
+   PORTFOLIO
+========================= */
+
+.portfolio-grid{
+
+display:grid;
+
+grid-template-columns:repeat(2,1fr);
+
+gap:32px;
+
+}
+
+
+.project{
+
+padding:56px;
+
+border:1px solid #ececec;
+
+border-radius:28px;
+
+transition:.35s;
+
+background:#fff;
+
+display:flex;
+
+flex-direction:column;
+
+min-height:340px;
+
+}
+
+
+.project:hover{
+
+transform:translateY(-8px);
+
+border-color:#111;
+
+}
+
+
+.project-category{
+
+font-size:13px;
+
+letter-spacing:.15em;
+
+color:#999;
+
+margin-bottom:28px;
+
+font-weight:600;
+
+}
+
+
+.project h2{
+
+font-size:34px;
+
+line-height:1.2;
+
+letter-spacing:-.04em;
+
+margin-bottom:18px;
+
+}
+
+
+.project p{
+
+font-size:18px;
+
+line-height:1.8;
+
+color:#666;
+
+margin-bottom:auto;
+
+}
+
+
+.arrow{
+
+margin-top:42px;
+
+font-size:15px;
+
+font-weight:600;
+
+}
+
+
+@media(max-width:980px){
+
+.portfolio-grid{
+
+grid-template-columns:1fr;
+
+}
+
+
+.project{
+
+padding:36px;
+
+min-height:auto;
+
+}
+
+
+.project h2{
+
+font-size:28px;
+
+}
+
+
+.project p{
+
+font-size:16px;
+
+}
+
+}
+
+</style>
