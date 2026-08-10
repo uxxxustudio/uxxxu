@@ -486,3 +486,64 @@ gap:12px;
 
 }
 
+/* =========================================
+   Case Study Spacing
+========================================= */
+
+section {
+    padding: 100px 0;
+}
+
+
+/* Project → Research */
+
+.benchmark {
+    padding-top: 80px;
+}
+
+
+/* Research 내부 간격 */
+
+.benchmark .section-title[style*="margin-top:90px"] {
+    margin-top: 70px !important;
+}
+
+.benchmark .section-title[style*="margin-top:140px"] {
+    margin-top: 100px !important;
+}
+
+
+/* Research 이미지 → 카드 */
+
+.benchmark .overview-grid {
+    margin-top: 50px !important;
+}
+
+
+/* Key Insights → 다음 섹션 */
+
+.information-architecture {
+    padding-top: 90px;
+}
+
+
+/* IA → UX Design */
+
+.screen-definition {
+    padding-top: 100px;
+}
+
+
+/* Screen Definition → Wireframe */
+
+.screen-definition .section-title[style*="margin-top:140px"] {
+    margin-top: 100px !important;
+}
+
+
+/* 이미지 사이 기본 간격 */
+
+.hero-image + .hero-image {
+    margin-top: 30px;
+}
+
