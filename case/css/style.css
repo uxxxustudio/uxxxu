@@ -547,3 +547,91 @@ section {
     margin-top: 30px;
 }
 
+
+/* =========================================
+   UI DESIGN
+========================================= */
+
+.ui-subsection {
+    margin-top: 90px;
+}
+
+.ui-subtitle {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+}
+
+.ui-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px;
+}
+
+.ui-item {
+    min-width: 0;
+}
+
+.ui-image {
+    width: 100%;
+    overflow: hidden;
+    border-radius: 18px;
+    background: #f5f5f5;
+}
+
+.ui-image img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.ui-item h3 {
+    margin: 18px 0 4px;
+    font-size: 16px;
+    line-height: 1.4;
+}
+
+.ui-item p {
+    margin: 0;
+    color: #777;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.mobile-section {
+    margin-top: 120px;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 900px) {
+
+    .ui-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 24px;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .ui-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .ui-subsection {
+        margin-top: 60px;
+    }
+
+    .mobile-section {
+        margin-top: 80px;
+    }
+
+}
