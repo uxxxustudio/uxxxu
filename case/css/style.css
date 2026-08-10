@@ -72,7 +72,7 @@ left:0;
 
 width:100%;
 
-padding:34px 64px;
+padding:28px 48px;
 
 display:flex;
 
@@ -94,7 +94,7 @@ transition:.35s;
 
 .logo{
 
-font-size:30px;
+font-size:28px;
 
 font-weight:900;
 
@@ -104,11 +104,15 @@ letter-spacing:-.03em;
 
 .back{
 
-font-size:15px;
+font-size:14px;
 
 font-weight:500;
 
 color:#666;
+
+white-space:nowrap;
+
+flex-shrink:0;
 
 transition:.25s;
 
@@ -398,7 +402,18 @@ padding:0 26px;
 
 header{
 
-padding:26px;
+padding:20px 20px;
+  
+}
+.logo{
+
+font-size:24px;
+
+}
+
+.back{
+
+font-size:13px;
 
 }
 
