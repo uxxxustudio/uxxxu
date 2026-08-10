@@ -70,11 +70,11 @@ left:0;
 
 width:100%;
 
-padding:28px 48px;
+height:96px;
+
+padding:0 48px;
 
 display:flex;
-
-justify-content:space-between;
 
 align-items:center;
 
@@ -98,9 +98,19 @@ font-weight:900;
 
 letter-spacing:-.03em;
 
+display:block;
+
 }
 
 .back{
+
+position:absolute;
+
+right:48px;
+
+top:50%;
+
+transform:translateY(-50%);
 
 font-size:14px;
 
@@ -109,8 +119,6 @@ font-weight:500;
 color:#666;
 
 white-space:nowrap;
-
-flex-shrink:0;
 
 display:block;
 
@@ -402,7 +410,9 @@ padding:0 26px;
 
 header{
 
-padding:20px;
+height:72px;
+
+padding:0 20px;
 
 }
 
@@ -414,9 +424,9 @@ font-size:24px;
 
 .back{
 
-font-size:13px;
+right:20px;
 
-white-space:nowrap;
+font-size:13px;
 
 }
 
