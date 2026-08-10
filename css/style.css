@@ -128,13 +128,11 @@ nav a:hover{
 
 .hero{
 
-    height:100vh;
-
-    display:flex;
-
-    align-items:center;
-
-    padding:0 64px;
+   height:100vh;
+   display:flex;
+   align-items:center;
+   padding:0 64px;
+   position:relative;
 
 }
 
