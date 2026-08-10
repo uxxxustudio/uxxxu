@@ -4,6 +4,10 @@
 
 async function loadComponent(id, file) {
 
+    const target = document.getElementById(id);
+
+    if (!target) return;
+
     const res = await fetch(file);
 
     if (!res.ok) {
@@ -11,9 +15,19 @@ async function loadComponent(id, file) {
         return;
     }
 
-    document.getElementById(id).innerHTML = await res.text();
+    target.innerHTML = await res.text();
 
 }
+
+
+/* =========================================================
+   Component Path
+========================================================= */
+
+const componentPath = new URL(
+    "../components/",
+    document.currentScript.src
+);
 
 
 /* =========================================================
@@ -22,19 +36,40 @@ async function loadComponent(id, file) {
 
 window.addEventListener("DOMContentLoaded", async () => {
 
-    await loadComponent("header", "components/header.html");
+    await loadComponent(
+        "header",
+        new URL("header.html", componentPath)
+    );
 
-    await loadComponent("hero", "components/hero.html");
+    await loadComponent(
+        "hero",
+        new URL("hero.html", componentPath)
+    );
 
-    await loadComponent("service", "components/service.html");
+    await loadComponent(
+        "service",
+        new URL("service.html", componentPath)
+    );
 
-    await loadComponent("portfolio", "components/portfolio.html");
+    await loadComponent(
+        "portfolio",
+        new URL("portfolio.html", componentPath)
+    );
 
-    await loadComponent("about", "components/about.html");
+    await loadComponent(
+        "about",
+        new URL("about.html", componentPath)
+    );
 
-    await loadComponent("contact", "components/contact.html");
+    await loadComponent(
+        "contact",
+        new URL("contact.html", componentPath)
+    );
 
-    await loadComponent("footer", "components/footer.html");
+    await loadComponent(
+        "footer",
+        new URL("footer.html", componentPath)
+    );
 
 });
 
@@ -62,6 +97,7 @@ window.addEventListener("scroll", () => {
 
 });
 
+
 /* =========================================================
    Mobile Menu
 ========================================================= */
@@ -70,7 +106,7 @@ window.addEventListener("click", (e) => {
 
     const button = document.querySelector(".menu-toggle");
     const nav = document.querySelector("header nav");
-   
+
     if (!button || !nav) return;
 
     if (e.target.closest(".menu-toggle")) {
