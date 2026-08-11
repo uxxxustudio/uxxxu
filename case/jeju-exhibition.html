@@ -22,6 +22,7 @@ href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretend
 
 html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
 }
 
 body {
@@ -32,11 +33,17 @@ body {
     font-family: "Pretendard", -apple-system, BlinkMacSystemFont,
     "Segoe UI", sans-serif;
     letter-spacing: -0.025em;
+    overflow-x: hidden;
 }
 
 img {
     display: block;
     width: 100%;
+    max-width: 100%;
+}
+
+iframe {
+    max-width: 100%;
 }
 
 a {
@@ -47,6 +54,7 @@ a {
 .container {
     width: min(1200px, calc(100% - 80px));
     margin: 0 auto;
+    max-width: 100%;
 }
 
 
@@ -59,6 +67,7 @@ header {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 20px;
     padding: 0 40px;
     background: rgba(247,247,245,.92);
     backdrop-filter: blur(12px);
@@ -72,11 +81,13 @@ header {
     font-size: 20px;
     font-weight: 700;
     letter-spacing: -0.04em;
+    flex-shrink: 0;
 }
 
 .back {
     font-size: 14px;
     color: #666;
+    white-space: nowrap;
 }
 
 
@@ -99,10 +110,12 @@ header {
 
 .hero h1 {
     margin: 0;
-    font-size: clamp(52px, 7vw, 96px);
+    max-width: 100%;
+    font-size: clamp(48px, 7vw, 96px);
     line-height: .98;
     letter-spacing: -.065em;
     font-weight: 700;
+    overflow-wrap: anywhere;
 }
 
 .hero-title-ko {
@@ -167,6 +180,7 @@ header {
 
 section {
     padding: 140px 0;
+    overflow: hidden;
 }
 
 .section-head {
@@ -185,6 +199,8 @@ section {
     line-height: 1.1;
     letter-spacing: -.055em;
     margin: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
 }
 
 .section-description {
@@ -283,6 +299,7 @@ section {
     margin: 0;
     font-size: 32px;
     letter-spacing: -.045em;
+    max-width: 100%;
 }
 
 .content-title p {
@@ -378,7 +395,7 @@ section {
 }
 
 .game {
-    padding: 70px 0;
+    padding: 70px 0 85px;
     border-top: 1px solid #ddd;
 }
 
@@ -396,7 +413,10 @@ section {
 .game h3 {
     margin: 0;
     font-size: 30px;
+    line-height: 1.25;
     letter-spacing: -.045em;
+    max-width: 100%;
+    overflow-wrap: anywhere;
 }
 
 .game-description {
@@ -416,6 +436,28 @@ section {
     aspect-ratio: 16 / 9;
     object-fit: cover;
     background: #eee;
+}
+
+
+/* =========================
+   YOUTUBE
+========================= */
+
+.youtube-wrap {
+    width: 88%;
+    max-width: 980px;
+    aspect-ratio: 16 / 9;
+    margin: 42px auto 0;
+    overflow: hidden;
+    border-radius: 4px;
+    background: #111;
+}
+
+.youtube-wrap iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
 }
 
 
@@ -475,6 +517,7 @@ footer {
 .footer-link {
     font-size: 28px;
     letter-spacing: -.04em;
+    overflow-wrap: anywhere;
 }
 
 .footer-back {
@@ -496,21 +539,70 @@ footer {
         padding: 0 20px;
     }
 
+    .logo {
+        font-size: 18px;
+    }
+
+    .back {
+        font-size: 12px;
+    }
+
     .container {
-        width: min(100% - 40px, 1200px);
+        width: calc(100% - 40px);
     }
 
     .hero {
         padding: 70px 0;
     }
 
+    .hero h1 {
+        font-size: clamp(38px, 11vw, 58px);
+        line-height: 1;
+        letter-spacing: -.065em;
+        overflow-wrap: anywhere;
+    }
+
+    .hero-title-ko {
+        margin-top: 20px;
+        font-size: 18px;
+    }
+
+    .hero-description {
+        font-size: 16px;
+        line-height: 1.7;
+    }
+
+    .hero-image {
+        margin-top: 55px;
+    }
+
     .project-info {
         grid-template-columns: repeat(2, 1fr);
-        gap: 25px;
+        gap: 25px 20px;
+        margin-top: 50px;
+    }
+
+    .info-value {
+        font-size: 14px;
     }
 
     section {
         padding: 90px 0;
+    }
+
+    .section-head {
+        margin-bottom: 50px;
+    }
+
+    .section-title {
+        font-size: clamp(32px, 9vw, 46px);
+        line-height: 1.12;
+        overflow-wrap: anywhere;
+    }
+
+    .section-description {
+        font-size: 15px;
+        line-height: 1.75;
     }
 
     .overview-layout,
@@ -519,29 +611,112 @@ footer {
         gap: 40px;
     }
 
+    .overview-copy {
+        font-size: 16px;
+        line-height: 1.85;
+    }
+
     .design-points {
         grid-template-columns: 1fr;
+        gap: 12px;
+        margin-top: 40px;
+    }
+
+    .point {
+        padding: 22px;
+    }
+
+    .content-block {
+        margin-top: 65px;
+    }
+
+    .content-title h3 {
+        font-size: 26px;
+    }
+
+    .content-title p {
+        font-size: 15px;
     }
 
     .image-grid-2,
     .image-grid-3 {
         grid-template-columns: 1fr;
+        gap: 12px;
     }
 
-    .games-intro {
-        display: block;
+    .game {
+        padding: 55px 0 65px;
     }
 
-    .games-intro p {
-        margin-top: 25px;
+    .game h3 {
+        font-size: 25px;
+        line-height: 1.3;
+    }
+
+    .game-description {
+        font-size: 15px;
+        margin: 15px 0 28px;
     }
 
     .game-images {
         grid-template-columns: 1fr;
+        gap: 12px;
     }
 
     .game-images img {
         aspect-ratio: 16 / 9;
+    }
+
+    .youtube-wrap {
+        width: 100%;
+        margin-top: 32px;
+        border-radius: 3px;
+    }
+
+    .concept-copy {
+        font-size: 16px;
+        line-height: 1.85;
+    }
+
+    footer {
+        padding: 65px 20px;
+    }
+
+    .footer-link {
+        font-size: 23px;
+    }
+
+}
+
+
+/* =========================
+   SMALL MOBILE
+========================= */
+
+@media (max-width: 420px) {
+
+    header {
+        padding: 0 16px;
+    }
+
+    .container {
+        width: calc(100% - 32px);
+    }
+
+    .back {
+        font-size: 11px;
+    }
+
+    .hero h1 {
+        font-size: 38px;
+    }
+
+    .project-info {
+        gap: 22px 14px;
+    }
+
+    .section-title {
+        font-size: 32px;
     }
 
 }
@@ -1002,6 +1177,15 @@ footer {
 
 </div>
 
+<div class="youtube-wrap">
+<iframe
+src="https://www.youtube.com/embed/dsiB7E_3_J0"
+title="등경돌에 불을 밝혀라!"
+allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+allowfullscreen>
+</iframe>
+</div>
+
 </div>
 
 
@@ -1030,6 +1214,15 @@ footer {
 <img src="images/jeju_smd_img/bumsum_00_start.jpg" alt="게임 시작">
 <img src="images/jeju_smd_img/bumsum_03_ending.jpg" alt="게임 완료">
 
+</div>
+
+<div class="youtube-wrap">
+<iframe
+src="https://www.youtube.com/embed/vTs3-bvJFMY"
+title="범섬 구멍을 뚫어라!"
+allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+allowfullscreen>
+</iframe>
 </div>
 
 </div>
@@ -1062,6 +1255,15 @@ footer {
 
 </div>
 
+<div class="youtube-wrap">
+<iframe
+src="https://www.youtube.com/embed/BdZdL7qRYFk"
+title="우도에서 빨래를 하자!"
+allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+allowfullscreen>
+</iframe>
+</div>
+
 </div>
 
 
@@ -1092,6 +1294,15 @@ footer {
 
 </div>
 
+<div class="youtube-wrap">
+<iframe
+src="https://www.youtube.com/embed/GU0OhCvejnY"
+title="엉장메코지 다리를 놓자!"
+allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+allowfullscreen>
+</iframe>
+</div>
+
 </div>
 
 
@@ -1120,6 +1331,15 @@ footer {
 <img src="images/jeju_smd_img/go_00-start.jpg" alt="게임 시작">
 <img src="images/jeju_smd_img/go_05_ending.jpg" alt="게임 완료">
 
+</div>
+
+<div class="youtube-wrap">
+<iframe
+src="https://www.youtube.com/embed/I_bm1Ac6mfI"
+title="고내봉에서 공기놀이 하자!"
+allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+allowfullscreen>
+</iframe>
 </div>
 
 </div>
