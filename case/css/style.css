@@ -386,6 +386,7 @@ footer {
 
 /* ---------------- Mobile ---------------- */
 
+
 @media(max-width:980px){
 
 .container{
@@ -463,6 +464,10 @@ font-size:18px;
 
     .footer-link {
         font-size: 23px;
+    }
+
+    .footer-back {
+        margin-top: 32px;
     }
 }
 
@@ -707,4 +712,3 @@ section {
     }
 
 }
-
