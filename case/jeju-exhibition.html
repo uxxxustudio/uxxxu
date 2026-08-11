@@ -1456,6 +1456,7 @@ footer {
 const videoModal = document.getElementById("videoModal");
 const videoFrame = document.getElementById("videoFrame");
 const videoModalClose = document.getElementById("videoModalClose");
+const videoModalInner = document.querySelector(".video-modal-inner");
 const videoButtons = document.querySelectorAll(".video-button");
 
 
@@ -1468,6 +1469,47 @@ videoButtons.forEach(button => {
         videoFrame.src = videoUrl + "?autoplay=1";
 
         videoModal.classList.add("is-open");
+
+        /*
+         * 클릭한 버튼 위치를 기준으로
+         * 영상이 버튼 위쪽에 뜨도록 위치 계산
+         */
+
+        const rect = button.getBoundingClientRect();
+
+        const popupWidth = Math.min(
+            720,
+            window.innerWidth - 40
+        );
+
+        const popupHeight = popupWidth * 9 / 16;
+
+        let left = rect.left + (rect.width / 2) - (popupWidth / 2);
+        let top = rect.top - popupHeight - 24;
+
+        /*
+         * 화면 위쪽을 넘어가면
+         * 버튼 아래쪽으로 표시
+         */
+
+        if (top < 20) {
+            top = rect.bottom + 24;
+        }
+
+        /*
+         * 오른쪽/왼쪽 화면 밖으로 나가지 않도록
+         */
+
+        if (left < 20) {
+            left = 20;
+        }
+
+        if (left + popupWidth > window.innerWidth - 20) {
+            left = window.innerWidth - popupWidth - 20;
+        }
+
+        videoModalInner.style.left = left + "px";
+        videoModalInner.style.top = top + "px";
 
         document.body.style.overflow = "hidden";
 
