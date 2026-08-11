@@ -635,3 +635,88 @@ section {
     }
 
 }
+
+/* =========================
+   VIDEO MODAL
+========================= */
+
+.video-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 28px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: #111;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.video-button:hover {
+    opacity: 0.55;
+}
+
+.video-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    background: rgba(0, 0, 0, 0.82);
+}
+
+.video-modal.is-open {
+    display: flex;
+}
+
+.video-modal-inner {
+    position: relative;
+    width: min(1000px, 100%);
+}
+
+.video-modal iframe {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border: 0;
+    background: #000;
+}
+
+.video-modal-close {
+    position: absolute;
+    top: -42px;
+    right: 0;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: #fff;
+    font-size: 28px;
+    font-weight: 300;
+    line-height: 1;
+    cursor: pointer;
+}
+
+@media (max-width: 800px) {
+
+    .video-modal {
+        padding: 20px;
+    }
+
+    .video-modal-close {
+        top: -38px;
+        right: 0;
+    }
+
+    .video-button {
+        margin-top: 24px;
+        font-size: 13px;
+    }
+
+}
