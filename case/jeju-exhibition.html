@@ -681,6 +681,53 @@ footer {
     background: #111;
 }
 
+
+/* =========================
+   SHINHWAJI MOBILE LAYOUT
+========================= */
+
+.shinhwaji-gallery {
+    display: block;
+}
+
+.shinhwaji-mobile {
+    display: none;
+}
+
+@media (max-width: 800px) {
+
+    .shinhwaji-desktop {
+        display: none;
+    }
+
+    .shinhwaji-mobile {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 18px;
+    }
+
+    .shinhwaji-mobile .shinhwa-main {
+        grid-column: 1 / 3;
+    }
+
+    .shinhwaji-mobile .image-card {
+        width: 100%;
+    }
+
+    .shinhwaji-mobile .image-card img {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 16 / 9;
+        object-fit: cover;
+    }
+
+    .shinhwaji-mobile .shinhwa-main img {
+        aspect-ratio: 16 / 9;
+    }
+
+}
+
 /* =========================
    RESPONSIVE
 ========================= */
@@ -1306,33 +1353,62 @@ footer {
 </div>
 
 
-<div class="full-image">
-<img src="images/jeju_smd_img/shinhwa_main.jpg" alt="신화지 메인">
+<!-- PC -->
+<div class="shinhwaji-desktop">
+
+    <div class="full-image">
+        <img src="images/jeju_smd_img/shinhwa_main.jpg" alt="신화지 메인">
+    </div>
+
+    <div class="image-grid-2">
+
+        <div class="image-card">
+            <img src="images/jeju_smd_img/shinhwa_diorama.jpg" alt="신화지 디오라마">
+        </div>
+
+        <div class="image-card">
+            <img src="images/jeju_smd_img/shinhwa_select_stone.jpg" alt="돌 선택 화면">
+        </div>
+
+    </div>
+
+    <div class="image-grid-2">
+
+        <div class="image-card">
+            <img src="images/jeju_smd_img/shinhwa_stone_decorate_ui.jpg" alt="돌 꾸미기 UI">
+        </div>
+
+        <div class="image-card">
+            <img src="images/jeju_smd_img/shinhwa_stone_decorate_ui_2.jpg" alt="돌 꾸미기 UI">
+        </div>
+
+    </div>
+
 </div>
 
 
-<div class="image-grid-2">
+<!-- 모바일 -->
+<div class="shinhwaji-mobile">
 
-<div class="image-card">
-<img src="images/jeju_smd_img/shinhwa_diorama.jpg" alt="신화지 디오라마">
-</div>
+    <div class="image-card shinhwa-main">
+        <img src="images/jeju_smd_img/shinhwa_main.jpg" alt="신화지 메인">
+    </div>
 
-<div class="image-card">
-<img src="images/jeju_smd_img/shinhwa_select_stone.jpg" alt="돌 선택 화면">
-</div>
+    <div class="image-card">
+        <img src="images/jeju_smd_img/shinhwa_diorama.jpg" alt="신화지 디오라마">
+    </div>
 
-</div>
+    <div class="image-card">
+        <img src="images/jeju_smd_img/shinhwa_select_stone.jpg" alt="돌 선택 화면">
+    </div>
 
+    <div class="image-card">
+        <img src="images/jeju_smd_img/shinhwa_stone_decorate_ui.jpg" alt="돌 꾸미기 UI">
+    </div>
 
-<div class="image-grid-2">
-
-<div class="image-card">
-<img src="images/jeju_smd_img/shinhwa_stone_decorate_ui.jpg" alt="돌 꾸미기 UI">
-</div>
-
-<div class="image-card">
-<img src="images/jeju_smd_img/shinhwa_stone_decorate_ui_2.jpg" alt="돌 꾸미기 UI">
-</div>
+    <div class="image-card">
+        <img src="images/jeju_smd_img/shinhwa_stone_decorate_ui_2.jpg" alt="돌 꾸미기 UI">
+    </div>
 
 </div>
 
