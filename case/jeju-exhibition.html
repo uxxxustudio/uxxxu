@@ -1567,7 +1567,7 @@ videoButtons.forEach(button => {
 
         const popupHeight = popupWidth * 9 / 16;
 
-        let left = rect.left + (rect.width / 2) - (popupWidth / 2);
+        let left = (window.innerWidth - popupWidth) / 2;
         let top = rect.top - popupHeight - 24;
 
         /*
