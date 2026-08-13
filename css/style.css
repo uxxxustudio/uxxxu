@@ -1213,7 +1213,7 @@ nav.open{
     position:absolute;
 
     width:650px;
-    height:560px;
+    height:540px;
 
     right:3vw;
     top:52%;
@@ -1221,7 +1221,6 @@ nav.open{
     transform:translateY(-50%);
 
     z-index:3;
-
     pointer-events:none;
 }
 
@@ -1236,28 +1235,27 @@ nav.open{
     will-change:transform;
 }
 
-
-/* U */
+/* U — 정사각형에 가까운 통통한 비율 */
 
 .ux-u-object{
-    width:330px;
-    height:420px;
+    width:340px;
+    height:340px;
 
-    left:30px;
-    top:145px;
+    left:20px;
+    top:135px;
 
     animation:uxUFloat 8s ease-in-out infinite;
 }
 
 
-/* X */
+/* X — U와 비슷한 크기 */
 
 .ux-x-object{
-    width:350px;
-    height:350px;
+    width:320px;
+    height:320px;
 
     right:0;
-    top:30px;
+    top:25px;
 
     animation:uxXFloat 7s ease-in-out infinite;
 }
@@ -1268,7 +1266,6 @@ nav.open{
     height:100%;
 
     display:block;
-
     overflow:visible;
 }
 
@@ -1282,14 +1279,16 @@ nav.open{
 .ux-main{
     fill:none;
 
-    stroke:#111111;
-    stroke-width:18;
+    stroke:#111;
+
+    stroke-width:12;
 
     stroke-linecap:round;
     stroke-linejoin:round;
 
-    opacity:.88;
+    opacity:.92;
 }
+
 
 
 /* 튜브 안쪽 윤곽 */
@@ -1297,7 +1296,8 @@ nav.open{
 .ux-inner{
     fill:none;
 
-    stroke:#333333;
+    stroke:#333;
+
     stroke-width:2;
 
     stroke-linecap:round;
@@ -1312,7 +1312,8 @@ nav.open{
 .ux-back{
     fill:none;
 
-    stroke:#555555;
+    stroke:#666;
+
     stroke-width:2;
 
     stroke-linecap:round;
@@ -1327,15 +1328,15 @@ nav.open{
 .ux-depth{
     fill:none;
 
-    stroke:#222222;
-    stroke-width:2;
+    stroke:#222;
+
+    stroke-width:1.5;
 
     stroke-linecap:round;
     stroke-linejoin:round;
 
     opacity:.55;
 }
-
 
 /* =========================================================
    DOTTED CONSTRUCTION LINE
@@ -1344,7 +1345,7 @@ nav.open{
 .ux-dots{
     fill:none;
 
-    stroke:#777777;
+    stroke:#777;
 
     stroke-width:1.2;
 
@@ -1357,49 +1358,42 @@ nav.open{
 }
 
 
+
+
 /* 중심 노드 */
 
 .ux-node{
-    fill:#111111;
+    fill:#111;
 
     opacity:.75;
 }
 
 
+
 /* =========================================================
-   FLOATING MOTION
+   FLOATING
 ========================================================= */
 
 @keyframes uxUFloat{
 
     0%{
-        transform:
-            translate3d(0,0,0)
-            rotate(-2deg);
+        transform:translate3d(0,0,0) rotate(-2deg);
     }
 
     25%{
-        transform:
-            translate3d(-6px,-12px,0)
-            rotate(-1deg);
+        transform:translate3d(-5px,-10px,0) rotate(-1deg);
     }
 
     50%{
-        transform:
-            translate3d(8px,-20px,0)
-            rotate(2deg);
+        transform:translate3d(7px,-17px,0) rotate(2deg);
     }
 
     75%{
-        transform:
-            translate3d(12px,-8px,0)
-            rotate(1deg);
+        transform:translate3d(10px,-7px,0) rotate(1deg);
     }
 
     100%{
-        transform:
-            translate3d(0,0,0)
-            rotate(-2deg);
+        transform:translate3d(0,0,0) rotate(-2deg);
     }
 }
 
@@ -1407,33 +1401,23 @@ nav.open{
 @keyframes uxXFloat{
 
     0%{
-        transform:
-            translate3d(0,0,0)
-            rotate(3deg);
+        transform:translate3d(0,0,0) rotate(3deg);
     }
 
     25%{
-        transform:
-            translate3d(10px,-8px,0)
-            rotate(5deg);
+        transform:translate3d(8px,-7px,0) rotate(4deg);
     }
 
     50%{
-        transform:
-            translate3d(3px,-18px,0)
-            rotate(2deg);
+        transform:translate3d(4px,-15px,0) rotate(2deg);
     }
 
     75%{
-        transform:
-            translate3d(-10px,-6px,0)
-            rotate(-1deg);
+        transform:translate3d(-8px,-5px,0) rotate(-1deg);
     }
 
     100%{
-        transform:
-            translate3d(0,0,0)
-            rotate(3deg);
+        transform:translate3d(0,0,0) rotate(3deg);
     }
 }
 
@@ -1445,25 +1429,25 @@ nav.open{
 @media (min-width:1200px){
 
     .hero-graphic{
-        width:680px;
-        height:580px;
+        width:650px;
+        height:540px;
 
         right:3vw;
     }
 
     .ux-u-object{
-        width:350px;
-        height:450px;
+        width:340px;
+        height:340px;
 
-        left:20px;
-        top:120px;
+        left:10px;
+        top:150px;
     }
 
     .ux-x-object{
-        width:360px;
-        height:360px;
+        width:320px;
+        height:320px;
 
-        right:-10px;
+        right:0;
         top:20px;
     }
 }
@@ -1479,23 +1463,23 @@ nav.open{
         width:430px;
         height:400px;
 
-        right:-70px;
+        right:-60px;
         top:62%;
     }
 
     .ux-u-object{
-        width:230px;
-        height:300px;
-
-        left:0;
-        top:100px;
-    }
-
-    .ux-x-object{
         width:240px;
         height:240px;
 
-        right:-10px;
+        left:0;
+        top:120px;
+    }
+
+    .ux-x-object{
+        width:230px;
+        height:230px;
+
+        right:0;
         top:20px;
     }
 }
