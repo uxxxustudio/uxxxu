@@ -243,13 +243,13 @@ nav a:hover{
     height:500px;
 
     right:3vw;
-    top:20vh;
+    top:19vh;
 
     pointer-events:none;
     overflow:visible;
-
-    animation:uxFloat 8s ease-in-out infinite alternate;
 }
+
+
 
 
 
@@ -260,16 +260,19 @@ nav a:hover{
 .graphic-u{
     position:absolute;
 
-    width:250px;
-    height:250px;
+    width:255px;
+    height:255px;
 
-    left:20px;
+    left:5px;
     top:145px;
 
     overflow:visible;
 
-    animation:uFloat 6.5s ease-in-out infinite alternate;
+    transform-origin:center center;
+
+    animation:uFloat 7s ease-in-out infinite alternate;
 }
+
 
 
 
@@ -280,15 +283,17 @@ nav a:hover{
 .graphic-x{
     position:absolute;
 
-    width:250px;
-    height:250px;
+    width:255px;
+    height:255px;
 
-    right:5px;
-    top:30px;
+    right:0;
+    top:5px;
 
     overflow:visible;
 
-    animation:xFloat 7.5s ease-in-out infinite alternate;
+    transform-origin:center center;
+
+    animation:xFloat 8s ease-in-out infinite alternate;
 }
 
 
@@ -298,62 +303,92 @@ nav a:hover{
 ========================================================= */
 
 
-/* 앞면 */
+/* =========================================================
+   FRONT
+========================================================= */
+
 .front-line{
     fill:none;
-    stroke:#111;
-    stroke-width:1.35;
+
+    stroke:#222;
+
+    stroke-width:1.05;
+
     stroke-linecap:round;
     stroke-linejoin:round;
-    opacity:.78;
+
+    opacity:.82;
 }
 
 
-/* 내부 라인 */
+/* =========================================================
+   INNER FRONT
+========================================================= */
+
 .inner-line{
     fill:none;
+
     stroke:#555;
-    stroke-width:.75;
+
+    stroke-width:.68;
+
     stroke-linecap:round;
     stroke-linejoin:round;
-    opacity:.52;
+
+    opacity:.58;
 }
 
 
-/* 측면 */
+/* =========================================================
+   SIDE
+   앞면과 뒷면을 연결하는 측면
+   → 실선
+========================================================= */
+
 .side-line{
     fill:none;
-    stroke:#444;
-    stroke-width:.75;
+
+    stroke:#333;
+
+    stroke-width:.85;
+
     stroke-linecap:round;
     stroke-linejoin:round;
-    opacity:.48;
+
+    opacity:.70;
 }
 
 
-/* 뒷면 */
+/* =========================================================
+   BACK
+   → 뒷면만 도트
+========================================================= */
+
 .back-dot{
     fill:none;
+
     stroke:#555;
-    stroke-width:.65;
+
+    stroke-width:.62;
+
     stroke-linecap:round;
     stroke-linejoin:round;
 
-    /*
-       카카오처럼 아주 촘촘하지 않은
-       얇은 도트 라인
-    */
     stroke-dasharray:1 4;
 
-    opacity:.48;
+    opacity:.46;
 }
 
 
-/* 중심점 */
+/* =========================================================
+   POINT
+========================================================= */
+
 .graphic-point{
-    fill:#111;
-    opacity:.55;
+    fill:#222;
+    opacity:.58;
 }
+
 
 
 
@@ -361,59 +396,68 @@ nav a:hover{
    GRAPHIC FLOAT
 ========================================================= */
 
-@keyframes uxFloat{
-
-    0%{
-        transform:
-            translate3d(0,4px,0)
-            rotate(-.5deg);
-    }
-
-    50%{
-        transform:
-            translate3d(-7px,-6px,0)
-            rotate(.5deg);
-    }
-
-    100%{
-        transform:
-            translate3d(6px,5px,0)
-            rotate(-.4deg);
-    }
-}
-
-
+/* U */
 @keyframes uFloat{
 
     0%{
         transform:
-            translate3d(0,4px,0)
-            rotate(-.8deg);
+            perspective(1000px)
+            translate3d(0,3px,0)
+            rotateY(-9deg)
+            rotateX(2deg)
+            rotateZ(-.4deg);
+    }
+
+    50%{
+        transform:
+            perspective(1000px)
+            translate3d(-5px,-5px,0)
+            rotateY(-6deg)
+            rotateX(3deg)
+            rotateZ(.3deg);
     }
 
     100%{
         transform:
-            translate3d(-8px,-7px,0)
-            rotate(.7deg);
+            perspective(1000px)
+            translate3d(5px,4px,0)
+            rotateY(-10deg)
+            rotateX(1deg)
+            rotateZ(-.3deg);
     }
 }
 
 
+/* X */
 @keyframes xFloat{
 
     0%{
         transform:
+            perspective(1000px)
             translate3d(3px,-3px,0)
-            rotate(.7deg);
+            rotateY(-9deg)
+            rotateX(2deg)
+            rotateZ(.4deg);
+    }
+
+    50%{
+        transform:
+            perspective(1000px)
+            translate3d(-5px,5px,0)
+            rotateY(-6deg)
+            rotateX(3deg)
+            rotateZ(-.3deg);
     }
 
     100%{
         transform:
-            translate3d(-7px,7px,0)
-            rotate(-.8deg);
+            perspective(1000px)
+            translate3d(5px,-4px,0)
+            rotateY(-10deg)
+            rotateX(1deg)
+            rotateZ(.4deg);
     }
 }
-
 
 /* =========================================================
    HERO
