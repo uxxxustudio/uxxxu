@@ -343,266 +343,1262 @@ nav a:hover{
    HERO
 ========================================================= */
 
-.hero {
-    position: relative;
-    isolation: isolate;
-    overflow: hidden;
+.hero{
+
+   height:100vh;
+   display:flex;
+   align-items:center;
+   padding:0 64px;
+   position:relative;
+
+}
+
+.hero-inner{
+
+    max-width:1200px;
+
+    width:100%;
+
+    min-width:0;
+
+}
+
+.eyebrow{
+
+    font-size:14px;
+
+    font-weight:600;
+
+    letter-spacing:.18em;
+
+    text-transform:uppercase;
+
+    color:#999;
+
+    margin-bottom:28px;
+
+    opacity:0;
+
+    transform:translateY(30px);
+
+    animation:fade .8s forwards;
+
+}
+
+.hero h1{
+
+    font-size:clamp(72px,7vw,118px);
+
+    font-weight:900;
+
+    line-height:.90;
+
+    letter-spacing:-0.03em;
+
+    margin-bottom:36px;
+
+    opacity:0;
+
+    transform:translateY(40px);
+
+    animation:fade .8s .15s forwards;
+
+}
+
+.subtitle{
+
+    font-size:30px;
+
+    font-weight:600;
+
+    letter-spacing:-.03em;
+
+    color:#444;
+
+    margin-bottom:26px;
+
+    opacity:0;
+
+    transform:translateY(30px);
+
+    animation:fade .8s .35s forwards;
+
+}
+
+.description{
+
+    max-width:650px;
+
+    font-size:20px;
+
+    line-height:1.9;
+
+    color:#666;
+
+    opacity:0;
+
+    transform:translateY(30px);
+
+    animation:fade .8s .55s forwards;
+
+}
+
+.hero-action{
+
+    margin-top:70px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:36px;
+
+    opacity:0;
+
+    transform:translateY(30px);
+
+    animation:fade .8s .75s forwards;
+
+}
+
+.cta{
+
+    font-size:16px;
+
+    font-weight:700;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+}
+
+.cta span{
+
+    transition:.25s;
+
+}
+
+.cta:hover span{
+
+    transform:translateX(8px);
+
+}
+
+.portfolio{
+
+    font-size:16px;
+
+    color:#888;
+
+    transition:.25s;
+
+}
+
+.portfolio:hover{
+
+    color:#111;
+
+}
+
+/*---.scroll{
+
+    position:absolute;
+
+    left:64px;
+
+    bottom:44px;
+
+    font-size:12px;
+
+    letter-spacing:.18em;
+
+    text-transform:uppercase;
+
+    color:#999;
+
+    animation:float 2s infinite;
+
+}---*/
+
+.scroll{
+    display:none !important;
 }
 
 
 /* =========================================================
-   HERO CONTENT
+   COMMON SECTION
 ========================================================= */
 
-.hero-inner {
-    position: relative;
-    z-index: 3;
+section{
+
+    padding:180px 64px;
+
+}
+
+.container{
+
+    max-width:1280px;
+
+    width:100%;
+
+    margin:auto;
+
 }
 
 
 /* =========================================================
-   3D UX GRAPHIC
+   ANIMATION
 ========================================================= */
 
-.hero-graphic {
-    position: absolute;
+@keyframes fade{
 
-    z-index: 2;
+    to{
 
-    width: 560px;
-    height: 500px;
+        opacity:1;
 
-    right: 4vw;
-    top: 19vh;
+        transform:translateY(0);
 
-    pointer-events: none;
+    }
 
-    overflow: visible;
-
-    animation: uxFloat 7s ease-in-out infinite alternate;
 }
 
+@keyframes float{
 
-/* ---------------------------------------------------------
-   U
---------------------------------------------------------- */
+    0%,100%{
 
-.graphic-u {
-    position: absolute;
+        transform:translateY(0);
 
-    width: 245px;
-    height: 300px;
+    }
 
-    left: 35px;
-    top: 115px;
+    50%{
 
-    overflow: visible;
+        transform:translateY(8px);
 
-    animation: uFloat 6.5s ease-in-out infinite alternate;
-}
+    }
 
-
-/* ---------------------------------------------------------
-   X
---------------------------------------------------------- */
-
-.graphic-x {
-    position: absolute;
-
-    width: 255px;
-    height: 255px;
-
-    right: 0;
-    top: 15px;
-
-    overflow: visible;
-
-    animation: xFloat 7.5s ease-in-out infinite alternate;
 }
 
 
 /* =========================================================
-   LINE SYSTEM
+   SERVICE
 ========================================================= */
 
+.section-title{
 
-/* 앞면 */
+    font-size:14px;
 
-.front-line {
-    fill: none;
+    letter-spacing:.18em;
 
-    stroke: #111;
+    text-transform:uppercase;
 
-    stroke-width: 1.65;
+    color:#999;
 
-    stroke-linecap: round;
-    stroke-linejoin: round;
+    margin-bottom:80px;
 
-    opacity: .82;
+    font-weight:600;
+
 }
 
+.service-list{
 
-/* 내부 깊이 */
+    display:flex;
 
-.inner-line {
-    fill: none;
+    flex-direction:column;
 
-    stroke: #555;
+    gap:70px;
 
-    stroke-width: .9;
-
-    stroke-linecap: round;
-    stroke-linejoin: round;
-
-    opacity: .55;
 }
 
+.service-item{
 
-/* 옆면 */
+    display:grid;
 
-.side-line {
-    fill: none;
+    grid-template-columns:80px 1fr;
 
-    stroke: #666;
+    padding-bottom:60px;
 
-    stroke-width: .9;
+    border-bottom:1px solid #ececec;
 
-    stroke-linecap: round;
-    stroke-linejoin: round;
+    transition:.35s;
 
-    opacity: .48;
 }
 
+.service-item:hover{
 
-/* 뒤쪽 — 카카오 레퍼런스의 도트 느낌 */
+    transform:translateX(8px);
 
-.back-dot {
-    fill: none;
-
-    stroke: #555;
-
-    stroke-width: .75;
-
-    stroke-linecap: round;
-    stroke-linejoin: round;
-
-    stroke-dasharray: 1 4;
-
-    opacity: .55;
 }
 
+.number{
 
-/* 뒤쪽 연결선 */
+    font-size:13px;
 
-.back-side {
-    fill: none;
+    font-weight:600;
 
-    stroke: #777;
+    color:#999;
 
-    stroke-width: .65;
+    padding-top:10px;
 
-    stroke-linecap: round;
-    stroke-linejoin: round;
-
-    opacity: .38;
 }
 
+.service-item h3{
 
-/* 포인트 */
+    font-size:42px;
 
-.graphic-point {
-    fill: #111;
+    font-weight:700;
 
-    opacity: .62;
+    letter-spacing:-.04em;
+
+    margin-bottom:18px;
+
+}
+
+.service-item p{
+
+    font-size:18px;
+
+    line-height:1.8;
+
+    color:#666;
+
 }
 
 
 /* =========================================================
-   FLOAT MOTION
+   PORTFOLIO
 ========================================================= */
 
-@keyframes uxFloat {
+.portfolio-grid{
 
-    0% {
-        transform:
-            translate3d(0, 4px, 0)
-            rotate(-1deg);
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:32px;
+
+}
+
+.project{
+
+    padding:56px;
+
+    border:1px solid #ececec;
+
+    border-radius:28px;
+
+    background:#fff;
+
+    transition:.35s;
+
+    display:flex;
+
+    flex-direction:column;
+
+    min-height:340px;
+
+    overflow:hidden;
+
+}
+
+.project:hover{
+
+    transform:translateY(-8px);
+
+    border-color:#111;
+
+}
+
+.project-category{
+
+    font-size:13px;
+
+    letter-spacing:.15em;
+
+    color:#999;
+
+    margin-bottom:28px;
+
+    font-weight:600;
+
+}
+
+.project h2{
+
+    font-size:34px;
+
+    line-height:1.2;
+
+    letter-spacing:-.04em;
+
+    margin-bottom:18px;
+
+}
+
+.project p{
+
+    font-size:18px;
+
+    line-height:1.8;
+
+    color:#666;
+
+    margin-bottom:auto;
+
+}
+
+.arrow{
+
+    margin-top:42px;
+
+    font-size:15px;
+
+    font-weight:600;
+
+}
+
+
+/* =========================================================
+   ABOUT
+========================================================= */
+
+.about-wrap{
+
+    display:grid;
+
+    grid-template-columns:180px 1fr;
+
+    gap:80px;
+
+}
+
+.about-content h2{
+
+    font-size:56px;
+
+    line-height:1.15;
+
+    letter-spacing:-.05em;
+
+    margin-bottom:42px;
+
+    font-weight:800;
+
+}
+
+.about-content p{
+
+    font-size:20px;
+
+    line-height:2;
+
+    color:#666;
+
+    max-width:760px;
+
+    margin-bottom:30px;
+
+}
+
+
+/* =========================================================
+   CONTACT
+========================================================= */
+
+.contact-wrap{
+
+    padding:120px 0;
+
+    border-top:1px solid #ececec;
+
+}
+
+.contact-wrap h2{
+
+    font-size:72px;
+
+    line-height:1.05;
+
+    letter-spacing:-.06em;
+
+    margin:26px 0;
+
+}
+
+.contact-wrap p{
+
+    font-size:20px;
+
+    color:#666;
+
+    margin-bottom:60px;
+
+}
+
+.contact-links{
+
+    display:flex;
+
+    gap:36px;
+
+    flex-wrap:wrap;
+
+}
+
+.contact-links a{
+
+    font-size:22px;
+
+    font-weight:600;
+
+    transition:.25s;
+
+}
+
+.contact-links a:hover{
+
+    opacity:.45;
+
+}
+
+
+/* Contact Info */
+
+.contact-info{
+
+    display:flex;
+
+    gap:100px;
+
+    margin-top:56px;
+
+}
+
+.contact-info span{
+
+    display:block;
+
+    font-size:13px;
+
+    color:#999;
+
+    letter-spacing:.15em;
+
+    text-transform:uppercase;
+
+    margin-bottom:12px;
+
+}
+
+.contact-info a{
+
+    font-size:20px;
+
+    font-weight:500;
+
+    color:#111;
+
+    text-decoration:none;
+
+}
+
+.contact-info a:hover{
+
+    opacity:.6;
+
+}
+
+.contact-info a span{
+
+    margin-left:8px;
+
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+footer{
+
+    padding:40px 64px;
+
+    border-top:1px solid #ececec;
+
+}
+
+.footer-inner{
+
+    max-width:1280px;
+
+    width:100%;
+
+    margin:auto;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    font-size:14px;
+
+    color:#888;
+
+}
+
+
+/* ------------------ Mobile Menu -------------- */
+
+.menu-toggle{
+
+    display:none;
+
+    width:42px;
+    height:42px;
+
+    border:none;
+    background:transparent;
+
+    cursor:pointer;
+
+    padding:0;
+}
+
+.menu-toggle span{
+
+    display:block;
+
+    width:24px;
+    height:2px;
+
+    background:#111;
+
+    margin:5px auto;
+
+    transition:.3s;
+}
+
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width:980px){
+    .hero-light{
+        width:120vw;
+        height:72vh;
+        right:-48vw;
+        top:10vh;
+        opacity:.58;
+        filter:blur(48px);
     }
 
-    50% {
-        transform:
-            translate3d(-8px, -7px, 0)
-            rotate(.7deg);
+
+
+/* ---------------- Header ---------------- */
+
+    header{
+    padding:26px;
+}
+
+nav{
+
+    display:none;
+
+    position:fixed;
+
+    top:92px;
+    left:0;
+
+    width:100%;
+
+    background:rgba(248,248,248,.72);
+    backdrop-filter:blur(20px) saturate(180%);
+    -webkit-backdrop-filter:blur(20px) saturate(180%);
+    box-shadow:0 10px 30px rgba(0,0,0,.06);
+   
+   padding:24px 26px;
+
+    flex-direction:column;
+
+    gap:20px;
+
+    border-top:1px solid rgba(0,0,0,.05);
+
+    z-index:998;
+
+}
+
+nav.open{
+    display:flex;
+}
+
+.menu-toggle{
+    display:block;
+}
+    
+
+
+    /* ---------------- Hero ---------------- */
+
+    .hero{
+        padding:0 26px;
     }
 
-    100% {
+    .hero h1{
+        font-size:clamp(52px,13vw,72px);
+        line-height:.95;
+        letter-spacing:-0.04em;
+    }
+
+    .subtitle{
+        font-size:22px;
+    }
+
+    .description{
+        font-size:17px;
+    }
+
+    .hero-action{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:18px;
+    }
+
+    .scroll{
+        left:26px;
+    }
+
+
+    /* ---------------- Common ---------------- */
+
+    section{
+        padding:120px 26px;
+    }
+
+
+    /* ---------------- Service ---------------- */
+
+    .service-item{
+        grid-template-columns:1fr;
+        gap:16px;
+    }
+
+    .service-item h3{
+        font-size:30px;
+    }
+
+    .service-item p{
+        font-size:16px;
+    }
+
+
+    /* ---------------- Portfolio ---------------- */
+
+    .portfolio-grid{
+        grid-template-columns:1fr;
+    }
+
+    .project{
+        padding:36px;
+        min-height:auto;
+    }
+
+    .project h2{
+        font-size:28px;
+    }
+
+    .project p{
+        font-size:16px;
+    }
+
+
+    /* ---------------- About ---------------- */
+
+    .about-wrap{
+        grid-template-columns:1fr;
+        gap:40px;
+    }
+
+    .about-content h2{
+        font-size:38px;
+    }
+
+    .about-content p{
+        font-size:17px;
+    }
+
+
+    /* ---------------- Contact ---------------- */
+
+    .contact-wrap h2{
+        font-size:42px;
+    }
+
+    .contact-wrap p{
+        font-size:17px;
+    }
+
+    .contact-links{
+        flex-direction:column;
+        gap:18px;
+    }
+
+    .contact-links a{
+        font-size:18px;
+    }
+
+    .contact-info{
+        flex-direction:column;
+        gap:32px;
+    }
+
+
+    /* ---------------- Footer ---------------- */
+
+    footer{
+        padding:30px 26px;
+    }
+
+    .footer-inner{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:12px;
+    }
+
+}
+
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce){
+
+    .hero-light,
+    .hero-light::after{
+        animation:none;
+    }
+
+}
+
+
+
+/* =========================================================
+   FLOATING 3D UX OBJECTS
+========================================================= */
+
+.hero{
+    position:relative;
+    isolation:isolate;
+    overflow:hidden;
+}
+
+.hero-inner{
+    position:relative;
+    z-index:5;
+}
+
+
+/* =========================================================
+   UX 3D WIREFRAME GRAPHIC
+========================================================= */
+
+.hero-graphic{
+    position:absolute;
+
+    width:680px;
+    height:580px;
+
+    right:2vw;
+    top:52%;
+
+    transform:translateY(-50%);
+
+    z-index:3;
+    pointer-events:none;
+
+    perspective:1000px;
+}
+
+
+/* =========================================================
+   OBJECT
+========================================================= */
+
+.ux-object{
+    position:absolute;
+
+    transform-style:preserve-3d;
+
+    will-change:transform;
+}
+
+
+/* U */
+
+.ux-u-object{
+    width:370px;
+    height:370px;
+
+    left:5px;
+    top:155px;
+
+    transform-origin:center center;
+
+    animation:uxUFloat 8s ease-in-out infinite;
+}
+
+
+/* X */
+
+.ux-x-object{
+    width:350px;
+    height:350px;
+
+    right:0;
+    top:25px;
+
+    transform-origin:center center;
+
+    animation:uxXFloat 7s ease-in-out infinite;
+}
+
+
+.ux-object svg{
+    width:100%;
+    height:100%;
+
+    display:block;
+
+    overflow:visible;
+
+    transform-style:preserve-3d;
+}
+
+
+/* =========================================================
+   U WIREFRAME
+========================================================= */
+
+.u-back{
+    fill:none;
+
+    stroke:#777;
+
+    stroke-width:1;
+
+    stroke-linecap:round;
+    stroke-linejoin:round;
+
+    opacity:.35;
+}
+
+.u-layer{
+    fill:none;
+
+    stroke:#555;
+
+    stroke-width:1.15;
+
+    stroke-linecap:round;
+    stroke-linejoin:round;
+
+    opacity:.48;
+}
+
+.u-main{
+    fill:none;
+
+    stroke:#111;
+
+    stroke-width:2.4;
+
+    stroke-linecap:round;
+    stroke-linejoin:round;
+
+    opacity:.86;
+}
+
+.u-inner{
+    fill:none;
+
+    stroke:#555;
+
+    stroke-width:1;
+
+    stroke-linecap:round;
+    stroke-linejoin:round;
+
+    opacity:.55;
+}
+
+.u-section{
+    fill:none;
+
+    stroke:#444;
+
+    stroke-width:.9;
+
+    stroke-linecap:round;
+    stroke-linejoin:round;
+
+    opacity:.5;
+}
+
+.u-dots{
+    fill:none;
+
+    stroke:#666;
+
+    stroke-width:.9;
+
+    stroke-linecap:round;
+
+    stroke-dasharray:1 5;
+
+    opacity:.62;
+}
+
+.u-point{
+    fill:#111;
+
+    opacity:.65;
+}
+
+
+/* =========================================================
+   X WIREFRAME
+========================================================= */
+
+.x-back{
+    fill:none;
+
+    stroke:#777;
+
+    stroke-width:1;
+
+    stroke-linecap:round;
+    stroke-linejoin:round;
+
+    opacity:.34;
+}
+
+.x-layer{
+    fill:none;
+
+    stroke:#555;
+
+    stroke-width:1.15;
+
+    stroke-linecap:round;
+    stroke-linejoin:round;
+
+    opacity:.48;
+}
+
+.x-main{
+    fill:none;
+
+    stroke:#111;
+
+    stroke-width:2.4;
+
+    stroke-linecap:round;
+    stroke-linejoin:round;
+
+    opacity:.86;
+}
+
+.x-inner{
+    fill:none;
+
+    stroke:#555;
+
+    stroke-width:1;
+
+    stroke-linecap:round;
+    stroke-linejoin:round;
+
+    opacity:.55;
+}
+
+.x-section{
+    fill:none;
+
+    stroke:#444;
+
+    stroke-width:.9;
+
+    stroke-linecap:round;
+    stroke-linejoin:round;
+
+    opacity:.5;
+}
+
+.x-dots{
+    fill:none;
+
+    stroke:#666;
+
+    stroke-width:.9;
+
+    stroke-linecap:round;
+
+    stroke-dasharray:1 5;
+
+    opacity:.62;
+}
+
+.x-point{
+    fill:#111;
+
+    opacity:.65;
+}
+
+
+/* =========================================================
+   FLOAT + PERSPECTIVE
+========================================================= */
+
+@keyframes uxUFloat{
+
+    0%{
         transform:
-            translate3d(7px, 5px, 0)
-            rotate(-.5deg);
+            translate3d(0,0,0)
+            rotateY(-18deg)
+            rotateX(4deg)
+            rotateZ(-2deg);
+    }
+
+    25%{
+        transform:
+            translate3d(-8px,-8px,0)
+            rotateY(-23deg)
+            rotateX(6deg)
+            rotateZ(-1deg);
+    }
+
+    50%{
+        transform:
+            translate3d(8px,-15px,0)
+            rotateY(-17deg)
+            rotateX(3deg)
+            rotateZ(2deg);
+    }
+
+    75%{
+        transform:
+            translate3d(11px,-6px,0)
+            rotateY(-21deg)
+            rotateX(5deg)
+            rotateZ(1deg);
+    }
+
+    100%{
+        transform:
+            translate3d(0,0,0)
+            rotateY(-18deg)
+            rotateX(4deg)
+            rotateZ(-2deg);
     }
 }
 
 
-@keyframes uFloat {
+@keyframes uxXFloat{
 
-    0% {
+    0%{
         transform:
-            translate3d(0, 5px, 0)
-            rotate(-1.2deg);
+            translate3d(0,0,0)
+            rotateY(20deg)
+            rotateX(5deg)
+            rotateZ(3deg);
     }
 
-    100% {
+    25%{
         transform:
-            translate3d(-9px, -8px, 0)
-            rotate(1deg);
-    }
-}
-
-
-@keyframes xFloat {
-
-    0% {
-        transform:
-            translate3d(3px, -3px, 0)
-            rotate(1deg);
+            translate3d(8px,-7px,0)
+            rotateY(25deg)
+            rotateX(7deg)
+            rotateZ(4deg);
     }
 
-    100% {
+    50%{
         transform:
-            translate3d(-8px, 8px, 0)
-            rotate(-1.2deg);
+            translate3d(5px,-16px,0)
+            rotateY(18deg)
+            rotateX(4deg)
+            rotateZ(1deg);
+    }
+
+    75%{
+        transform:
+            translate3d(-8px,-5px,0)
+            rotateY(23deg)
+            rotateX(6deg)
+            rotateZ(-1deg);
+    }
+
+    100%{
+        transform:
+            translate3d(0,0,0)
+            rotateY(20deg)
+            rotateX(5deg)
+            rotateZ(3deg);
     }
 }
 
 
 /* =========================================================
-   MOBILE
+   RESPONSIVE
 ========================================================= */
 
-@media (max-width: 900px) {
+@media (max-width:1200px){
 
-    .hero-graphic {
-        width: 360px;
-        height: 340px;
-
-        right: -20px;
-        top: 18vh;
+    .hero-graphic{
+        width:570px;
+        height:500px;
+        right:0;
     }
 
-    .graphic-u {
-        width: 155px;
-        height: 190px;
-
-        left: 15px;
-        top: 110px;
+    .ux-u-object{
+        width:310px;
+        height:310px;
+        top:150px;
     }
 
-    .graphic-x {
-        width: 165px;
-        height: 165px;
+    .ux-x-object{
+        width:295px;
+        height:295px;
+        top:30px;
+    }
+}
 
-        right: 0;
-        top: 20px;
+
+@media (max-width:900px){
+
+    .hero-graphic{
+        width:430px;
+        height:400px;
+
+        right:-60px;
+        top:65%;
     }
 
+    .ux-u-object{
+        width:240px;
+        height:240px;
+        top:130px;
+    }
+
+    .ux-x-object{
+        width:225px;
+        height:225px;
+        top:20px;
+    }
 }
