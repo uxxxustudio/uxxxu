@@ -1263,7 +1263,7 @@ footer{
 
     .hero h1{
         left:26px;
-        top:31%;
+        top:23%;
 
         width:calc(100% - 52px);
 
@@ -1276,29 +1276,22 @@ footer{
 
     .hero h1 .title-line-1{
         display:block;
-
         position:relative;
-
         left:0;
         margin:0;
-
         width:100%;
-
         text-align:left;
     }
 
     .hero h1 .title-line-2{
         display:block;
-
         position:relative;
 
-        /* PC 위치값 제거 */
         left:0;
         top:16px;
         margin-left:0;
 
         width:100%;
-
         text-align:left;
     }
 
@@ -1335,9 +1328,9 @@ footer{
        BETTER UX
     ------------------------- */
 
-    .hero-message-ux{
+  .hero-message-ux{
         left:26px;
-        top:61%;
+        top:53%;
 
         width:calc(100% - 52px);
     }
@@ -1349,7 +1342,7 @@ footer{
 
     .hero-message-ui{
         left:50%;
-        top:73%;
+        top:65%;
 
         width:calc(50% - 26px);
     }
@@ -1374,14 +1367,12 @@ footer{
        HERO ACTION
     ------------------------- */
 
-    .hero-action{
+   .hero-action{
         margin-top:34px;
 
         display:flex;
         flex-direction:column;
-
         align-items:flex-start;
-
         gap:18px;
     }
 
@@ -1389,6 +1380,9 @@ footer{
     .portfolio{
         font-size:15px;
     }
+}
+
+   
 
 
     /* -------------------------
