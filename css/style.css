@@ -1190,89 +1190,61 @@ nav.open{
 
 
 /* =========================================================
-   HERO U / X GRAPHIC - TEST
+   HERO U X GRAPHIC
 ========================================================= */
 
-.hero {
-    position: relative;
-    isolation: isolate;
-    overflow: hidden;
+.hero{
+    position:relative;
+    isolation:isolate;
+    overflow:hidden;
 }
 
+.hero-graphic{
+    position:absolute;
 
-/* U/X 전체 위치 */
+    width:620px;
+    height:500px;
 
-.hero-graphic {
-    position: absolute;
+    right:4vw;
+    top:50%;
 
-    z-index: 2;
+    transform:translateY(-50%);
 
-    width: 560px;
-    height: 420px;
+    z-index:2;
 
-    right: 5%;
-    top: 50%;
+    pointer-events:none;
 
-    transform: translateY(-50%);
-
-    pointer-events: none;
+    opacity:.75;
 }
 
+.hero-graphic svg{
+    display:block;
 
-/* SVG */
+    width:100%;
+    height:100%;
 
-.ux-graphic {
-    display: block;
-
-    width: 100%;
-    height: 100%;
-
-    overflow: visible;
+    overflow:visible;
 }
 
+.hero-graphic path{
+    fill:none;
 
-/* 라인 */
+    stroke:#8c928e;
 
-.ux-graphic path {
-    fill: none;
+    stroke-width:2;
 
-    stroke: #8f9691;
+    stroke-linecap:round;
+    stroke-linejoin:round;
 
-    stroke-width: 2;
-
-    stroke-linecap: round;
-    stroke-linejoin: round;
-
-    opacity: 0.8;
+    opacity:.85;
 }
 
-
-/* U */
-
-.ux-u {
-    transform-origin: center;
+.hero-graphic circle{
+    fill:#718076;
+    opacity:.7;
 }
 
-
-/* X */
-
-.ux-x {
-    transform-origin: center;
-}
-
-
-/* 포인트 */
-
-.ux-graphic circle {
-    fill: #53695b;
-
-    opacity: 0.8;
-}
-
-
-/* 기존 텍스트가 그래픽 위로 */
-
-.hero-inner {
-    position: relative;
-    z-index: 3;
+.hero-inner{
+    position:relative;
+    z-index:3;
 }
