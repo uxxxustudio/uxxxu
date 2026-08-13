@@ -232,27 +232,30 @@ nav a:hover{
 
 /* =========================================================
    HERO 3D GRAPHIC
-   Kakao-style line construction
-   - front / side : solid
-   - rear : dotted
+   Three.js wireframe
 ========================================================= */
 
-.hero-graphic{
+.hero-3d{
     position:absolute;
+    z-index:2;
+
     right:2%;
     top:50%;
+
     width:52%;
     max-width:760px;
     height:620px;
+
     transform:translateY(-50%);
+
     pointer-events:none;
-    z-index:1;
+    overflow:visible;
 }
 
-.hero-graphic svg{
-    width:100%;
-    height:100%;
-    overflow:visible;
+.hero-3d canvas{
+    width:100% !important;
+    height:100% !important;
+    display:block;
 }
 
 
@@ -260,149 +263,42 @@ nav a:hover{
    U / X FLOAT
 ========================================================= */
 
-.u-front,
-.x-front{
-    fill:none;
-    stroke:#111;
-    stroke-width:1.8;
-    stroke-linecap:round;
-    stroke-linejoin:round;
-    opacity:.72;
-}
-
-
-.ux-u{
-    animation:uFloat 7s ease-in-out infinite alternate;
-}
-
-.ux-x{
-    animation:xFloat 8s ease-in-out infinite alternate;
+.hero-3d{
+    will-change:transform;
 }
 
 
 /* =========================================================
-   U — FRONT / SIDE / REAR
+   HERO 3D LINE
+   Three.js wireframe
 ========================================================= */
 
-.u-front{
-    fill:none;
-    stroke:#111;
-    stroke-width:1.25;
-    stroke-linecap:round;
-    stroke-linejoin:round;
-    opacity:.82;
-}
-
-.u-side{
-    fill:none;
-    stroke:#222;
-    stroke-width:.95;
-    stroke-linecap:round;
-    stroke-linejoin:round;
-    opacity:.68;
-}
-
-.u-rear{
-    fill:none;
-    stroke:#333;
-    stroke-width:.78;
-    stroke-dasharray:1 5;
-    stroke-linecap:round;
-    stroke-linejoin:round;
-    opacity:.52;
+.hero-3d canvas{
+    opacity:.78;
 }
 
 
 /* =========================================================
-   X — FRONT / SIDE / REAR
+   HERO 3D MOTION
 ========================================================= */
 
-.x-front{
-    fill:none;
-    stroke:#111;
-    stroke-width:1.25;
-    stroke-linecap:round;
-    stroke-linejoin:round;
-    opacity:.82;
-}
-
-.x-side{
-    fill:none;
-    stroke:#222;
-    stroke-width:.95;
-    stroke-linecap:round;
-    stroke-linejoin:round;
-    opacity:.68;
-}
-
-.x-rear{
-    fill:none;
-    stroke:#333;
-    stroke-width:.78;
-    stroke-dasharray:1 5;
-    stroke-linecap:round;
-    stroke-linejoin:round;
-    opacity:.52;
-}
-
-
-/* =========================================================
-   CENTER POINT
-========================================================= */
-
-.ux-point{
-    fill:#111;
-    opacity:.48;
-}
-
-
-/* =========================================================
-   GRAPHIC FLOAT
-   작은 이동 + 아주 미세한 회전
-   → 떠 있는 느낌만 유지
-========================================================= */
-
-@keyframes uFloat{
+@keyframes hero3dFloat{
 
     0%{
-        transform:
-            translate3d(-4px,3px,0)
-            rotate(-.6deg);
+        transform:translateY(-50%) translate3d(-3px,2px,0);
     }
 
     50%{
-        transform:
-            translate3d(3px,-5px,0)
-            rotate(.35deg);
+        transform:translateY(-50%) translate3d(4px,-5px,0);
     }
 
     100%{
-        transform:
-            translate3d(6px,4px,0)
-            rotate(.6deg);
+        transform:translateY(-50%) translate3d(-2px,4px,0);
     }
 }
 
-
-@keyframes xFloat{
-
-    0%{
-        transform:
-            translate3d(4px,-4px,0)
-            rotate(.6deg);
-    }
-
-    50%{
-        transform:
-            translate3d(-3px,4px,0)
-            rotate(-.3deg);
-    }
-
-    100%{
-        transform:
-            translate3d(-6px,-5px,0)
-            rotate(-.6deg);
-    }
+.hero-3d{
+    animation:hero3dFloat 7s ease-in-out infinite alternate;
 }
 
 /* =========================================================
@@ -1113,21 +1009,17 @@ footer{
 
     /* ---------------- Graphic ---------------- */
 
-    .hero-graphic{
+    .hero-3d{
 
-        width:360px;
+        width:420px;
 
-        height:340px;
+        height:380px;
 
-        right:-20px;
+        right:-70px;
 
-        top:18vh;
-    }
+        top:28vh;
 
-    .ux-u,
-    .ux-x{
-        transform-box:fill-box;
-        transform-origin:center;
+        transform:translateY(-50%);
     }
 
 
@@ -1263,9 +1155,7 @@ footer{
 
     .hero-light,
     .hero-light::after,
-    .hero-graphic,
-    .ux-u,
-    .ux-x{
+    .hero-3d{
 
         animation:none;
     }
