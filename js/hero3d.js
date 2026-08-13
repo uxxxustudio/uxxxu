@@ -12,17 +12,17 @@ export function initHero3D() {
 
   /* =====================================================
      SCENE & CAMERA
-     (넓은 배치를 커버하기 위해 카메라 화각과 위치를 조정했습니다)
+     (넓은 배치를 위해 FOV를 더 넓히고 카메라를 뒤로 뺐습니다)
   ===================================================== */
   const scene = new THREE.Scene();
 
   const camera = new THREE.PerspectiveCamera(
-    42, // 더 넓은 시야를 위해 FOV 증가 (기존 34)
+    48, // 화면 전체를 커버하기 위해 화각을 더 넓힙니다 (기존 34)
     container.clientWidth / container.clientHeight,
     0.1,
     100
   );
-  camera.position.set(0, 0, 22); // 글자들이 잘 보이도록 카메라를 뒤로 이동 (기존 15)
+  camera.position.set(0, 0, 25); // 배치를 위해 카메라를 뒤로 더 이동 (기존 15)
 
   /* =====================================================
      RENDERER
@@ -62,23 +62,23 @@ export function initHero3D() {
     (font) => {
       // -------------------------------------------------
       // [U X X X U] 화면 전체 자유 배치 튜닝
-      // createLetter(글자, 폰트, x, y, zOffset, rotY, rotX, scale, phase)
+      // createLetter(글자, 폰트, x, y, rotY, rotX, scale, phase)
       // -------------------------------------------------
 
       // 1. 좌측 상단 U (화면 모서리로 크게 배치)
-      createLetter("U", font, -7.0, 3.8, -1.0, -0.42, 0.05, 1.1, 0);
+      createLetter("U", font, -8.0, 4.5, -0.42, 0.05, 1.1, 0);
 
       // 2. 우측 상단 X (폰트 크기를 다양하게)
-      createLetter("X", font, 6.5, 4.0, -0.5, 0.2, -0.1, 0.9, 0.8);
+      createLetter("X", font, 7.5, 4.8, 0.2, -0.1, 0.9, 0.8);
 
       // 3. 중앙 중상단 X (작고 뒤쪽에 배치하여 원근감 연출)
-      createLetter("X", font, 0.0, 1.8, -3.0, 0.15, 0.2, 0.65, 1.7);
+      createLetter("X", font, 0.0, 2.5, 0.15, 0.2, 0.65, 1.7);
 
       // 4. 좌측 하단 X (조금 더 앞쪽에 배치)
-      createLetter("X", font, -6.8, -3.8, 1.0, -0.2, 0.0, 0.95, 2.5);
+      createLetter("X", font, -7.8, -4.5, -0.2, 0.0, 0.95, 2.5);
 
       // 5. 우측 하단 U (화면 전체를 균형 있게 채움)
-      createLetter("U", font, 7.2, -3.5, 0.0, 0.42, -0.08, 1.05, 3.2);
+      createLetter("U", font, 8.2, -4.2, 0.42, -0.08, 1.05, 3.2);
     },
     undefined,
     (error) => {
@@ -88,14 +88,12 @@ export function initHero3D() {
 
   /* =====================================================
      CREATE 3D LINE LETTER (EDGES GEOMETRY)
-     (zOffset 매개변수를 추가하여 깊이감을 부여했습니다)
   ===================================================== */
   function createLetter(
     character,
     font,
     x,
     y,
-    zOffset, // Z축 깊이 오프셋 추가
     rotationY,
     rotationX,
     scale,
@@ -125,7 +123,7 @@ export function initHero3D() {
     const wireGeometry = new THREE.EdgesGeometry(geometry, 20);
     const wire = new THREE.LineSegments(wireGeometry, material);
 
-    wire.position.set(x, y, zOffset); // 깊이감 적용
+    wire.position.set(x, y, 0);
     wire.scale.setScalar(scale);
     wire.rotation.y = rotationY;
     wire.rotation.x = rotationX; // 기본 기울기 적용
@@ -133,7 +131,6 @@ export function initHero3D() {
     wire.userData = {
       baseX: x,
       baseY: y,
-      baseZ: zOffset, // 애니메이션 기준값으로 저장
       baseRotationY: rotationY,
       baseRotationX: rotationX, // 애니메이션 기준값으로 저장
       phase: phase,
@@ -143,7 +140,7 @@ export function initHero3D() {
   }
 
   /* =====================================================
-     MOUSE & INTERACTION
+     MOUSE & INTERACTION (모션 느낌 유지)
   ===================================================== */
   const target = { x: 0, y: 0 };
   const mouse = { x: 0, y: 0 };
@@ -175,7 +172,7 @@ export function initHero3D() {
   window.addEventListener("resize", resize);
 
   /* =====================================================
-     ANIMATION LOOP
+     ANIMATION LOOP (모션 느낌 유지)
   ===================================================== */
   const clock = new THREE.Clock();
 
@@ -191,14 +188,13 @@ export function initHero3D() {
     group.children.forEach((object) => {
       const phase = object.userData.phase;
 
-      // 1. 부유 모션 (둥실거림)
-      // 화면 전체 배치에 맞춰 움직임 반경을 미세하게 키웠습니다.
+      // 1. 부유 모션 (둥실거림) - 그대로 유지
       object.position.x =
-        object.userData.baseX + Math.sin(time * 0.5 + phase) * 0.15;
+        object.userData.baseX + Math.sin(time * 0.55 + phase) * 0.1;
       object.position.y =
-        object.userData.baseY + Math.cos(time * 0.6 + phase) * 0.18;
+        object.userData.baseY + Math.cos(time * 0.7 + phase) * 0.12;
 
-      // 2. 마우스 반응 회전
+      // 2. 마우스 반응 회전 - 그대로 유지 (baseRotationX 기반으로 수정)
       object.rotation.y = object.userData.baseRotationY + mouse.x * 0.18;
       object.rotation.x = object.userData.baseRotationX + mouse.y * 0.06;
     });
