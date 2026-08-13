@@ -4,51 +4,103 @@
 
 <div class="hero-graphic" aria-hidden="true">
 
-<svg viewBox="0 0 900 650"
-     xmlns="http://www.w3.org/2000/svg">
-
     <!-- U -->
-    <g class="ux-u">
+    <div class="ux-object ux-u-object">
 
-        <path d="M150 100
-                 L150 390
-                 C150 485 215 540 310 540
-                 C405 540 470 485 470 390
-                 L470 100"/>
+        <svg viewBox="0 0 420 520"
+             xmlns="http://www.w3.org/2000/svg">
 
-        <path d="M185 115
-                 L185 385
-                 C185 455 235 500 310 500
-                 C385 500 435 455 435 385
-                 L435 115"/>
+            <!-- 뒤쪽 구조선 -->
+            <path class="ux-back"
+                d="M105 55
+                   L105 310
+                   C105 385 150 425 210 425
+                   C270 425 315 385 315 310
+                   L315 55"/>
 
-        <path d="M220 130
-                 L220 380
-                 C220 425 255 460 310 460
-                 C365 460 400 425 400 380
-                 L400 130"/>
+            <!-- 메인 외곽 -->
+            <path class="ux-main"
+                d="M80 40
+                   L80 305
+                   C80 405 135 465 210 465
+                   C285 465 340 405 340 305
+                   L340 40"/>
 
-    </g>
+            <!-- 내부 라운드 구조 -->
+            <path class="ux-inner"
+                d="M105 65
+                   L105 305
+                   C105 380 145 425 210 425
+                   C275 425 315 380 315 305
+                   L315 65"/>
+
+            <path class="ux-inner"
+                d="M130 85
+                   L130 300
+                   C130 355 160 395 210 395
+                   C260 395 290 355 290 300
+                   L290 85"/>
+
+            <!-- 입체 연결선 -->
+            <path class="ux-depth"
+                d="M80 40 L105 55
+                   M340 40 L315 55
+                   M80 305 L105 310
+                   M340 305 L315 310"/>
+
+            <!-- 내부 도트 라인 -->
+            <path class="ux-dots"
+                d="M118 75
+                   L118 305
+                   C118 365 153 410 210 410
+                   C267 410 302 365 302 305
+                   L302 75"/>
+
+        </svg>
+
+    </div>
 
 
     <!-- X -->
-    <g class="ux-x">
+    <div class="ux-object ux-x-object">
 
-        <path d="M540 120 L665 270 L790 120"/>
-        <path d="M540 520 L665 370 L790 520"/>
+        <svg viewBox="0 0 460 460"
+             xmlns="http://www.w3.org/2000/svg">
 
-        <path d="M540 120 L665 270 L790 520"/>
-        <path d="M790 120 L665 270 L540 520"/>
+            <!-- 뒤쪽 X -->
+            <path class="ux-back"
+                d="M75 65 L205 220 L335 65
+                   M75 395 L205 240 L335 395"/>
 
-        <path d="M565 135 L665 285 L765 135"/>
-        <path d="M565 505 L665 355 L765 505"/>
+            <!-- 메인 X -->
+            <path class="ux-main"
+                d="M55 50 L205 220 L355 50
+                   M55 410 L205 240 L355 410"/>
 
-    </g>
+            <!-- 안쪽 X -->
+            <path class="ux-inner"
+                d="M85 70 L205 225 L325 70
+                   M85 390 L205 235 L325 390"/>
 
-    <circle cx="665" cy="270" r="5"/>
-    <circle cx="665" cy="370" r="4"/>
+            <!-- 깊이 연결 -->
+            <path class="ux-depth"
+                d="M55 50 L75 65
+                   M355 50 L335 65
+                   M55 410 L75 395
+                   M355 410 L335 395"/>
 
-</svg>
+            <!-- 내부 도트 -->
+            <path class="ux-dots"
+                d="M100 85 L205 220 L310 85
+                   M100 375 L205 240 L310 375"/>
+
+            <!-- 중심 구조 -->
+            <circle class="ux-node" cx="205" cy="220" r="4"/>
+            <circle class="ux-node" cx="205" cy="240" r="4"/>
+
+        </svg>
+
+    </div>
 
 </div>
 
