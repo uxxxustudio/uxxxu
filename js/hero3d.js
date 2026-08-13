@@ -3,7 +3,7 @@ import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 
 /* =========================================================
-   HERO THREE.JS (맑은 프리미엄 글래스 질감 수정 버전)
+   HERO THREE.JS (반투명 아크릴 글래스 재질 완성 버전)
 ========================================================= */
 
 export function initHero3D() {
@@ -19,20 +19,20 @@ export function initHero3D() {
   camera.position.set(0, 0, 15);
 
   /* =====================================================
-     LIGHTS (유리 반사 및 림라이트)
+     LIGHTS (유리/아크릴 표면 하이라이트 생성용 조명)
   ===================================================== */
-  const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
+  const ambientLight = new THREE.AmbientLight(0xffffff, 1.1);
   scene.add(ambientLight);
 
-  // 유리 모서리 하이라이트를 위한 메인 조명
-  const mainLight = new THREE.DirectionalLight(0xffffff, 2.0);
-  mainLight.position.set(6, 10, 8);
-  scene.add(mainLight);
+  // 상단에서 비추어 글래스 곡면에 쨍한 빛 반사를 만드는 주 조명
+  const keyLight = new THREE.DirectionalLight(0xffffff, 2.8);
+  keyLight.position.set(6, 12, 8);
+  scene.add(keyLight);
 
-  // 은은한 #DCE2DF 림라이트
-  const rimLight = new THREE.DirectionalLight(0xdce2df, 1.2);
-  rimLight.position.set(-8, -6, 5);
-  scene.add(rimLight);
+  // 하단 측면에서 입체감을 살려주는 보조 조명
+  const fillLight = new THREE.DirectionalLight(0xdce2df, 1.5);
+  fillLight.position.set(-6, -5, 5);
+  scene.add(fillLight);
 
   /* =====================================================
      RENDERER
@@ -56,46 +56,35 @@ export function initHero3D() {
   /* =====================================================
      MATERIALS
   ===================================================== */
-  // 1. 앞쪽 선명한 외곽선
-  const frontLineMaterial = new THREE.LineBasicMaterial({
+  // 1. 선명한 외곽 테두리선
+  const lineMaterial = new THREE.LineBasicMaterial({
     color: 0x111111,
     transparent: true,
-    opacity: 0.55,
-    depthTest: true,
+    opacity: 0.65,
   });
 
-  // 2. 유리 너머 비치는 뒷선 (약간 굴절되어 비치는 느낌)
-  const backLineMaterial = new THREE.LineBasicMaterial({
-    color: 0x222222,
+  // 2. #DCE2DF 아크릴 글래스 물리 재질
+  const glassMaterial = new THREE.MeshPhysicalMaterial({
+    color: 0xdce2df,
+    roughness: 0.18,          // 표면을 매끄럽게 하여 광택 유지
+    metalness: 0.08,         // 은은한 아크릴 느낌의 은빛 광택
+    clearcoat: 1.0,           // 유리 표면의 강한 코팅 반사층
+    clearcoatRoughness: 0.1,  // 하이라이트를 또렷하게 표현
     transparent: true,
-    opacity: 0.22,
-    depthTest: false,
-  });
-
-  // 3. 물리 기반 맑은 글래스 재질 (MeshPhysicalMaterial)
-  const clearGlassMaterial = new THREE.MeshPhysicalMaterial({
-    color: 0xdce2df,         // 메인 틴트 컬러
-    metalness: 0.0,          // 금속성 제거 (탁함 방지)
-    roughness: 0.08,         // 표면을 매우 매끄럽게
-    transmission: 0.88,      // 맑은 빛 투과율
-    ior: 1.18,               // 자연스러운 유리 굴절률
-    transparent: true,
-    opacity: 0.25,           // 베이스 알맹이 투명도
-    clearcoat: 1.0,          // 유리 표면 쨍한 코팅층
-    clearcoatRoughness: 0.05,
-    reflectivity: 0.5,
-    depthWrite: false,       // 맑게 겹쳐보이도록 처리
+    opacity: 0.62,            // 덩어리감이 느껴지는 적절한 불투명도
+    depthWrite: true,         // 내부 복잡한 뒷선 차단
+    side: THREE.DoubleSide,
   });
 
   /* =====================================================
-     FONT LOADER
+     FONT LOADER & BATCH CREATION
   ===================================================== */
   const loader = new FontLoader();
 
   loader.load(
     "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/fonts/helvetiker_bold.typeface.json",
     (font) => {
-      // 1. 메인 U (맑은 글래스 적용)
+      // 1. 메인 U (아크릴 글래스 + 테두리)
       createLetter("U", font, -2.9, -0.65, -0.42, 0.92, 0);
 
       // 2. 메인 X
@@ -137,27 +126,17 @@ export function initHero3D() {
     geometry.translate(-centerX, -centerY, 0);
 
     const letterGroup = new THREE.Group();
-    const wireGeometry = new THREE.EdgesGeometry(geometry, 20);
 
+    // U 글자인 경우 아크릴 글래스 Mesh 추가
     if (isU) {
-      // [1] 유리 너머로 은은하게 비치는 뒷선
-      const backWire = new THREE.LineSegments(wireGeometry, backLineMaterial);
-      backWire.renderOrder = 0;
-      letterGroup.add(backWire);
-
-      // [2] 맑은 반투명 유리 메쉬
-      const mesh = new THREE.Mesh(geometry, clearGlassMaterial);
-      mesh.renderOrder = 1;
+      const mesh = new THREE.Mesh(geometry, glassMaterial);
       letterGroup.add(mesh);
-
-      // [3] 가장 앞쪽 외곽선
-      const frontWire = new THREE.LineSegments(wireGeometry, frontLineMaterial);
-      frontWire.renderOrder = 2;
-      letterGroup.add(frontWire);
-    } else {
-      const wire = new THREE.LineSegments(wireGeometry, frontLineMaterial);
-      letterGroup.add(wire);
     }
+
+    // 외곽 테두리선 추가
+    const wireGeometry = new THREE.EdgesGeometry(geometry, 20);
+    const wire = new THREE.LineSegments(wireGeometry, lineMaterial);
+    letterGroup.add(wire);
 
     letterGroup.position.set(x, y, 0);
     letterGroup.scale.setScalar(scale);
