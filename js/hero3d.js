@@ -3,7 +3,7 @@ import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 
 /* =========================================================
-   HERO THREE.JS (U + 서브 X 2개 구도 추가 버전)
+   HERO THREE.JS (U 글래스 질감 적용 버전)
 ========================================================= */
 
 export function initHero3D() {
@@ -17,6 +17,20 @@ export function initHero3D() {
 
   const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 100);
   camera.position.set(0, 0, 15);
+
+  /* =====================================================
+     LIGHTS (글래스 질감 및 하이라이트 표출)
+  ===================================================== */
+  const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
+  scene.add(ambientLight);
+
+  const dirLight1 = new THREE.DirectionalLight(0xffffff, 1.5);
+  dirLight1.position.set(5, 8, 10);
+  scene.add(dirLight1);
+
+  const dirLight2 = new THREE.DirectionalLight(0xdce2df, 0.8);
+  dirLight2.position.set(-5, -5, -5);
+  scene.add(dirLight2);
 
   /* =====================================================
      RENDERER
@@ -38,32 +52,47 @@ export function initHero3D() {
   scene.add(group);
 
   /* =====================================================
-     LINE MATERIAL
+     MATERIALS
   ===================================================== */
-  const material = new THREE.LineBasicMaterial({
+  // 1. 와이어프레임 테두리 선 재질
+  const lineMaterial = new THREE.LineBasicMaterial({
     color: 0x111111,
     transparent: true,
     opacity: 0.58,
   });
 
+  // 2. #DCE2DF 반투명 글래스 재질 (U 전용)
+  const glassMaterial = new THREE.MeshPhysicalMaterial({
+    color: 0xdce2df,
+    transparent: true,
+    opacity: 0.22,           // 은은한 투명도
+    roughness: 0.15,         // 표면 매끄러움
+    metalness: 0.05,
+    transmission: 0.65,      // 빛 투과 효과
+    ior: 1.25,               // 유리 굴절률
+    clearcoat: 1.0,          // 매끄러운 코팅층
+    clearcoatRoughness: 0.1,
+    depthWrite: false,       // 뒷면 선 잘림 방지
+  });
+
   /* =====================================================
-     FONT LOADER & 배치 (4개 레터)
+     FONT LOADER & BATCH CREATION
   ===================================================== */
   const loader = new FontLoader();
 
   loader.load(
     "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/fonts/helvetiker_bold.typeface.json",
     (font) => {
-      // 1. 메인 U
+      // 1. 메인 U (글래스 + 테두리)
       createLetter("U", font, -2.9, -0.65, -0.42, 0.92, 0);
 
-      // 2. 메인 X (중앙 우측)
+      // 2. 메인 X (와이어프레임 전용)
       createLetter("X", font, 2.25, 0.55, 0.42, 0.88, 1.7);
 
-      // 3. 상단 미니 X (U 위쪽 화면 경계에 상단이 걸쳐 잘림)
+      // 3. 상단 미니 X (크롭)
       createLetter("X", font, -2.3, 3.8, 0.35, 0.52, 0.8);
 
-      // 4. 하단 우측 미니 X (우측 하단 경계에 걸쳐 잘림)
+      // 4. 하단 우측 미니 X (크롭)
       createLetter("X", font, 5.3, -3.2, 0.45, 0.55, 2.3);
     },
     undefined,
@@ -73,7 +102,7 @@ export function initHero3D() {
   );
 
   /* =====================================================
-     CREATE 3D LINE LETTER
+     CREATE 3D LETTER
   ===================================================== */
   function createLetter(character, font, x, y, rotationY, scale, phase) {
     const isU = character === "U";
@@ -82,7 +111,7 @@ export function initHero3D() {
       font: font,
       size: 4.1,
       depth: 0.72,
-      curveSegments: isU ? 30 : 1, // U는 곡면 정밀화, X는 직선 단순화
+      curveSegments: isU ? 30 : 1,
       bevelEnabled: false,
     });
 
@@ -95,25 +124,32 @@ export function initHero3D() {
 
     geometry.translate(-centerX, -centerY, 0);
 
-    /* =================================================
-       OUTLINE EDGES ONLY (잔선 없는 통 입체 유지)
-    ================================================= */
+    const letterGroup = new THREE.Group();
+
+    // U 글자인 경우 반투명 글래스 Mesh 추가
+    if (isU) {
+      const mesh = new THREE.Mesh(geometry, glassMaterial);
+      letterGroup.add(mesh);
+    }
+
+    // 외곽 테두리선(Wireframe) 생성 및 추가
     const wireGeometry = new THREE.EdgesGeometry(geometry, 20);
-    const wire = new THREE.LineSegments(wireGeometry, material);
+    const wire = new THREE.LineSegments(wireGeometry, lineMaterial);
+    letterGroup.add(wire);
 
-    wire.position.set(x, y, 0);
-    wire.scale.setScalar(scale);
-    wire.rotation.y = rotationY;
-    wire.rotation.x = -0.08;
+    letterGroup.position.set(x, y, 0);
+    letterGroup.scale.setScalar(scale);
+    letterGroup.rotation.y = rotationY;
+    letterGroup.rotation.x = -0.08;
 
-    wire.userData = {
+    letterGroup.userData = {
       baseX: x,
       baseY: y,
       baseRotationY: rotationY,
       phase: phase,
     };
 
-    group.add(wire);
+    group.add(letterGroup);
   }
 
   /* =====================================================
