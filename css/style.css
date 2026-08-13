@@ -359,11 +359,16 @@ nav a:hover{
 
 .hero h1 .title-line-2{
     display:block;
+
     position:relative;
+
     left:-245px;
     top:26px;
+
     width:max-content;
+
     text-align:left;
+
     margin-left:48%;
 }
 
@@ -456,11 +461,15 @@ nav a:hover{
 ========================================================= */
 
 .hero-action{
+
     margin-top:62px;
 
     display:flex;
+
     flex-direction:column;
+
     align-items:flex-start;
+
     gap:18px;
 }
 
@@ -1233,10 +1242,10 @@ footer{
 
 
 /* =========================================================
-   MOBILE HERO FIX
+   MOBILE HERO
 ========================================================= */
 
-@media (max-width: 767px){
+@media (max-width:767px){
 
     /* -------------------------
        HERO
@@ -1265,7 +1274,7 @@ footer{
 
         width:calc(100% - 52px);
 
-        font-size:clamp(48px, 13vw, 64px);
+        font-size:clamp(48px,13vw,64px);
         line-height:.94;
         letter-spacing:-0.045em;
 
@@ -1274,24 +1283,31 @@ footer{
 
     .hero h1 .title-line-1{
         display:block;
+
         position:relative;
+
         left:0;
         margin:0;
+
         width:100%;
+
         text-align:left;
     }
 
-   .hero h1 .title-line-2{
-       display:block;
-       position:relative;
-   
-       left:36%;
-       top:16px;
-       margin-left:0;
-   
-       width:calc(100% - 36%);
-       text-align:left;
-   }
+    .hero h1 .title-line-2{
+        display:block;
+
+        position:relative;
+
+        left:36%;
+        top:16px;
+
+        margin-left:0;
+
+        width:calc(100% - 36%);
+
+        text-align:left;
+    }
 
 
     /* -------------------------
@@ -1326,7 +1342,7 @@ footer{
        BETTER UX
     ------------------------- */
 
-  .hero-message-ux{
+    .hero-message-ux{
         left:26px;
         top:53%;
 
@@ -1365,22 +1381,28 @@ footer{
        HERO ACTION
     ------------------------- */
 
-   .hero-action{
-        margin-top:34px;
+    .hero-message-ux .hero-action{
+        margin-top:90px;
 
         display:flex;
+
         flex-direction:column;
+
         align-items:flex-start;
+
         gap:18px;
     }
 
-    .cta,
-    .portfolio{
+    .hero-message-ux .hero-action .btn-primary,
+    .hero-message-ux .hero-action .portfolio{
+        position:static !important;
+
+        top:auto !important;
+
+        transform:none !important;
+
         font-size:15px;
     }
-}
-
-   
 
 
     /* -------------------------
@@ -1389,6 +1411,7 @@ footer{
 
     .hero-light{
         width:120vw;
+
         height:70vh;
 
         right:-45vw;
@@ -1398,13 +1421,4 @@ footer{
 
         filter:blur(45px);
     }
-}
-
-@media (max-width: 767px){
-
-.hero-action .cta,
-.hero-action .portfolio{
-    position:relative !important;
-    top:100px !important;
-   }
 }
