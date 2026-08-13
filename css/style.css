@@ -46,79 +46,134 @@ img{
 ========================================================= */
 
 header{
-
     position:fixed;
-
     top:0;
     left:0;
-
     width:100%;
-
     overflow:visible;
-
     padding:34px 64px;
-
     display:flex;
-
     justify-content:space-between;
-
     align-items:center;
-
     z-index:999;
 
     transition:
-    background .35s ease,
-    backdrop-filter .35s ease,
-    -webkit-backdrop-filter .35s ease,
-    border-color .35s ease;
-
+        background .35s ease,
+        backdrop-filter .35s ease,
+        -webkit-backdrop-filter .35s ease,
+        border-color .35s ease;
 }
 
 header.active{
-
     background:rgba(255,255,255,.72);
 
     backdrop-filter:blur(20px);
     -webkit-backdrop-filter:blur(20px);
 
     border-bottom:1px solid rgba(0,0,0,.05);
-
 }
 
-
-
 .logo{
-
     font-size:30px;
-
     font-weight:900;
-
     letter-spacing:-0.03em;
-
 }
 
 nav{
-
     display:flex;
-
     gap:44px;
-
 }
 
 nav a{
-
     font-size:15px;
-
     font-weight:500;
-
     letter-spacing:-0.01em;
-
 }
 
 nav a:hover{
-
     opacity:.45;
+}
 
+
+/* =========================================================
+   HERO LIGHT
+   LIGHT GRAY + SOFT DEEP GREEN
+========================================================= */
+
+.hero{
+    position:relative;
+    isolation:isolate;
+    overflow:hidden;
+}
+
+.hero-light{
+    position:absolute;
+
+    z-index:0;
+
+    width:72vw;
+    height:78vh;
+
+    right:-14vw;
+    top:8vh;
+
+    pointer-events:none;
+
+    opacity:.82;
+
+    filter:blur(52px);
+
+    transform:translate3d(4%,0,0) scale(1);
+
+    background:
+
+        /* soft deep green */
+        radial-gradient(
+            ellipse 30% 36% at 70% 44%,
+            rgba(63,84,72,.095) 0%,
+            rgba(63,84,72,.065) 25%,
+            rgba(63,84,72,.025) 48%,
+            rgba(63,84,72,0) 72%
+        ),
+
+        /* light gray */
+        radial-gradient(
+            ellipse 60% 54% at 62% 48%,
+            rgba(125,130,128,.095) 0%,
+            rgba(145,148,146,.065) 30%,
+            rgba(170,173,171,.035) 50%,
+            rgba(255,255,255,0) 76%
+        );
+
+    animation:
+        heroLightFlow 8s ease-in-out infinite alternate;
+}
+
+.hero-light::after{
+    content:"";
+
+    position:absolute;
+
+    inset:-18%;
+
+    background:
+
+        radial-gradient(
+            ellipse 30% 42% at 76% 52%,
+            rgba(255,255,255,.36) 0%,
+            rgba(255,255,255,.15) 30%,
+            rgba(255,255,255,0) 70%
+        );
+
+    filter:blur(28px);
+
+    animation:
+        heroLightPulse 6s ease-in-out infinite alternate;
+}
+
+.hero-inner{
+    position:relative;
+    z-index:3;
 }
 
 
@@ -126,216 +181,292 @@ nav a:hover{
    HERO LIGHT MOTION
 ========================================================= */
 
-.hero{
-    isolation:isolate;
-    overflow:hidden;
-}
-
-.hero-light{
-    position:absolute;
-    z-index:0;
-
-    width:78vw;
-    height:62vh;
-
-    right:-12vw;
-    top:17vh;
-
-    pointer-events:none;
-
-    opacity:1;
-
-    filter:blur(34px);
-
-    transform:translate3d(0,0,0);
-
-    /* =====================================================
-       1. 큰 라이트 그레이 영역
-       화이트와 확실히 구분되도록 중심을 조금 어둡게
-    ===================================================== */
-
-    background:
-        radial-gradient(
-            ellipse 58% 48% at 62% 52%,
-            rgba(185,188,186,.30) 0%,
-            rgba(195,198,196,.23) 25%,
-            rgba(210,213,211,.14) 48%,
-            rgba(225,227,226,.055) 68%,
-            transparent 84%
-        );
-
-    animation:heroLightFlow 8s ease-in-out infinite alternate;
-}
-
-
-/* =========================================================
-   2. 그레이 영역 안에만 들어가는 그린빛
-========================================================= */
-
-.hero-light::before{
-    content:"";
-
-    position:absolute;
-
-    width:48%;
-    height:58%;
-
-    left:47%;
-    top:27%;
-
-    pointer-events:none;
-
-    background:
-        radial-gradient(
-            ellipse 55% 52% at 50% 50%,
-            rgba(126,145,133,.15) 0%,
-            rgba(145,160,150,.105) 30%,
-            rgba(166,176,169,.06) 54%,
-            rgba(190,197,192,.025) 72%,
-            transparent 88%
-        );
-
-    filter:blur(30px);
-
-    animation:heroGreenFlow 8s ease-in-out infinite alternate;
-}
-
-
-/* =========================================================
-   3. 그린 위를 지나가는 아주 약한 빛
-========================================================= */
-
-.hero-light::after{
-    content:"";
-
-    position:absolute;
-
-    width:55%;
-    height:38%;
-
-    left:38%;
-    top:25%;
-
-    pointer-events:none;
-
-    background:
-        linear-gradient(
-            125deg,
-            transparent 20%,
-            rgba(255,255,255,.18) 44%,
-            rgba(255,255,255,.07) 57%,
-            transparent 76%
-        );
-
-    filter:blur(25px);
-
-    animation:heroHighlightFlow 8s ease-in-out infinite alternate;
-}
-
-
-/* =========================================================
-   HERO CONTENT
-========================================================= */
-
-.hero-inner{
-    position:relative;
-    z-index:1;
-}
-
-
-/* =========================================================
-   GRAY LIGHT MOVEMENT
-========================================================= */
-
 @keyframes heroLightFlow{
 
     0%{
         transform:
-            translate3d(5%,2%,0)
-            scale(.94);
+            translate3d(5%,-2%,0)
+            scale(1);
     }
 
     50%{
         transform:
-            translate3d(-2%,-1%,0)
+            translate3d(-2%,3%,0)
+            scale(1.055);
+    }
+
+    100%{
+        transform:
+            translate3d(-7%,-1%,0)
             scale(1.02);
     }
-
-    100%{
-        transform:
-            translate3d(-7%,3%,0)
-            scale(1.05);
-    }
-
 }
 
-
-/* =========================================================
-   GREEN LIGHT MOVEMENT
-========================================================= */
-
-@keyframes heroGreenFlow{
+@keyframes heroLightPulse{
 
     0%{
         transform:
-            translate3d(8%,3%,0)
-            scale(.90);
-
-        opacity:.55;
-    }
-
-    50%{
-        transform:
-            translate3d(-3%,-2%,0)
-            scale(1.04);
-
-        opacity:.85;
-    }
-
-    100%{
-        transform:
-            translate3d(-10%,3%,0)
-            scale(.96);
-
-        opacity:.62;
-    }
-
-}
-
-
-/* =========================================================
-   HIGHLIGHT MOVEMENT
-========================================================= */
-
-@keyframes heroHighlightFlow{
-
-    0%{
-        transform:
-            translate3d(10%,4%,0)
-            rotate(-4deg)
+            translate3d(5%,-2%,0)
             scale(.92);
 
-        opacity:.35;
+        opacity:.48;
     }
 
     50%{
         transform:
-            translate3d(-2%,-2%,0)
-            rotate(1deg)
-            scale(1.05);
+            translate3d(-2%,2%,0)
+            scale(1.04);
 
-        opacity:.65;
+        opacity:.72;
     }
 
     100%{
         transform:
-            translate3d(-10%,2%,0)
-            rotate(4deg)
+            translate3d(-7%,-1%,0)
             scale(.96);
 
-        opacity:.38;
+        opacity:.42;
+    }
+}
+
+
+/* =========================================================
+   HERO 3D GRAPHIC
+========================================================= */
+
+.hero-graphic{
+
+    position:absolute;
+
+    z-index:2;
+
+    width:560px;
+    height:500px;
+
+    right:4vw;
+    top:19vh;
+
+    pointer-events:none;
+
+    overflow:visible;
+
+    animation:
+        uxFloat 7s ease-in-out infinite alternate;
+}
+
+
+/* =========================================================
+   U GRAPHIC
+========================================================= */
+
+.graphic-u{
+
+    position:absolute;
+
+    width:245px;
+    height:300px;
+
+    left:35px;
+    top:115px;
+
+    overflow:visible;
+
+    animation:
+        uFloat 6.5s ease-in-out infinite alternate;
+}
+
+
+/* =========================================================
+   X GRAPHIC
+========================================================= */
+
+.graphic-x{
+
+    position:absolute;
+
+    width:255px;
+    height:255px;
+
+    right:0;
+    top:15px;
+
+    overflow:visible;
+
+    animation:
+        xFloat 7.5s ease-in-out infinite alternate;
+}
+
+
+/* =========================================================
+   3D LINE SYSTEM
+========================================================= */
+
+
+/* -------------------------
+   FRONT
+------------------------- */
+
+.front-line{
+
+    fill:none;
+
+    stroke:#111;
+
+    stroke-width:1.55;
+
+    stroke-linecap:round;
+    stroke-linejoin:round;
+
+    opacity:.82;
+}
+
+
+/* -------------------------
+   INNER DEPTH
+------------------------- */
+
+.inner-line{
+
+    fill:none;
+
+    stroke:#555;
+
+    stroke-width:.85;
+
+    stroke-linecap:round;
+    stroke-linejoin:round;
+
+    opacity:.52;
+}
+
+
+/* -------------------------
+   SIDE / VOLUME
+------------------------- */
+
+.side-line{
+
+    fill:none;
+
+    stroke:#666;
+
+    stroke-width:.85;
+
+    stroke-linecap:round;
+    stroke-linejoin:round;
+
+    opacity:.46;
+}
+
+
+/* -------------------------
+   BACK
+   dotted line
+------------------------- */
+
+.back-dot{
+
+    fill:none;
+
+    stroke:#555;
+
+    stroke-width:.7;
+
+    stroke-linecap:round;
+    stroke-linejoin:round;
+
+    stroke-dasharray:1 4;
+
+    opacity:.52;
+}
+
+
+/* -------------------------
+   BACK CONNECTION
+------------------------- */
+
+.back-side{
+
+    fill:none;
+
+    stroke:#777;
+
+    stroke-width:.6;
+
+    stroke-linecap:round;
+    stroke-linejoin:round;
+
+    opacity:.34;
+}
+
+
+/* -------------------------
+   CENTER POINT
+------------------------- */
+
+.graphic-point{
+
+    fill:#111;
+
+    opacity:.6;
+}
+
+
+/* =========================================================
+   GRAPHIC FLOAT
+========================================================= */
+
+@keyframes uxFloat{
+
+    0%{
+        transform:
+            translate3d(0,4px,0)
+            rotate(-1deg);
     }
 
+    50%{
+        transform:
+            translate3d(-8px,-7px,0)
+            rotate(.7deg);
+    }
+
+    100%{
+        transform:
+            translate3d(7px,5px,0)
+            rotate(-.5deg);
+    }
+}
+
+
+@keyframes uFloat{
+
+    0%{
+        transform:
+            translate3d(0,5px,0)
+            rotate(-1.2deg);
+    }
+
+    100%{
+        transform:
+            translate3d(-9px,-8px,0)
+            rotate(1deg);
+    }
+}
+
+
+@keyframes xFloat{
+
+    0%{
+        transform:
+            translate3d(3px,-3px,0)
+            rotate(1deg);
+    }
+
+    100%{
+        transform:
+            translate3d(-8px,8px,0)
+            rotate(-1.2deg);
+    }
 }
 
 
@@ -345,12 +476,15 @@ nav a:hover{
 
 .hero{
 
-   height:100vh;
-   display:flex;
-   align-items:center;
-   padding:0 64px;
-   position:relative;
+    height:100vh;
 
+    display:flex;
+
+    align-items:center;
+
+    padding:0 64px;
+
+    position:relative;
 }
 
 .hero-inner{
@@ -360,7 +494,6 @@ nav a:hover{
     width:100%;
 
     min-width:0;
-
 }
 
 .eyebrow{
@@ -382,10 +515,13 @@ nav a:hover{
     transform:translateY(30px);
 
     animation:fade .8s forwards;
-
 }
 
 .hero h1{
+
+    position:relative;
+
+    z-index:4;
 
     font-size:clamp(72px,7vw,118px);
 
@@ -402,7 +538,6 @@ nav a:hover{
     transform:translateY(40px);
 
     animation:fade .8s .15s forwards;
-
 }
 
 .subtitle{
@@ -422,7 +557,6 @@ nav a:hover{
     transform:translateY(30px);
 
     animation:fade .8s .35s forwards;
-
 }
 
 .description{
@@ -440,7 +574,6 @@ nav a:hover{
     transform:translateY(30px);
 
     animation:fade .8s .55s forwards;
-
 }
 
 .hero-action{
@@ -458,7 +591,6 @@ nav a:hover{
     transform:translateY(30px);
 
     animation:fade .8s .75s forwards;
-
 }
 
 .cta{
@@ -472,19 +604,16 @@ nav a:hover{
     align-items:center;
 
     gap:10px;
-
 }
 
 .cta span{
 
     transition:.25s;
-
 }
 
 .cta:hover span{
 
     transform:translateX(8px);
-
 }
 
 .portfolio{
@@ -494,34 +623,17 @@ nav a:hover{
     color:#888;
 
     transition:.25s;
-
 }
 
 .portfolio:hover{
 
     color:#111;
-
 }
 
-/*---.scroll{
 
-    position:absolute;
-
-    left:64px;
-
-    bottom:44px;
-
-    font-size:12px;
-
-    letter-spacing:.18em;
-
-    text-transform:uppercase;
-
-    color:#999;
-
-    animation:float 2s infinite;
-
-}---*/
+/* =========================================================
+   SCROLL
+========================================================= */
 
 .scroll{
     display:none !important;
@@ -535,7 +647,6 @@ nav a:hover{
 section{
 
     padding:180px 64px;
-
 }
 
 .container{
@@ -545,7 +656,6 @@ section{
     width:100%;
 
     margin:auto;
-
 }
 
 
@@ -560,9 +670,7 @@ section{
         opacity:1;
 
         transform:translateY(0);
-
     }
-
 }
 
 @keyframes float{
@@ -570,15 +678,12 @@ section{
     0%,100%{
 
         transform:translateY(0);
-
     }
 
     50%{
 
         transform:translateY(8px);
-
     }
-
 }
 
 
@@ -599,7 +704,6 @@ section{
     margin-bottom:80px;
 
     font-weight:600;
-
 }
 
 .service-list{
@@ -609,7 +713,6 @@ section{
     flex-direction:column;
 
     gap:70px;
-
 }
 
 .service-item{
@@ -623,13 +726,11 @@ section{
     border-bottom:1px solid #ececec;
 
     transition:.35s;
-
 }
 
 .service-item:hover{
 
     transform:translateX(8px);
-
 }
 
 .number{
@@ -641,7 +742,6 @@ section{
     color:#999;
 
     padding-top:10px;
-
 }
 
 .service-item h3{
@@ -653,7 +753,6 @@ section{
     letter-spacing:-.04em;
 
     margin-bottom:18px;
-
 }
 
 .service-item p{
@@ -663,7 +762,6 @@ section{
     line-height:1.8;
 
     color:#666;
-
 }
 
 
@@ -678,7 +776,6 @@ section{
     grid-template-columns:repeat(2,1fr);
 
     gap:32px;
-
 }
 
 .project{
@@ -700,7 +797,6 @@ section{
     min-height:340px;
 
     overflow:hidden;
-
 }
 
 .project:hover{
@@ -708,7 +804,6 @@ section{
     transform:translateY(-8px);
 
     border-color:#111;
-
 }
 
 .project-category{
@@ -722,7 +817,6 @@ section{
     margin-bottom:28px;
 
     font-weight:600;
-
 }
 
 .project h2{
@@ -734,7 +828,6 @@ section{
     letter-spacing:-.04em;
 
     margin-bottom:18px;
-
 }
 
 .project p{
@@ -746,7 +839,6 @@ section{
     color:#666;
 
     margin-bottom:auto;
-
 }
 
 .arrow{
@@ -756,7 +848,6 @@ section{
     font-size:15px;
 
     font-weight:600;
-
 }
 
 
@@ -771,7 +862,6 @@ section{
     grid-template-columns:180px 1fr;
 
     gap:80px;
-
 }
 
 .about-content h2{
@@ -785,7 +875,6 @@ section{
     margin-bottom:42px;
 
     font-weight:800;
-
 }
 
 .about-content p{
@@ -799,7 +888,6 @@ section{
     max-width:760px;
 
     margin-bottom:30px;
-
 }
 
 
@@ -812,7 +900,6 @@ section{
     padding:120px 0;
 
     border-top:1px solid #ececec;
-
 }
 
 .contact-wrap h2{
@@ -824,7 +911,6 @@ section{
     letter-spacing:-.06em;
 
     margin:26px 0;
-
 }
 
 .contact-wrap p{
@@ -834,7 +920,6 @@ section{
     color:#666;
 
     margin-bottom:60px;
-
 }
 
 .contact-links{
@@ -844,7 +929,6 @@ section{
     gap:36px;
 
     flex-wrap:wrap;
-
 }
 
 .contact-links a{
@@ -854,17 +938,17 @@ section{
     font-weight:600;
 
     transition:.25s;
-
 }
 
 .contact-links a:hover{
 
     opacity:.45;
-
 }
 
 
-/* Contact Info */
+/* =========================================================
+   CONTACT INFO
+========================================================= */
 
 .contact-info{
 
@@ -873,7 +957,6 @@ section{
     gap:100px;
 
     margin-top:56px;
-
 }
 
 .contact-info span{
@@ -889,7 +972,6 @@ section{
     text-transform:uppercase;
 
     margin-bottom:12px;
-
 }
 
 .contact-info a{
@@ -901,19 +983,16 @@ section{
     color:#111;
 
     text-decoration:none;
-
 }
 
 .contact-info a:hover{
 
     opacity:.6;
-
 }
 
 .contact-info a span{
 
     margin-left:8px;
-
 }
 
 
@@ -926,7 +1005,6 @@ footer{
     padding:40px 64px;
 
     border-top:1px solid #ececec;
-
 }
 
 .footer-inner{
@@ -946,20 +1024,23 @@ footer{
     font-size:14px;
 
     color:#888;
-
 }
 
 
-/* ------------------ Mobile Menu -------------- */
+/* =========================================================
+   MOBILE MENU
+========================================================= */
 
 .menu-toggle{
 
     display:none;
 
     width:42px;
+
     height:42px;
 
     border:none;
+
     background:transparent;
 
     cursor:pointer;
@@ -972,6 +1053,7 @@ footer{
     display:block;
 
     width:24px;
+
     height:2px;
 
     background:#111;
@@ -982,101 +1064,158 @@ footer{
 }
 
 
-
 /* =========================================================
    RESPONSIVE
 ========================================================= */
 
 @media (max-width:980px){
+
     .hero-light{
+
         width:120vw;
+
         height:72vh;
+
         right:-48vw;
+
         top:10vh;
+
         opacity:.58;
+
         filter:blur(48px);
     }
 
 
-
-/* ---------------- Header ---------------- */
+    /* ---------------- Header ---------------- */
 
     header{
-    padding:26px;
-}
 
-nav{
+        padding:26px;
+    }
 
-    display:none;
+    nav{
 
-    position:fixed;
+        display:none;
 
-    top:92px;
-    left:0;
+        position:fixed;
 
-    width:100%;
+        top:92px;
 
-    background:rgba(248,248,248,.72);
-    backdrop-filter:blur(20px) saturate(180%);
-    -webkit-backdrop-filter:blur(20px) saturate(180%);
-    box-shadow:0 10px 30px rgba(0,0,0,.06);
-   
-   padding:24px 26px;
+        left:0;
 
-    flex-direction:column;
+        width:100%;
 
-    gap:20px;
+        background:rgba(248,248,248,.72);
 
-    border-top:1px solid rgba(0,0,0,.05);
+        backdrop-filter:blur(20px) saturate(180%);
 
-    z-index:998;
+        -webkit-backdrop-filter:blur(20px) saturate(180%);
 
-}
+        box-shadow:0 10px 30px rgba(0,0,0,.06);
 
-nav.open{
-    display:flex;
-}
+        padding:24px 26px;
 
-.menu-toggle{
-    display:block;
-}
-    
+        flex-direction:column;
+
+        gap:20px;
+
+        border-top:1px solid rgba(0,0,0,.05);
+
+        z-index:998;
+    }
+
+    nav.open{
+
+        display:flex;
+    }
+
+    .menu-toggle{
+
+        display:block;
+    }
 
 
     /* ---------------- Hero ---------------- */
 
     .hero{
+
         padding:0 26px;
     }
 
     .hero h1{
+
         font-size:clamp(52px,13vw,72px);
+
         line-height:.95;
+
         letter-spacing:-0.04em;
     }
 
     .subtitle{
+
         font-size:22px;
     }
 
     .description{
+
         font-size:17px;
     }
 
     .hero-action{
+
         flex-direction:column;
+
         align-items:flex-start;
+
         gap:18px;
     }
 
     .scroll{
+
         left:26px;
+    }
+
+
+    /* ---------------- Graphic ---------------- */
+
+    .hero-graphic{
+
+        width:360px;
+
+        height:340px;
+
+        right:-20px;
+
+        top:18vh;
+    }
+
+    .graphic-u{
+
+        width:155px;
+
+        height:190px;
+
+        left:15px;
+
+        top:110px;
+    }
+
+    .graphic-x{
+
+        width:165px;
+
+        height:165px;
+
+        right:0;
+
+        top:20px;
     }
 
 
     /* ---------------- Common ---------------- */
 
     section{
+
         padding:120px 26px;
     }
 
@@ -1084,15 +1223,19 @@ nav.open{
     /* ---------------- Service ---------------- */
 
     .service-item{
+
         grid-template-columns:1fr;
+
         gap:16px;
     }
 
     .service-item h3{
+
         font-size:30px;
     }
 
     .service-item p{
+
         font-size:16px;
     }
 
@@ -1100,19 +1243,24 @@ nav.open{
     /* ---------------- Portfolio ---------------- */
 
     .portfolio-grid{
+
         grid-template-columns:1fr;
     }
 
     .project{
+
         padding:36px;
+
         min-height:auto;
     }
 
     .project h2{
+
         font-size:28px;
     }
 
     .project p{
+
         font-size:16px;
     }
 
@@ -1120,15 +1268,19 @@ nav.open{
     /* ---------------- About ---------------- */
 
     .about-wrap{
+
         grid-template-columns:1fr;
+
         gap:40px;
     }
 
     .about-content h2{
+
         font-size:38px;
     }
 
     .about-content p{
+
         font-size:17px;
     }
 
@@ -1136,24 +1288,31 @@ nav.open{
     /* ---------------- Contact ---------------- */
 
     .contact-wrap h2{
+
         font-size:42px;
     }
 
     .contact-wrap p{
+
         font-size:17px;
     }
 
     .contact-links{
+
         flex-direction:column;
+
         gap:18px;
     }
 
     .contact-links a{
+
         font-size:18px;
     }
 
     .contact-info{
+
         flex-direction:column;
+
         gap:32px;
     }
 
@@ -1161,17 +1320,19 @@ nav.open{
     /* ---------------- Footer ---------------- */
 
     footer{
+
         padding:30px 26px;
     }
 
     .footer-inner{
+
         flex-direction:column;
+
         align-items:flex-start;
+
         gap:12px;
     }
-
 }
-
 
 
 /* =========================================================
@@ -1181,424 +1342,11 @@ nav.open{
 @media (prefers-reduced-motion: reduce){
 
     .hero-light,
-    .hero-light::after{
+    .hero-light::after,
+    .hero-graphic,
+    .graphic-u,
+    .graphic-x{
+
         animation:none;
-    }
-
-}
-
-
-
-/* =========================================================
-   FLOATING 3D UX OBJECTS
-========================================================= */
-
-.hero{
-    position:relative;
-    isolation:isolate;
-    overflow:hidden;
-}
-
-.hero-inner{
-    position:relative;
-    z-index:5;
-}
-
-
-/* =========================================================
-   UX 3D WIREFRAME GRAPHIC
-========================================================= */
-
-.hero-graphic{
-    position:absolute;
-
-    width:680px;
-    height:580px;
-
-    right:2vw;
-    top:52%;
-
-    transform:translateY(-50%);
-
-    z-index:3;
-    pointer-events:none;
-
-    perspective:1000px;
-}
-
-
-/* =========================================================
-   OBJECT
-========================================================= */
-
-.ux-object{
-    position:absolute;
-
-    transform-style:preserve-3d;
-
-    will-change:transform;
-}
-
-
-/* U */
-
-.ux-u-object{
-    width:370px;
-    height:370px;
-
-    left:5px;
-    top:155px;
-
-    transform-origin:center center;
-
-    animation:uxUFloat 8s ease-in-out infinite;
-}
-
-
-/* X */
-
-.ux-x-object{
-    width:350px;
-    height:350px;
-
-    right:0;
-    top:25px;
-
-    transform-origin:center center;
-
-    animation:uxXFloat 7s ease-in-out infinite;
-}
-
-
-.ux-object svg{
-    width:100%;
-    height:100%;
-
-    display:block;
-
-    overflow:visible;
-
-    transform-style:preserve-3d;
-}
-
-
-/* =========================================================
-   U WIREFRAME
-========================================================= */
-
-.u-back{
-    fill:none;
-
-    stroke:#777;
-
-    stroke-width:1;
-
-    stroke-linecap:round;
-    stroke-linejoin:round;
-
-    opacity:.35;
-}
-
-.u-layer{
-    fill:none;
-
-    stroke:#555;
-
-    stroke-width:1.15;
-
-    stroke-linecap:round;
-    stroke-linejoin:round;
-
-    opacity:.48;
-}
-
-.u-main{
-    fill:none;
-
-    stroke:#111;
-
-    stroke-width:2.4;
-
-    stroke-linecap:round;
-    stroke-linejoin:round;
-
-    opacity:.86;
-}
-
-.u-inner{
-    fill:none;
-
-    stroke:#555;
-
-    stroke-width:1;
-
-    stroke-linecap:round;
-    stroke-linejoin:round;
-
-    opacity:.55;
-}
-
-.u-section{
-    fill:none;
-
-    stroke:#444;
-
-    stroke-width:.9;
-
-    stroke-linecap:round;
-    stroke-linejoin:round;
-
-    opacity:.5;
-}
-
-.u-dots{
-    fill:none;
-
-    stroke:#666;
-
-    stroke-width:.9;
-
-    stroke-linecap:round;
-
-    stroke-dasharray:1 5;
-
-    opacity:.62;
-}
-
-.u-point{
-    fill:#111;
-
-    opacity:.65;
-}
-
-
-/* =========================================================
-   X WIREFRAME
-========================================================= */
-
-.x-back{
-    fill:none;
-
-    stroke:#777;
-
-    stroke-width:1;
-
-    stroke-linecap:round;
-    stroke-linejoin:round;
-
-    opacity:.34;
-}
-
-.x-layer{
-    fill:none;
-
-    stroke:#555;
-
-    stroke-width:1.15;
-
-    stroke-linecap:round;
-    stroke-linejoin:round;
-
-    opacity:.48;
-}
-
-.x-main{
-    fill:none;
-
-    stroke:#111;
-
-    stroke-width:2.4;
-
-    stroke-linecap:round;
-    stroke-linejoin:round;
-
-    opacity:.86;
-}
-
-.x-inner{
-    fill:none;
-
-    stroke:#555;
-
-    stroke-width:1;
-
-    stroke-linecap:round;
-    stroke-linejoin:round;
-
-    opacity:.55;
-}
-
-.x-section{
-    fill:none;
-
-    stroke:#444;
-
-    stroke-width:.9;
-
-    stroke-linecap:round;
-    stroke-linejoin:round;
-
-    opacity:.5;
-}
-
-.x-dots{
-    fill:none;
-
-    stroke:#666;
-
-    stroke-width:.9;
-
-    stroke-linecap:round;
-
-    stroke-dasharray:1 5;
-
-    opacity:.62;
-}
-
-.x-point{
-    fill:#111;
-
-    opacity:.65;
-}
-
-
-/* =========================================================
-   FLOAT + PERSPECTIVE
-========================================================= */
-
-@keyframes uxUFloat{
-
-    0%{
-        transform:
-            translate3d(0,0,0)
-            rotateY(-18deg)
-            rotateX(4deg)
-            rotateZ(-2deg);
-    }
-
-    25%{
-        transform:
-            translate3d(-8px,-8px,0)
-            rotateY(-23deg)
-            rotateX(6deg)
-            rotateZ(-1deg);
-    }
-
-    50%{
-        transform:
-            translate3d(8px,-15px,0)
-            rotateY(-17deg)
-            rotateX(3deg)
-            rotateZ(2deg);
-    }
-
-    75%{
-        transform:
-            translate3d(11px,-6px,0)
-            rotateY(-21deg)
-            rotateX(5deg)
-            rotateZ(1deg);
-    }
-
-    100%{
-        transform:
-            translate3d(0,0,0)
-            rotateY(-18deg)
-            rotateX(4deg)
-            rotateZ(-2deg);
-    }
-}
-
-
-@keyframes uxXFloat{
-
-    0%{
-        transform:
-            translate3d(0,0,0)
-            rotateY(20deg)
-            rotateX(5deg)
-            rotateZ(3deg);
-    }
-
-    25%{
-        transform:
-            translate3d(8px,-7px,0)
-            rotateY(25deg)
-            rotateX(7deg)
-            rotateZ(4deg);
-    }
-
-    50%{
-        transform:
-            translate3d(5px,-16px,0)
-            rotateY(18deg)
-            rotateX(4deg)
-            rotateZ(1deg);
-    }
-
-    75%{
-        transform:
-            translate3d(-8px,-5px,0)
-            rotateY(23deg)
-            rotateX(6deg)
-            rotateZ(-1deg);
-    }
-
-    100%{
-        transform:
-            translate3d(0,0,0)
-            rotateY(20deg)
-            rotateX(5deg)
-            rotateZ(3deg);
-    }
-}
-
-
-/* =========================================================
-   RESPONSIVE
-========================================================= */
-
-@media (max-width:1200px){
-
-    .hero-graphic{
-        width:570px;
-        height:500px;
-        right:0;
-    }
-
-    .ux-u-object{
-        width:310px;
-        height:310px;
-        top:150px;
-    }
-
-    .ux-x-object{
-        width:295px;
-        height:295px;
-        top:30px;
-    }
-}
-
-
-@media (max-width:900px){
-
-    .hero-graphic{
-        width:430px;
-        height:400px;
-
-        right:-60px;
-        top:65%;
-    }
-
-    .ux-u-object{
-        width:240px;
-        height:240px;
-        top:130px;
-    }
-
-    .ux-x-object{
-        width:225px;
-        height:225px;
-        top:20px;
     }
 }
