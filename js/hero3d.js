@@ -3,7 +3,7 @@ import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 
 /* =========================================================
-   HERO THREE.JS (HTML 텍스트 투과 맑은 프리미엄 글래스)
+   HERO THREE.JS (맑은 틴트 투과 3D 글래스 - 회색 뭉개짐 해결)
 ========================================================= */
 
 export function initHero3D() {
@@ -19,20 +19,10 @@ export function initHero3D() {
   camera.position.set(0, 0, 15);
 
   /* =====================================================
-     LIGHTS (유리 반사 하이라이트 극대화)
+     LIGHTS
   ===================================================== */
-  const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
+  const ambientLight = new THREE.AmbientLight(0xffffff, 1.0);
   scene.add(ambientLight);
-
-  // 유리 곡면에 쨍한 반사를 만드는 주 조명
-  const keyLight = new THREE.DirectionalLight(0xffffff, 3.5);
-  keyLight.position.set(8, 12, 10);
-  scene.add(keyLight);
-
-  // 은은한 윤곽선을 살려주는 보조 림라이트
-  const fillLight = new THREE.DirectionalLight(0xdce2df, 2.0);
-  fillLight.position.set(-8, -6, 6);
-  scene.add(fillLight);
 
   /* =====================================================
      RENDERER
@@ -60,20 +50,15 @@ export function initHero3D() {
   const lineMaterial = new THREE.LineBasicMaterial({
     color: 0x111111,
     transparent: true,
-    opacity: 0.5,
+    opacity: 0.55,
   });
 
-  // 2. HTML 텍스트를 맑게 뚫어주는 프리스틴 글래스 재질 (U 전용)
-  const glassMaterial = new THREE.MeshPhysicalMaterial({
-    color: 0xffffff,          // 순백색으로 변경하여 뒤쪽 HTML 텍스트 탁함 방지
-    roughness: 0.05,         // 매끄러운 유리 표면
-    metalness: 0.05,
+  // 2. #DCE2DF 맑은 틴트 매터리얼 (어두운 음영 제거 버전)
+  const glassMaterial = new THREE.MeshBasicMaterial({
+    color: 0xdce2df,
     transparent: true,
-    opacity: 0.22,           // HTML 글자가 맑게 비쳐 보이도록 투명도 조정
-    clearcoat: 1.0,          // 유리 표면의 쨍한 코팅 반사층
-    clearcoatRoughness: 0.03,
-    reflectivity: 0.9,
-    depthWrite: false,       // 렌더링 뒤틀림 방지
+    opacity: 0.22,           // 회색 뭉개짐 없이 맑고 가벼운 틴트
+    depthWrite: false,       // 뒤쪽 HTML 및 레이어 깔끔 투과
     side: THREE.DoubleSide,
   });
 
@@ -85,7 +70,7 @@ export function initHero3D() {
   loader.load(
     "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/fonts/helvetiker_bold.typeface.json",
     (font) => {
-      // 1. 메인 U (맑은 글래스 + 테두리 라인)
+      // 1. 메인 U (맑은 틴트 면 + 테두리 라인)
       createLetter("U", font, -2.9, -0.65, -0.42, 0.92, 0);
 
       // 2. 메인 X
@@ -128,7 +113,7 @@ export function initHero3D() {
 
     const letterGroup = new THREE.Group();
 
-    // U 글자에 맑은 글래스 Mesh 추가
+    // U 글자에 맑은 틴트 Mesh 추가
     if (isU) {
       const mesh = new THREE.Mesh(geometry, glassMaterial);
       letterGroup.add(mesh);
