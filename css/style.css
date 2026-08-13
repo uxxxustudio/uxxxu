@@ -135,34 +135,34 @@ nav a:hover{
     position:absolute;
     z-index:0;
 
-    width:62vw;
-    height:62vh;
+    width:58vw;
+    height:58vh;
 
-    right:-2vw;
-    top:16vh;
+    right:0;
+    top:18vh;
 
     pointer-events:none;
 
-    opacity:.9;
+    opacity:1;
 
-    filter:blur(38px);
+    filter:blur(25px);
 
-    transform:translate3d(0,0,0) scale(.98);
+    transform:translate3d(0,0,0);
 
     background:
         radial-gradient(
-            ellipse 78% 52% at 58% 48%,
-            rgba(150,154,152,.105) 0%,
-            rgba(150,154,152,.055) 38%,
-            rgba(150,154,152,.018) 58%,
-            transparent 78%
+            ellipse 72% 58% at 58% 50%,
+            rgba(150,155,152,.22) 0%,
+            rgba(150,155,152,.13) 35%,
+            rgba(150,155,152,.04) 62%,
+            transparent 82%
         ),
 
         radial-gradient(
-            ellipse 24% 32% at 62% 48%,
-            rgba(45,68,56,.055) 0%,
-            rgba(45,68,56,.025) 42%,
-            transparent 72%
+            ellipse 28% 36% at 58% 48%,
+            rgba(42,68,55,.12) 0%,
+            rgba(42,68,55,.055) 40%,
+            transparent 75%
         );
 
     animation:heroLightFlow 22s ease-in-out infinite alternate;
@@ -178,21 +178,15 @@ nav a:hover{
 @keyframes heroLightFlow{
 
     0%{
-        transform:
-            translate3d(3%,2%,0)
-            scale(.96);
+        transform:translate3d(4%,2%,0) scale(.94);
     }
 
     50%{
-        transform:
-            translate3d(-2%,-1%,0)
-            scale(1.035);
+        transform:translate3d(-3%,-2%,0) scale(1.05);
     }
 
     100%{
-        transform:
-            translate3d(2%,1%,0)
-            scale(.99);
+        transform:translate3d(2%,2%,0) scale(.98);
     }
 
 }
