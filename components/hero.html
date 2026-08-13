@@ -7,160 +7,127 @@
     <!-- =====================================================
          3D UX GRAPHIC
     ====================================================== -->
-    <div class="hero-graphic" aria-hidden="true">
+   <div class="hero-graphic" aria-hidden="true">
 
-        <!-- U -->
-        <svg class="graphic-u"
-             viewBox="0 0 360 430"
-             xmlns="http://www.w3.org/2000/svg">
+    <!-- U -->
+    <svg class="graphic-u"
+         viewBox="0 0 260 320"
+         xmlns="http://www.w3.org/2000/svg">
 
-            <!-- 뒤쪽 구조 : DOT -->
-            <path
-                class="back-dot"
-                d="
-                M126 72
-                L126 270
-                C126 342 170 385 228 385
-                C286 385 330 342 330 270
-                L330 72
-                "
-            />
+        <!-- BACK : dotted -->
+        <path class="back-dot"
+              d="M78 48
+                 L78 190
+                 C78 247 111 277 130 277
+                 C149 277 182 247 182 190
+                 L182 48"/>
 
-            <!-- 뒤쪽 측면 라인 -->
-            <path
-                class="back-side"
-                d="
-                M126 72 L108 61
-                M330 72 L312 61
-                "
-            />
+        <!-- SIDE : solid -->
+        <path class="side-line"
+              d="M61 38 L78 48"/>
+        <path class="side-line"
+              d="M61 184 L78 190"/>
+        <path class="side-line"
+              d="M61 38 L61 184"/>
 
-            <!-- 앞면과 뒷면을 연결하는 입체 측면 -->
-            <path
-                class="side-line"
-                d="
-                M126 72 L108 61
-                M330 72 L312 61
+        <path class="side-line"
+              d="M199 38 L182 48"/>
+        <path class="side-line"
+              d="M199 184 L182 190"/>
+        <path class="side-line"
+              d="M199 38 L199 184"/>
 
-                M108 61
-                L108 264
-                C108 348 160 403 228 403
-                C296 403 348 348 348 264
-                L348 61
+        <!-- FRONT -->
+        <path class="front-line"
+              d="M61 38
+                 L61 184
+                 C61 251 94 292 130 292
+                 C166 292 199 251 199 184
+                 L199 38"/>
 
-                M312 61
-                L312 270
-                C312 329 276 366 228 366
-                C180 366 144 329 144 270
-                L144 61
-                "
-            />
+        <!-- INNER FRONT -->
+        <path class="inner-line"
+              d="M75 47
+                 L75 182
+                 C75 239 101 273 130 273
+                 C159 273 185 239 185 182
+                 L185 47"/>
 
-            <!-- U 앞면 -->
-            <path
-                class="front-line"
-                d="
-                M126 72
-                L126 270
-                C126 342 170 385 228 385
-                C286 385 330 342 330 270
-                L330 72
-                "
-            />
+        <!-- INNER BACK : dotted -->
+        <path class="back-dot"
+              d="M92 58
+                 L92 180
+                 C92 225 110 251 130 251
+                 C150 251 168 225 168 180
+                 L168 58"/>
 
-            <!-- U 내부 깊이 라인 -->
-            <path
-                class="inner-line"
-                d="
-                M144 72
-                L144 270
-                C144 329 180 366 228 366
-                C276 366 312 329 312 270
-                L312 72
-                "
-            />
+        <!-- small depth connectors -->
+        <path class="side-line"
+              d="M75 47 L92 58"/>
+        <path class="side-line"
+              d="M185 47 L168 58"/>
 
-            <!-- 작은 포인트 -->
-            <circle class="graphic-point"
-                    cx="228"
-                    cy="366"
-                    r="3.5"/>
-        </svg>
+        <!-- center depth point -->
+        <circle class="graphic-point"
+                cx="130"
+                cy="251"
+                r="2.4"/>
+
+    </svg>
 
 
-        <!-- X -->
-        <svg class="graphic-x"
-             viewBox="0 0 360 360"
-             xmlns="http://www.w3.org/2000/svg">
+    <!-- X -->
+    <svg class="graphic-x"
+         viewBox="0 0 280 280"
+         xmlns="http://www.w3.org/2000/svg">
 
-            <!-- 뒤쪽 X : DOT -->
-            <path
-                class="back-dot"
-                d="
-                M92 72
-                L268 288
+        <!-- BACK : dotted -->
+        <path class="back-dot"
+              d="M78 38 L140 140 L202 38"/>
+        <path class="back-dot"
+              d="M78 242 L140 140 L202 242"/>
 
-                M268 72
-                L92 288
-                "
-            />
+        <!-- SIDE / DEPTH -->
+        <path class="side-line"
+              d="M61 28 L78 38"/>
+        <path class="side-line"
+              d="M219 28 L202 38"/>
 
-            <!-- 뒤쪽 측면 -->
-            <path
-                class="back-side"
-                d="
-                M92 72 L75 60
-                M268 72 L285 60
+        <path class="side-line"
+              d="M61 252 L78 242"/>
+        <path class="side-line"
+              d="M219 252 L202 242"/>
 
-                M92 288 L75 300
-                M268 288 L285 300
-                "
-            />
+        <!-- FRONT X -->
+        <path class="front-line"
+              d="M61 28 L140 140 L219 28"/>
 
-            <!-- X 입체 측면 -->
-            <path
-                class="side-line"
-                d="
-                M75 60 L252 276
-                M285 60 L108 276
+        <path class="front-line"
+              d="M61 252 L140 140 L219 252"/>
 
-                M75 300 L252 84
-                M285 300 L108 84
-                "
-            />
+        <!-- INNER / FRONT -->
+        <path class="inner-line"
+              d="M70 35 L140 140 L210 35"/>
 
-            <!-- X 앞면 -->
-            <path
-                class="front-line"
-                d="
-                M92 72
-                L268 288
+        <path class="inner-line"
+              d="M70 245 L140 140 L210 245"/>
 
-                M268 72
-                L92 288
-                "
-            />
+        <!-- BACK CROSS -->
+        <path class="back-dot"
+              d="M78 38 L140 140 L202 242"/>
 
-            <!-- X 내부 깊이 -->
-            <path
-                class="inner-line"
-                d="
-                M108 72
-                L268 268
+        <path class="back-dot"
+              d="M202 38 L140 140 L78 242"/>
 
-                M252 72
-                L92 268
-                "
-            />
+        <!-- CENTER -->
+        <circle class="graphic-point"
+                cx="140"
+                cy="140"
+                r="2.4"/>
 
-            <!-- 중심 포인트 -->
-            <circle class="graphic-point"
-                    cx="180"
-                    cy="180"
-                    r="3"/>
-        </svg>
+    </svg>
 
-    </div>
+</div>
 
 
     <!-- =====================================================
