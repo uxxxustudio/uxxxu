@@ -7,133 +7,215 @@
     <!-- =====================================================
          3D UX GRAPHIC
     ====================================================== -->
- <div class="hero-graphic" aria-hidden="true">
+<div class="hero-graphic" aria-hidden="true">
 
-    <!-- =========================
-         U
-    ========================== -->
-    <svg class="graphic-u"
-         viewBox="0 0 260 260"
-         xmlns="http://www.w3.org/2000/svg">
+    <svg
+        viewBox="0 0 900 650"
+        xmlns="http://www.w3.org/2000/svg"
+        preserveAspectRatio="xMidYMid meet"
+    >
 
-        <!-- BACK : dotted -->
-        <path class="back-dot"
-              d="M72 42
-                 L72 151
-                 C72 191 94 214 130 214
-                 C166 214 188 191 188 151
-                 L188 42"/>
+        <!-- =====================================================
+             U
+        ====================================================== -->
 
-        <!-- SIDE : solid -->
-        <path class="side-line" d="M54 34 L72 42"/>
-        <path class="side-line" d="M206 34 L188 42"/>
+        <g class="ux-u">
 
-        <path class="side-line" d="M54 151 L72 151"/>
-        <path class="side-line" d="M206 151 L188 151"/>
+            <!-- BACK / REAR : 점선 -->
+            <path
+                class="u-rear"
+                d="
+                    M275 150
+                    L275 355
+                    C275 470 348 535 445 535
+                    C542 535 615 470 615 355
+                    L615 150
+                "
+            />
 
-        <!-- FRONT -->
-        <path class="front-line"
-              d="M54 34
-                 L54 151
-                 C54 198 82 229 130 229
-                 C178 229 206 198 206 151
-                 L206 34"/>
-
-        <!-- INNER FRONT -->
-        <path class="inner-line"
-              d="M67 42
-                 L67 150
-                 C67 188 89 214 130 214
-                 C171 214 193 188 193 150
-                 L193 42"/>
-
-        <!-- INNER BACK : dotted -->
-        <path class="back-dot"
-              d="M84 52
-                 L84 149
-                 C84 177 101 196 130 196
-                 C159 196 176 177 176 149
-                 L176 52"/>
-
-        <!-- INNER SIDE : solid -->
-        <path class="side-line" d="M67 42 L84 52"/>
-        <path class="side-line" d="M193 42 L176 52"/>
-
-        <!-- depth point -->
-        <circle class="graphic-point"
-                cx="130"
-                cy="196"
-                r="2.3"/>
-
-    </svg>
+            <path
+                class="u-rear"
+                d="
+                    M307 150
+                    L307 350
+                    C307 447 362 500 445 500
+                    C528 500 583 447 583 350
+                    L583 150
+                "
+            />
 
 
-    <!-- =========================
-         X
-    ========================== -->
-    <svg class="graphic-x"
-         viewBox="0 0 260 260"
-         xmlns="http://www.w3.org/2000/svg">
+            <!-- FRONT : 기본 실선 -->
+            <path
+                class="u-front"
+                d="
+                    M255 135
+                    L255 350
+                    C255 475 330 545 445 545
+                    C560 545 635 475 635 350
+                    L635 135
+                "
+            />
 
-        <!-- BACK : dotted -->
-        <path class="back-dot"
-              d="M73 42 L130 130 L187 42"/>
+            <path
+                class="u-front"
+                d="
+                    M285 135
+                    L285 347
+                    C285 452 346 512 445 512
+                    C544 512 605 452 605 347
+                    L605 135
+                "
+            />
 
-        <path class="back-dot"
-              d="M73 218 L130 130 L187 218"/>
 
-        <!-- SIDE : solid -->
-        <path class="side-line" d="M55 32 L73 42"/>
-        <path class="side-line" d="M205 32 L187 42"/>
+            <!-- SIDE : 앞/뒤를 연결하는 입체 면 -->
+            <path
+                class="u-side"
+                d="M255 135 L275 150"
+            />
 
-        <path class="side-line" d="M55 228 L73 218"/>
-        <path class="side-line" d="M205 228 L187 218"/>
+            <path
+                class="u-side"
+                d="M635 135 L615 150"
+            />
 
-        <!-- FRONT -->
-        <path class="front-line"
-              d="M55 32
-                 L130 130
-                 L205 32"/>
+            <path
+                class="u-side"
+                d="M285 135 L307 150"
+            />
 
-        <path class="front-line"
-              d="M55 228
-                 L130 130
-                 L205 228"/>
+            <path
+                class="u-side"
+                d="M605 135 L583 150"
+            />
 
-        <!-- INNER FRONT -->
-        <path class="inner-line"
-              d="M67 39
-                 L130 130
-                 L193 39"/>
 
-        <path class="inner-line"
-              d="M67 221
-                 L130 130
-                 L193 221"/>
+            <!-- U 아래쪽의 깊이 -->
+            <path
+                class="u-side"
+                d="
+                    M275 355
+                    C275 470 348 535 445 535
+                    C542 535 615 470 615 355
+                "
+            />
 
-        <!-- INNER BACK : dotted -->
-        <path class="back-dot"
-              d="M82 50
-                 L130 130
-                 L178 50"/>
+            <!-- 중심 포인트 -->
+            <circle
+                cx="445"
+                cy="512"
+                r="3"
+                class="ux-point"
+            />
 
-        <path class="back-dot"
-              d="M82 210
-                 L130 130
-                 L178 210"/>
+        </g>
 
-        <!-- INNER SIDE : solid -->
-        <path class="side-line" d="M67 39 L82 50"/>
-        <path class="side-line" d="M193 39 L178 50"/>
 
-        <path class="side-line" d="M67 221 L82 210"/>
-        <path class="side-line" d="M193 221 L178 210"/>
+        <!-- =====================================================
+             X
+        ====================================================== -->
 
-        <!-- center point -->
-        <circle class="graphic-point"
-                cx="130"
-                cy="130"
-                r="2.3"/>
+        <g class="ux-x">
+
+            <!-- BACK / REAR : 점선 -->
+
+            <path
+                class="x-rear"
+                d="
+                    M635 125
+                    L665 95
+                    L825 275
+                    L795 305
+                    Z
+                "
+            />
+
+            <path
+                class="x-rear"
+                d="
+                    M795 95
+                    L825 125
+                    L665 305
+                    L635 275
+                    Z
+                "
+            />
+
+
+            <!-- FRONT : 기본 실선 -->
+
+            <path
+                class="x-front"
+                d="
+                    M615 105
+                    L645 75
+                    L825 275
+                    L795 305
+                    Z
+                "
+            />
+
+            <path
+                class="x-front"
+                d="
+                    M795 75
+                    L825 105
+                    L645 305
+                    L615 275
+                    Z
+                "
+            />
+
+
+            <!-- SIDE : 입체 두께 -->
+
+            <path
+                class="x-side"
+                d="
+                    M615 105
+                    L635 125
+                    L795 305
+                "
+            />
+
+            <path
+                class="x-side"
+                d="
+                    M645 75
+                    L665 95
+                    L825 275
+                "
+            />
+
+            <path
+                class="x-side"
+                d="
+                    M795 75
+                    L815 95
+                    L655 275
+                "
+            />
+
+            <path
+                class="x-side"
+                d="
+                    M825 105
+                    L825 125
+                    L665 305
+                "
+            />
+
+
+            <!-- 중심 포인트 -->
+            <circle
+                cx="715"
+                cy="190"
+                r="3"
+                class="ux-point"
+            />
+
+        </g>
 
     </svg>
 
