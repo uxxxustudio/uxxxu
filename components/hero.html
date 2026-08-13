@@ -1,230 +1,238 @@
 <section class="hero">
 
-    <!-- 기존 배경 라이트 -->
     <div class="hero-light" aria-hidden="true"></div>
-
 
     <!-- =====================================================
          3D UX GRAPHIC
     ====================================================== -->
-<div class="hero-graphic" aria-hidden="true">
+    <div class="hero-graphic" aria-hidden="true">
 
-    <svg
-        viewBox="0 0 900 650"
-        xmlns="http://www.w3.org/2000/svg"
-        preserveAspectRatio="xMidYMid meet"
-    >
+        <svg
+            viewBox="0 0 900 650"
+            xmlns="http://www.w3.org/2000/svg"
+            preserveAspectRatio="xMidYMid meet"
+        >
 
-        <!-- =====================================================
-             U
-        ====================================================== -->
+            <!-- =================================================
+                 U
+                 FRONT = SOLID
+                 SIDE  = SOLID
+                 REAR  = DOTTED
+            ================================================== -->
 
-        <g class="ux-u">
+            <g class="ux-u">
 
-            <!-- BACK / REAR : 점선 -->
-            <path
-                class="u-rear"
-                d="
-                    M275 150
-                    L275 355
-                    C275 470 348 535 445 535
-                    C542 535 615 470 615 355
-                    L615 150
-                "
-            />
+                <!-- BACK / REAR -->
+                <path
+                    class="u-rear"
+                    d="
+                        M278 150
+                        L278 338
+                        C278 430 337 490 430 490
+                        C523 490 582 430 582 338
+                        L582 150
+                    "
+                />
 
-            <path
-                class="u-rear"
-                d="
-                    M307 150
-                    L307 350
-                    C307 447 362 500 445 500
-                    C528 500 583 447 583 350
-                    L583 150
-                "
-            />
-
-
-            <!-- FRONT : 기본 실선 -->
-            <path
-                class="u-front"
-                d="
-                    M255 135
-                    L255 350
-                    C255 475 330 545 445 545
-                    C560 545 635 475 635 350
-                    L635 135
-                "
-            />
-
-            <path
-                class="u-front"
-                d="
-                    M285 135
-                    L285 347
-                    C285 452 346 512 445 512
-                    C544 512 605 452 605 347
-                    L605 135
-                "
-            />
+                <path
+                    class="u-rear"
+                    d="
+                        M306 150
+                        L306 338
+                        C306 412 354 462 430 462
+                        C506 462 554 412 554 338
+                        L554 150
+                    "
+                />
 
 
-            <!-- SIDE : 앞/뒤를 연결하는 입체 면 -->
-            <path
-                class="u-side"
-                d="M255 135 L275 150"
-            />
+                <!-- FRONT -->
+                <path
+                    class="u-front"
+                    d="
+                        M248 132
+                        L248 342
+                        C248 465 326 535 430 535
+                        C534 535 612 465 612 342
+                        L612 132
+                    "
+                />
 
-            <path
-                class="u-side"
-                d="M635 135 L615 150"
-            />
-
-            <path
-                class="u-side"
-                d="M285 135 L307 150"
-            />
-
-            <path
-                class="u-side"
-                d="M605 135 L583 150"
-            />
-
-
-            <!-- U 아래쪽의 깊이 -->
-            <path
-                class="u-side"
-                d="
-                    M275 355
-                    C275 470 348 535 445 535
-                    C542 535 615 470 615 355
-                "
-            />
-
-            <!-- 중심 포인트 -->
-            <circle
-                cx="445"
-                cy="512"
-                r="3"
-                class="ux-point"
-            />
-
-        </g>
+                <path
+                    class="u-front"
+                    d="
+                        M278 132
+                        L278 340
+                        C278 442 337 505 430 505
+                        C523 505 582 442 582 340
+                        L582 132
+                    "
+                />
 
 
-        <!-- =====================================================
-             X
-        ====================================================== -->
+                <!-- SIDE / DEPTH -->
 
-        <g class="ux-x">
+                <path
+                    class="u-side"
+                    d="M248 132 L278 150"
+                />
 
-            <!-- BACK / REAR : 점선 -->
+                <path
+                    class="u-side"
+                    d="M612 132 L582 150"
+                />
 
-            <path
-                class="x-rear"
-                d="
-                    M635 125
-                    L665 95
-                    L825 275
-                    L795 305
-                    Z
-                "
-            />
+                <path
+                    class="u-side"
+                    d="M278 132 L306 150"
+                />
 
-            <path
-                class="x-rear"
-                d="
-                    M795 95
-                    L825 125
-                    L665 305
-                    L635 275
-                    Z
-                "
-            />
+                <path
+                    class="u-side"
+                    d="M582 132 L554 150"
+                />
 
 
-            <!-- FRONT : 기본 실선 -->
+                <!-- LOWER DEPTH -->
 
-            <path
-                class="x-front"
-                d="
-                    M615 105
-                    L645 75
-                    L825 275
-                    L795 305
-                    Z
-                "
-            />
+                <path
+                    class="u-side"
+                    d="
+                        M248 342
+                        C248 465 326 535 430 535
+                        C534 535 612 465 612 342
+                    "
+                />
 
-            <path
-                class="x-front"
-                d="
-                    M795 75
-                    L825 105
-                    L645 305
-                    L615 275
-                    Z
-                "
-            />
+                <path
+                    class="u-side"
+                    d="
+                        M278 340
+                        C278 442 337 505 430 505
+                        C523 505 582 442 582 340
+                    "
+                />
 
+                <circle
+                    class="ux-point"
+                    cx="430"
+                    cy="505"
+                    r="3"
+                />
 
-            <!-- SIDE : 입체 두께 -->
-
-            <path
-                class="x-side"
-                d="
-                    M615 105
-                    L635 125
-                    L795 305
-                "
-            />
-
-            <path
-                class="x-side"
-                d="
-                    M645 75
-                    L665 95
-                    L825 275
-                "
-            />
-
-            <path
-                class="x-side"
-                d="
-                    M795 75
-                    L815 95
-                    L655 275
-                "
-            />
-
-            <path
-                class="x-side"
-                d="
-                    M825 105
-                    L825 125
-                    L665 305
-                "
-            />
+            </g>
 
 
-            <!-- 중심 포인트 -->
-            <circle
-                cx="715"
-                cy="190"
-                r="3"
-                class="ux-point"
-            />
+            <!-- =================================================
+                 X
+                 FRONT = SOLID
+                 SIDE  = SOLID
+                 REAR  = DOTTED
+            ================================================== -->
 
-        </g>
+            <g class="ux-x">
 
-    </svg>
+                <!-- BACK / REAR -->
 
-</div>
+                <path
+                    class="x-rear"
+                    d="
+                        M650 118
+                        L672 96
+                        L814 254
+                        L792 276
+                        Z
+                    "
+                />
+
+                <path
+                    class="x-rear"
+                    d="
+                        M792 96
+                        L814 118
+                        L672 276
+                        L650 254
+                        Z
+                    "
+                />
+
+
+                <!-- FRONT -->
+
+                <path
+                    class="x-front"
+                    d="
+                        M620 102
+                        L648 74
+                        L842 264
+                        L814 292
+                        Z
+                    "
+                />
+
+                <path
+                    class="x-front"
+                    d="
+                        M814 74
+                        L842 102
+                        L648 292
+                        L620 264
+                        Z
+                    "
+                />
+
+
+                <!-- SIDE / DEPTH -->
+
+                <path
+                    class="x-side"
+                    d="M620 102 L650 118"
+                />
+
+                <path
+                    class="x-side"
+                    d="M648 74 L672 96"
+                />
+
+                <path
+                    class="x-side"
+                    d="M842 102 L814 118"
+                />
+
+                <path
+                    class="x-side"
+                    d="M814 292 L792 276"
+                />
+
+                <path
+                    class="x-side"
+                    d="M620 264 L650 254"
+                />
+
+                <path
+                    class="x-side"
+                    d="M648 292 L672 276"
+                />
+
+
+                <circle
+                    class="ux-point"
+                    cx="731"
+                    cy="183"
+                    r="3"
+                />
+
+            </g>
+
+        </svg>
+
+    </div>
 
 
     <!-- =====================================================
          HERO CONTENT
     ====================================================== -->
+
     <div class="hero-inner">
 
         <h1>
@@ -244,15 +252,19 @@
 
         <div class="hero-action">
 
-            <a href="https://pf.kakao.com/_sgDBX/chat"
-               class="btn-primary"
-               target="_blank"
-               rel="noopener">
+            <a
+                href="https://pf.kakao.com/_sgDBX/chat"
+                class="btn-primary"
+                target="_blank"
+                rel="noopener"
+            >
                 Let's Talk <span>→</span>
             </a>
 
-            <a href="https://uxxxu-studio.com"
-               class="portfolio">
+            <a
+                href="https://uxxxu-studio.com"
+                class="portfolio"
+            >
                 View Portfolio
             </a>
 
