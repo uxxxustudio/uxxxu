@@ -1199,11 +1199,15 @@ nav.open{
     overflow:hidden;
 }
 
+./* -----------------------------------------
+   Graphic container
+----------------------------------------- */
+
 .hero-graphic{
     position:absolute;
 
     width:620px;
-    height:500px;
+    height:570px;
 
     right:4vw;
     top:50%;
@@ -1213,38 +1217,274 @@ nav.open{
     z-index:2;
 
     pointer-events:none;
-
-    opacity:.75;
 }
 
-.hero-graphic svg{
-    display:block;
 
+/* -----------------------------------------
+   Individual objects
+----------------------------------------- */
+
+.ux-object{
+    position:absolute;
+
+    width:320px;
+    height:320px;
+
+    will-change:transform;
+}
+
+
+/* U */
+
+.ux-u-object{
+    left:20px;
+    top:145px;
+
+    animation:
+        uxUFloat 8s ease-in-out infinite;
+}
+
+
+/* X */
+
+.ux-x-object{
+    right:5px;
+    top:35px;
+
+    animation:
+        uxXFloat 7s ease-in-out infinite;
+}
+
+
+.ux-object svg{
     width:100%;
     height:100%;
+
+    display:block;
 
     overflow:visible;
 }
 
-.hero-graphic path{
+
+/* -----------------------------------------
+   Main 3D lines
+----------------------------------------- */
+
+.ux-main{
     fill:none;
 
-    stroke:#8c928e;
+    stroke:#111111;
 
-    stroke-width:2;
+    stroke-width:2.2;
 
     stroke-linecap:round;
     stroke-linejoin:round;
 
-    opacity:.85;
+    opacity:.78;
 }
 
-.hero-graphic circle{
-    fill:#718076;
-    opacity:.7;
+
+/* 내부 구조 */
+
+.ux-inner{
+    fill:none;
+
+    stroke:#202020;
+
+    stroke-width:1.35;
+
+    stroke-linecap:round;
+    stroke-linejoin:round;
+
+    opacity:.48;
 }
 
-.hero-inner{
-    position:relative;
-    z-index:3;
+
+/* 뒤쪽 깊이선 */
+
+.ux-back{
+    fill:none;
+
+    stroke:#333333;
+
+    stroke-width:1.25;
+
+    stroke-linecap:round;
+    stroke-linejoin:round;
+
+    opacity:.38;
+}
+
+
+/* 입체 연결선 */
+
+.ux-depth{
+    fill:none;
+
+    stroke:#111111;
+
+    stroke-width:1.25;
+
+    stroke-linecap:round;
+    stroke-linejoin:round;
+
+    opacity:.42;
+}
+
+
+/* -----------------------------------------
+   Dotted construction lines
+----------------------------------------- */
+
+.ux-dots{
+    fill:none;
+
+    stroke:#555555;
+
+    stroke-width:1;
+
+    stroke-linecap:round;
+    stroke-linejoin:round;
+
+    stroke-dasharray:1 7;
+
+    opacity:.55;
+}
+
+
+/* 중심 노드 */
+
+.ux-node{
+    fill:#111111;
+
+    opacity:.65;
+}
+
+
+/* -----------------------------------------
+   Floating motion
+----------------------------------------- */
+
+@keyframes uxUFloat{
+
+    0%{
+        transform:
+            translate3d(0,0,0)
+            rotate(-2deg);
+    }
+
+    25%{
+        transform:
+            translate3d(-8px,-12px,0)
+            rotate(-1deg);
+    }
+
+    50%{
+        transform:
+            translate3d(5px,-20px,0)
+            rotate(1.5deg);
+    }
+
+    75%{
+        transform:
+            translate3d(12px,-8px,0)
+            rotate(2deg);
+    }
+
+    100%{
+        transform:
+            translate3d(0,0,0)
+            rotate(-2deg);
+    }
+}
+
+
+@keyframes uxXFloat{
+
+    0%{
+        transform:
+            translate3d(0,0,0)
+            rotate(3deg);
+    }
+
+    25%{
+        transform:
+            translate3d(10px,-8px,0)
+            rotate(5deg);
+    }
+
+    50%{
+        transform:
+            translate3d(4px,-18px,0)
+            rotate(2deg);
+    }
+
+    75%{
+        transform:
+            translate3d(-10px,-10px,0)
+            rotate(-1deg);
+    }
+
+    100%{
+        transform:
+            translate3d(0,0,0)
+            rotate(3deg);
+    }
+}
+
+
+/* -----------------------------------------
+   Desktop positioning
+----------------------------------------- */
+
+@media (min-width:1200px){
+
+    .ux-u-object{
+        width:350px;
+        height:350px;
+
+        left:10px;
+        top:165px;
+    }
+
+    .ux-x-object{
+        width:340px;
+        height:340px;
+
+        right:-10px;
+        top:35px;
+    }
+}
+
+
+/* -----------------------------------------
+   Mobile
+----------------------------------------- */
+
+@media (max-width:900px){
+
+    .hero-graphic{
+        width:430px;
+        height:400px;
+
+        right:-80px;
+        top:58%;
+    }
+
+    .ux-u-object{
+        width:230px;
+        height:230px;
+
+        left:0;
+        top:120px;
+    }
+
+    .ux-x-object{
+        width:220px;
+        height:220px;
+
+        right:-10px;
+        top:30px;
+    }
+
 }
