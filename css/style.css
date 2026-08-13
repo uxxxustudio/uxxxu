@@ -256,24 +256,6 @@ nav a:hover{
     width:100% !important;
     height:100% !important;
     display:block;
-}
-
-
-/* =========================================================
-   U / X FLOAT
-========================================================= */
-
-.hero-3d{
-    will-change:transform;
-}
-
-
-/* =========================================================
-   HERO 3D LINE
-   Three.js wireframe
-========================================================= */
-
-.hero-3d canvas{
     opacity:.78;
 }
 
@@ -298,8 +280,10 @@ nav a:hover{
 }
 
 .hero-3d{
+    will-change:transform;
     animation:hero3dFloat 7s ease-in-out infinite alternate;
 }
+
 
 /* =========================================================
    HERO
