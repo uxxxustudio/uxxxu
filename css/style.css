@@ -1285,11 +1285,11 @@ footer{
        display:block;
        position:relative;
    
-       left:28%;
+       left:36%;
        top:16px;
        margin-left:0;
    
-       width:calc(100% - 28%);
+       width:calc(100% - 36%);
        text-align:left;
    }
 
@@ -1398,4 +1398,12 @@ footer{
 
         filter:blur(45px);
     }
+}
+
+@media (max-width: 767px){
+
+    .hero-action{
+        transform: translateY(90px);
+    }
+
 }
