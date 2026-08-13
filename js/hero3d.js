@@ -58,33 +58,80 @@ export function initHero3D() {
   const loader = new FontLoader();
 
   loader.load(
-    "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/fonts/helvetiker_bold.typeface.json",
-    (font) => {
-      // -------------------------------------------------
-      // [U X X X U] 화면 전체 자유 배치 튜닝
-      // createLetter(글자, 폰트, x, y, rotY, rotX, scale, phase)
-      // -------------------------------------------------
+  "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/fonts/helvetiker_bold.typeface.json",
+  (font) => {
 
-      // 1. 좌측 상단 U (화면 모서리로 크게 배치)
-      createLetter("U", font, -8.0, 4.5, -0.42, 0.05, 1.1, 0);
+    /* =================================================
+       U · X · X · X · U
+       HERO 전체 화면 자유 배치
+    ================================================= */
 
-      // 2. 우측 상단 X (폰트 크기를 다양하게)
-      createLetter("X", font, 7.5, 4.8, 0.2, -0.1, 0.9, 0.8);
+    // ① U — 왼쪽 중단 / 큰 사이즈
+    createLetter(
+      "U",
+      font,
+      -4.8,
+      0.25,
+      -0.42,
+      -0.08,
+      0.78,
+      0
+    );
 
-      // 3. 중앙 중상단 X (작고 뒤쪽에 배치하여 원근감 연출)
-      createLetter("X", font, 0.0, 2.5, 0.15, 0.2, 0.65, 1.7);
+    // ② X — 왼쪽 상단
+    createLetter(
+      "X",
+      font,
+      -2.1,
+      2.75,
+      0.28,
+      0.08,
+      0.46,
+      1.7
+    );
 
-      // 4. 좌측 하단 X (조금 더 앞쪽에 배치)
-      createLetter("X", font, -7.8, -4.5, -0.2, 0.0, 0.95, 2.5);
+    // ③ X — 중앙 / 가장 작게
+    createLetter(
+      "X",
+      font,
+      1.15,
+      1.55,
+      -0.20,
+      -0.04,
+      0.38,
+      3.2
+    );
 
-      // 5. 우측 하단 U (화면 전체를 균형 있게 채움)
-      createLetter("U", font, 8.2, -4.2, 0.42, -0.08, 1.05, 3.2);
-    },
-    undefined,
-    (error) => {
-      console.error("Hero font load failed:", error);
-    }
-  );
+    // ④ X — 오른쪽 상단
+    createLetter(
+      "X",
+      font,
+      4.35,
+      2.45,
+      0.34,
+      0.06,
+      0.62,
+      4.8
+    );
+
+    // ⑤ U — 오른쪽 하단
+    createLetter(
+      "U",
+      font,
+      4.85,
+      -1.75,
+      0.30,
+      -0.05,
+      0.54,
+      6.1
+    );
+
+  },
+  undefined,
+  (error) => {
+    console.error("Hero font load failed:", error);
+  }
+);
 
   /* =====================================================
      CREATE 3D LINE LETTER (EDGES GEOMETRY)
