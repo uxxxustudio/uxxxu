@@ -1186,3 +1186,93 @@ nav.open{
     }
 
 }
+
+
+
+/* =========================================================
+   HERO U / X GRAPHIC - TEST
+========================================================= */
+
+.hero {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+}
+
+
+/* U/X 전체 위치 */
+
+.hero-graphic {
+    position: absolute;
+
+    z-index: 2;
+
+    width: 560px;
+    height: 420px;
+
+    right: 5%;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    pointer-events: none;
+}
+
+
+/* SVG */
+
+.ux-graphic {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    overflow: visible;
+}
+
+
+/* 라인 */
+
+.ux-graphic path {
+    fill: none;
+
+    stroke: #8f9691;
+
+    stroke-width: 2;
+
+    stroke-linecap: round;
+    stroke-linejoin: round;
+
+    opacity: 0.8;
+}
+
+
+/* U */
+
+.ux-u {
+    transform-origin: center;
+}
+
+
+/* X */
+
+.ux-x {
+    transform-origin: center;
+}
+
+
+/* 포인트 */
+
+.ux-graphic circle {
+    fill: #53695b;
+
+    opacity: 0.8;
+}
+
+
+/* 기존 텍스트가 그래픽 위로 */
+
+.hero-inner {
+    position: relative;
+    z-index: 3;
+}
