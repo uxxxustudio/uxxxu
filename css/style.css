@@ -132,59 +132,113 @@ nav a:hover{
 }
 
 
-/* 전체 빛 영역 */
+/* ---------------------------------------------------------
+   MAIN LIGHT
+--------------------------------------------------------- */
 
 .hero-light{
     position:absolute;
     z-index:0;
 
-    width:70vw;
-    height:46vh;
+    width:72vw;
+    height:52vh;
 
-    right:-7vw;
-    top:23vh;
+    right:-8vw;
+    top:20vh;
 
     pointer-events:none;
 
     opacity:1;
 
-    filter:blur(42px);
+    filter:blur(38px);
 
     transform:translate3d(0,0,0) scale(1);
 
     background:
 
-        /* 넓게 퍼지는 메인 그레이 빛 */
+        /* 넓게 퍼지는 라이트 그레이 */
         radial-gradient(
-            ellipse 72% 46% at 34% 54%,
-            rgba(145,150,147,.18) 0%,
-            rgba(145,150,147,.09) 32%,
-            rgba(145,150,147,.035) 58%,
-            transparent 82%
+            ellipse 70% 45% at 35% 52%,
+            rgba(205,208,206,.32) 0%,
+            rgba(205,208,206,.20) 30%,
+            rgba(205,208,206,.08) 55%,
+            transparent 78%
         ),
 
-        /* 오른쪽으로 이어지는 두 번째 빛 */
+        /* 오른쪽으로 이어지는 밝은 영역 */
         radial-gradient(
-            ellipse 48% 62% at 72% 42%,
-            rgba(135,140,137,.11) 0%,
-            rgba(135,140,137,.045) 38%,
-            rgba(135,140,137,.015) 62%,
-            transparent 80%
-        ),
-
-        /* 아주 작은 딥그린 영역 */
-        radial-gradient(
-            ellipse 22% 34% at 67% 52%,
-            rgba(43,67,54,.055) 0%,
-            rgba(43,67,54,.025) 42%,
-            transparent 76%
+            ellipse 48% 55% at 72% 42%,
+            rgba(225,227,226,.22) 0%,
+            rgba(225,227,226,.10) 38%,
+            transparent 75%
         );
 
-    animation:heroLightFlow 20s ease-in-out infinite alternate;
+    animation:heroLightMove 10s ease-in-out infinite alternate;
 }
 
 
-/* 콘텐츠는 빛보다 위 */
+/* ---------------------------------------------------------
+   DEEP GREEN LIGHT
+--------------------------------------------------------- */
+
+.hero-light::before{
+    content:"";
+
+    position:absolute;
+
+    width:48%;
+    height:58%;
+
+    left:46%;
+    top:18%;
+
+    pointer-events:none;
+
+    filter:blur(34px);
+
+    background:
+        radial-gradient(
+            ellipse 62% 52% at 50% 50%,
+            rgba(45,68,56,.16) 0%,
+            rgba(45,68,56,.09) 34%,
+            rgba(45,68,56,.035) 60%,
+            transparent 78%
+        );
+
+    animation:heroGreenMove 8s ease-in-out infinite alternate;
+}
+
+
+/* ---------------------------------------------------------
+   SOFT LIGHT SWEEP
+--------------------------------------------------------- */
+
+.hero-light::after{
+    content:"";
+
+    position:absolute;
+
+    width:75%;
+    height:70%;
+
+    left:8%;
+    top:8%;
+
+    pointer-events:none;
+
+    filter:blur(45px);
+
+    background:
+        radial-gradient(
+            ellipse 60% 35% at 50% 50%,
+            rgba(255,255,255,.34) 0%,
+            rgba(255,255,255,.12) 42%,
+            transparent 75%
+        );
+
+    animation:heroLightSweep 11s ease-in-out infinite alternate;
+}
+
 
 .hero-inner{
     position:relative;
@@ -193,33 +247,89 @@ nav a:hover{
 
 
 /* =========================================================
-   LIGHT MOVEMENT
+   MOVEMENT
 ========================================================= */
 
-@keyframes heroLightFlow{
+@keyframes heroLightMove{
 
     0%{
         transform:
-            translate3d(4%,1%,0)
-            scale(.96);
+            translate3d(8%,3%,0)
+            scale(.92);
     }
 
     35%{
         transform:
-            translate3d(-1%,-2%,0)
+            translate3d(1%,-2%,0)
             scale(1.02);
     }
 
     70%{
         transform:
-            translate3d(-4%,2%,0)
-            scale(1.05);
+            translate3d(-7%,2%,0)
+            scale(1.08);
     }
 
     100%{
         transform:
-            translate3d(1%,1%,0)
+            translate3d(-2%,-1%,0)
             scale(.98);
+    }
+
+}
+
+
+/* 딥그린 영역 */
+
+@keyframes heroGreenMove{
+
+    0%{
+        transform:
+            translate3d(12%,6%,0)
+            scale(.82);
+        opacity:.65;
+    }
+
+    50%{
+        transform:
+            translate3d(-8%,-5%,0)
+            scale(1.08);
+        opacity:1;
+    }
+
+    100%{
+        transform:
+            translate3d(6%,3%,0)
+            scale(.94);
+        opacity:.72;
+    }
+
+}
+
+
+/* 빛이 퍼졌다가 수축 */
+
+@keyframes heroLightSweep{
+
+    0%{
+        transform:
+            translate3d(8%,-3%,0)
+            scale(.88);
+        opacity:.45;
+    }
+
+    50%{
+        transform:
+            translate3d(-4%,3%,0)
+            scale(1.12);
+        opacity:.85;
+    }
+
+    100%{
+        transform:
+            translate3d(5%,-2%,0)
+            scale(.96);
+        opacity:.55;
     }
 
 }
