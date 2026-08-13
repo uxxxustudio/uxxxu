@@ -148,38 +148,35 @@ nav a:hover{
 
     transform:translate3d(0,0,0) scale(1);
 
-    background:
+background:
 
-        /* 전체적인 라이트 그레이 빛 */
-        radial-gradient(
-            ellipse 85% 62% at 64% 58%,
-            rgba(218,220,219,.32) 0%,
-            rgba(218,220,219,.22) 30%,
-            rgba(218,220,219,.10) 52%,
-            rgba(218,220,219,.035) 70%,
-            transparent 88%
-        ),
+    radial-gradient(
+        ellipse 85% 62% at 64% 58%,
+        rgba(218,220,219,.40) 0%,
+        rgba(218,220,219,.28) 30%,
+        rgba(218,220,219,.13) 52%,
+        rgba(218,220,219,.045) 70%,
+        transparent 88%
+    ),
 
-        /* 그레이에서 아주 옅은 그린으로 자연스럽게 변화 */
-        radial-gradient(
-            ellipse 58% 70% at 70% 66%,
-            rgba(168,178,171,.075) 0%,
-            rgba(168,178,171,.055) 25%,
-            rgba(168,178,171,.035) 48%,
-            rgba(168,178,171,.015) 68%,
-            transparent 86%
-        ),
+    radial-gradient(
+        ellipse 58% 70% at 70% 66%,
+        rgba(168,178,171,.095) 0%,
+        rgba(168,178,171,.070) 25%,
+        rgba(168,178,171,.045) 48%,
+        rgba(168,178,171,.020) 68%,
+        transparent 86%
+    ),
 
-        /* 빛이 지나가는 밝은 영역 */
-        linear-gradient(
-            135deg,
-            rgba(255,255,255,0) 28%,
-            rgba(245,246,245,.18) 43%,
-            rgba(255,255,255,.08) 55%,
-            rgba(255,255,255,0) 72%
-        );
+    linear-gradient(
+        135deg,
+        rgba(255,255,255,0) 28%,
+        rgba(245,246,245,.20) 43%,
+        rgba(255,255,255,.09) 55%,
+        rgba(255,255,255,0) 72%
+    );
 
-    animation:heroLightFlow 8s ease-in-out infinite alternate;
+animation:heroLightFlow 8s ease-in-out infinite alternate;
 }
 
 
