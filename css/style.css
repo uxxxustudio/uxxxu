@@ -234,25 +234,23 @@ nav a:hover{
    HERO 3D GRAPHIC
 ========================================================= */
 
+
 .hero-graphic{
-
     position:absolute;
-
     z-index:2;
 
     width:560px;
     height:500px;
 
-    right:4vw;
-    top:19vh;
+    right:3vw;
+    top:20vh;
 
     pointer-events:none;
-
     overflow:visible;
 
-    animation:
-        uxFloat 7s ease-in-out infinite alternate;
+    animation:uxFloat 8s ease-in-out infinite alternate;
 }
+
 
 
 /* =========================================================
@@ -260,20 +258,19 @@ nav a:hover{
 ========================================================= */
 
 .graphic-u{
-
     position:absolute;
 
     width:245px;
     height:300px;
 
-    left:35px;
-    top:115px;
+    left:15px;
+    top:135px;
 
     overflow:visible;
 
-    animation:
-        uFloat 6.5s ease-in-out infinite alternate;
+    animation:uFloat 6.5s ease-in-out infinite alternate;
 }
+
 
 
 /* =========================================================
@@ -281,20 +278,19 @@ nav a:hover{
 ========================================================= */
 
 .graphic-x{
-
     position:absolute;
 
     width:255px;
     height:255px;
 
     right:0;
-    top:15px;
+    top:20px;
 
     overflow:visible;
 
-    animation:
-        xFloat 7.5s ease-in-out infinite alternate;
+    animation:xFloat 7.5s ease-in-out infinite alternate;
 }
+
 
 
 /* =========================================================
@@ -302,114 +298,63 @@ nav a:hover{
 ========================================================= */
 
 
-/* -------------------------
-   FRONT
-------------------------- */
-
+/* 앞면 */
 .front-line{
-
     fill:none;
-
     stroke:#111;
-
-    stroke-width:1.55;
-
+    stroke-width:1.35;
     stroke-linecap:round;
     stroke-linejoin:round;
-
-    opacity:.82;
+    opacity:.78;
 }
 
 
-/* -------------------------
-   INNER DEPTH
-------------------------- */
-
+/* 내부 라인 */
 .inner-line{
-
     fill:none;
-
     stroke:#555;
-
-    stroke-width:.85;
-
+    stroke-width:.75;
     stroke-linecap:round;
     stroke-linejoin:round;
-
     opacity:.52;
 }
 
 
-/* -------------------------
-   SIDE / VOLUME
-------------------------- */
-
+/* 측면 */
 .side-line{
-
     fill:none;
-
-    stroke:#666;
-
-    stroke-width:.85;
-
+    stroke:#444;
+    stroke-width:.75;
     stroke-linecap:round;
     stroke-linejoin:round;
-
-    opacity:.46;
+    opacity:.48;
 }
 
 
-/* -------------------------
-   BACK
-   dotted line
-------------------------- */
-
+/* 뒷면 */
 .back-dot{
-
     fill:none;
-
     stroke:#555;
-
-    stroke-width:.7;
-
+    stroke-width:.65;
     stroke-linecap:round;
     stroke-linejoin:round;
 
+    /*
+       카카오처럼 아주 촘촘하지 않은
+       얇은 도트 라인
+    */
     stroke-dasharray:1 4;
 
-    opacity:.52;
+    opacity:.48;
 }
 
 
-/* -------------------------
-   BACK CONNECTION
-------------------------- */
-
-.back-side{
-
-    fill:none;
-
-    stroke:#777;
-
-    stroke-width:.6;
-
-    stroke-linecap:round;
-    stroke-linejoin:round;
-
-    opacity:.34;
-}
-
-
-/* -------------------------
-   CENTER POINT
-------------------------- */
-
+/* 중심점 */
 .graphic-point{
-
     fill:#111;
-
-    opacity:.6;
+    opacity:.55;
 }
+
 
 
 /* =========================================================
@@ -421,19 +366,19 @@ nav a:hover{
     0%{
         transform:
             translate3d(0,4px,0)
-            rotate(-1deg);
+            rotate(-.5deg);
     }
 
     50%{
         transform:
-            translate3d(-8px,-7px,0)
-            rotate(.7deg);
+            translate3d(-7px,-6px,0)
+            rotate(.5deg);
     }
 
     100%{
         transform:
-            translate3d(7px,5px,0)
-            rotate(-.5deg);
+            translate3d(6px,5px,0)
+            rotate(-.4deg);
     }
 }
 
@@ -442,14 +387,14 @@ nav a:hover{
 
     0%{
         transform:
-            translate3d(0,5px,0)
-            rotate(-1.2deg);
+            translate3d(0,4px,0)
+            rotate(-.8deg);
     }
 
     100%{
         transform:
-            translate3d(-9px,-8px,0)
-            rotate(1deg);
+            translate3d(-8px,-7px,0)
+            rotate(.7deg);
     }
 }
 
@@ -459,13 +404,13 @@ nav a:hover{
     0%{
         transform:
             translate3d(3px,-3px,0)
-            rotate(1deg);
+            rotate(.7deg);
     }
 
     100%{
         transform:
-            translate3d(-8px,8px,0)
-            rotate(-1.2deg);
+            translate3d(-7px,7px,0)
+            rotate(-.8deg);
     }
 }
 
