@@ -54,8 +54,64 @@ export function initHero3D() {
   loader.load(
     "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/fonts/helvetiker_bold.typeface.json",
     (font) => {
-      createLetter("U", font, -2.9, -0.65, -0.42, 0.92, 0);
-      createLetter("X", font, 2.25, 0.55, 0.42, 0.88, 1.7);
+
+      /* =================================================
+         U · X · X · X · U
+         
+         현재 스타일 / 두께 / 3D 방식은 그대로 유지
+         위치와 크기만 각각 다르게 배치
+      ================================================= */
+
+      createLetter(
+        "U",
+        font,
+        -2.9,
+        -0.65,
+        -0.42,
+        0.92,
+        0
+      );
+
+      createLetter(
+        "X",
+        font,
+        2.25,
+        0.55,
+        0.42,
+        0.88,
+        1.7
+      );
+
+      createLetter(
+        "X",
+        font,
+        -0.65,
+        2.05,
+        -0.28,
+        0.48,
+        3.2
+      );
+
+      createLetter(
+        "X",
+        font,
+        3.45,
+        2.15,
+        -0.35,
+        0.46,
+        4.8
+      );
+
+      createLetter(
+        "U",
+        font,
+        3.45,
+        -1.65,
+        0.32,
+        0.55,
+        6.1
+      );
+
     },
     undefined,
     (error) => {
@@ -71,11 +127,11 @@ export function initHero3D() {
       font: font,
       size: 4.1,
       depth: 0.72,
-      curveSegments: 8, // 곡선 잔선 방지를 위해 세그먼트 최적화
+      curveSegments: 8,
       bevelEnabled: true,
       bevelThickness: 0.09,
       bevelSize: 0.055,
-      bevelSegments: 2, // 베벨 꺾임선 단순화
+      bevelSegments: 2,
     });
 
     geometry.computeBoundingBox();
@@ -88,12 +144,18 @@ export function initHero3D() {
     geometry.translate(-centerX, -centerY, 0);
 
     /* =================================================
-       OUTLINE EDGES ONLY (내부 겹침선 제거)
+       OUTLINE EDGES ONLY
     ================================================= */
-    // 20도 이상 꺾이는 외곽 모서리선만 추출
-    const wireGeometry = new THREE.EdgesGeometry(geometry, 20);
 
-    const wire = new THREE.LineSegments(wireGeometry, material);
+    const wireGeometry = new THREE.EdgesGeometry(
+      geometry,
+      20
+    );
+
+    const wire = new THREE.LineSegments(
+      wireGeometry,
+      material
+    );
 
     wire.position.set(x, y, 0);
     wire.scale.setScalar(scale);
@@ -119,8 +181,11 @@ export function initHero3D() {
   window.addEventListener(
     "mousemove",
     (event) => {
-      target.x = (event.clientX / window.innerWidth) * 2 - 1;
-      target.y = (event.clientY / window.innerHeight) * 2 - 1;
+      target.x =
+        (event.clientX / window.innerWidth) * 2 - 1;
+
+      target.y =
+        (event.clientY / window.innerHeight) * 2 - 1;
     },
     { passive: true }
   );
@@ -159,12 +224,20 @@ export function initHero3D() {
       const phase = object.userData.phase;
 
       object.position.x =
-        object.userData.baseX + Math.sin(time * 0.55 + phase) * 0.1;
-      object.position.y =
-        object.userData.baseY + Math.cos(time * 0.7 + phase) * 0.12;
+        object.userData.baseX +
+        Math.sin(time * 0.55 + phase) * 0.1;
 
-      object.rotation.y = object.userData.baseRotationY + mouse.x * 0.18;
-      object.rotation.x = -0.08 + mouse.y * 0.06;
+      object.position.y =
+        object.userData.baseY +
+        Math.cos(time * 0.7 + phase) * 0.12;
+
+      object.rotation.y =
+        object.userData.baseRotationY +
+        mouse.x * 0.18;
+
+      object.rotation.x =
+        -0.08 +
+        mouse.y * 0.06;
     });
 
     renderer.render(scene, camera);
