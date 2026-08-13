@@ -1,267 +1,204 @@
 <section class="hero">
 
-<div class="hero-light" aria-hidden="true"></div>
+    <!-- 기존 배경 라이트 -->
+    <div class="hero-light" aria-hidden="true"></div>
 
-<div class="hero-graphic" aria-hidden="true">
 
-    <!-- =========================
-         3D U
-    ========================== -->
+    <!-- =====================================================
+         3D UX GRAPHIC
+    ====================================================== -->
+    <div class="hero-graphic" aria-hidden="true">
 
-    <div class="ux-object ux-u-object">
-
-        <svg viewBox="0 0 420 420"
+        <!-- U -->
+        <svg class="graphic-u"
+             viewBox="0 0 360 430"
              xmlns="http://www.w3.org/2000/svg">
 
-            <!-- 가장 뒤쪽 실루엣 -->
-            <path class="u-back"
-                d="M105 62
-                   L105 205
-                   C105 286 149 330 210 330
-                   C271 330 315 286 315 205
-                   L315 62"/>
+            <!-- 뒤쪽 구조 : DOT -->
+            <path
+                class="back-dot"
+                d="
+                M126 72
+                L126 270
+                C126 342 170 385 228 385
+                C286 385 330 342 330 270
+                L330 72
+                "
+            />
 
-            <!-- 뒤쪽 두 번째 -->
-            <path class="u-layer"
-                d="M116 58
-                   L116 205
-                   C116 277 154 317 210 317
-                   C266 317 304 277 304 205
-                   L304 58"/>
+            <!-- 뒤쪽 측면 라인 -->
+            <path
+                class="back-side"
+                d="
+                M126 72 L108 61
+                M330 72 L312 61
+                "
+            />
 
-            <!-- 메인 외곽 -->
-            <path class="u-main"
-                d="M128 52
-                   L128 203
-                   C128 268 162 304 210 304
-                   C258 304 292 268 292 203
-                   L292 52"/>
+            <!-- 앞면과 뒷면을 연결하는 입체 측면 -->
+            <path
+                class="side-line"
+                d="
+                M126 72 L108 61
+                M330 72 L312 61
 
-            <!-- 안쪽 -->
-            <path class="u-inner"
-                d="M145 62
-                   L145 202
-                   C145 255 169 285 210 285
-                   C251 285 275 255 275 202
-                   L275 62"/>
+                M108 61
+                L108 264
+                C108 348 160 403 228 403
+                C296 403 348 348 348 264
+                L348 61
 
-            <!-- 가장 안쪽 -->
-            <path class="u-inner"
-                d="M160 72
-                   L160 201
-                   C160 244 179 269 210 269
-                   C241 269 260 244 260 201
-                   L260 72"/>
+                M312 61
+                L312 270
+                C312 329 276 366 228 366
+                C180 366 144 329 144 270
+                L144 61
+                "
+            />
 
-            <!-- 내부 점선 -->
-            <path class="u-dots"
-                d="M174 78
-                   L174 199
-                   C174 235 188 252 210 252
-                   C232 252 246 235 246 199
-                   L246 78"/>
+            <!-- U 앞면 -->
+            <path
+                class="front-line"
+                d="
+                M126 72
+                L126 270
+                C126 342 170 385 228 385
+                C286 385 330 342 330 270
+                L330 72
+                "
+            />
 
+            <!-- U 내부 깊이 라인 -->
+            <path
+                class="inner-line"
+                d="
+                M144 72
+                L144 270
+                C144 329 180 366 228 366
+                C276 366 312 329 312 270
+                L312 72
+                "
+            />
 
-            <!-- 상단 단면 -->
-            <path class="u-section"
-                d="M105 62 L116 58 L128 52
-                   M116 58 L145 62
-                   M128 52 L160 72"/>
-
-            <path class="u-section"
-                d="M315 62 L304 58 L292 52
-                   M304 58 L275 62
-                   M292 52 L260 72"/>
-
-
-            <!-- U 하단 단면 -->
-            <path class="u-section"
-                d="M105 205
-                   C105 286 149 330 210 330
-                   C271 330 315 286 315 205"/>
-
-            <path class="u-section"
-                d="M116 205
-                   C116 277 154 317 210 317
-                   C266 317 304 277 304 205"/>
-
-            <path class="u-section"
-                d="M128 203
-                   C128 268 162 304 210 304
-                   C258 304 292 268 292 203"/>
+            <!-- 작은 포인트 -->
+            <circle class="graphic-point"
+                    cx="228"
+                    cy="366"
+                    r="3.5"/>
+        </svg>
 
 
-            <!-- 점선 하단 -->
-            <path class="u-dots"
-                d="M174 199
-                   C174 235 188 252 210 252
-                   C232 252 246 235 246 199"/>
+        <!-- X -->
+        <svg class="graphic-x"
+             viewBox="0 0 360 360"
+             xmlns="http://www.w3.org/2000/svg">
 
-            <circle class="u-point"
-                    cx="210"
-                    cy="252"
+            <!-- 뒤쪽 X : DOT -->
+            <path
+                class="back-dot"
+                d="
+                M92 72
+                L268 288
+
+                M268 72
+                L92 288
+                "
+            />
+
+            <!-- 뒤쪽 측면 -->
+            <path
+                class="back-side"
+                d="
+                M92 72 L75 60
+                M268 72 L285 60
+
+                M92 288 L75 300
+                M268 288 L285 300
+                "
+            />
+
+            <!-- X 입체 측면 -->
+            <path
+                class="side-line"
+                d="
+                M75 60 L252 276
+                M285 60 L108 276
+
+                M75 300 L252 84
+                M285 300 L108 84
+                "
+            />
+
+            <!-- X 앞면 -->
+            <path
+                class="front-line"
+                d="
+                M92 72
+                L268 288
+
+                M268 72
+                L92 288
+                "
+            />
+
+            <!-- X 내부 깊이 -->
+            <path
+                class="inner-line"
+                d="
+                M108 72
+                L268 268
+
+                M252 72
+                L92 268
+                "
+            />
+
+            <!-- 중심 포인트 -->
+            <circle class="graphic-point"
+                    cx="180"
+                    cy="180"
                     r="3"/>
-
         </svg>
 
     </div>
 
 
-    <!-- =========================
-         3D X
-    ========================== -->
+    <!-- =====================================================
+         HERO CONTENT
+    ====================================================== -->
+    <div class="hero-inner">
 
-    <div class="ux-object ux-x-object">
+        <h1>
+            From Complexity<br>
+            to Clarity.
+        </h1>
 
-        <svg viewBox="0 0 420 420"
-             xmlns="http://www.w3.org/2000/svg">
+        <div class="subtitle">
+            Better UX. Better Business.
+        </div>
 
-            <!-- 뒤쪽 X -->
-            <path class="x-back"
-                d="M78 78
-                   L210 210
-                   L342 342"/>
+        <div class="description">
+            복잡한 서비스를 누구나 이해하기 쉬운 경험으로 설계합니다.<br>
+            운영 중인 제품의 UX/UI 개선부터 AI 서비스와 정부 R&amp;D 프로젝트까지,<br>
+            브랜드와 제품이 함께 성장하는 디자인을 만듭니다.
+        </div>
 
-            <path class="x-back"
-                d="M342 78
-                   L210 210
-                   L78 342"/>
+        <div class="hero-action">
 
+            <a href="https://pf.kakao.com/_sgDBX/chat"
+               class="btn-primary"
+               target="_blank"
+               rel="noopener">
+                Let's Talk <span>→</span>
+            </a>
 
-            <!-- 두 번째 깊이 -->
-            <path class="x-layer"
-                d="M88 70
-                   L210 202
-                   L332 334"/>
+            <a href="https://uxxxu-studio.com"
+               class="portfolio">
+                View Portfolio
+            </a>
 
-            <path class="x-layer"
-                d="M332 70
-                   L210 202
-                   L88 334"/>
-
-
-            <!-- 메인 -->
-            <path class="x-main"
-                d="M98 62
-                   L210 188
-                   L322 314"/>
-
-            <path class="x-main"
-                d="M322 62
-                   L210 188
-                   L98 314"/>
-
-
-            <!-- 안쪽 구조 -->
-            <path class="x-inner"
-                d="M113 74
-                   L210 188
-                   L307 302"/>
-
-            <path class="x-inner"
-                d="M307 74
-                   L210 188
-                   L113 302"/>
-
-
-            <!-- 가장 안쪽 -->
-            <path class="x-inner"
-                d="M128 86
-                   L210 188
-                   L292 290"/>
-
-            <path class="x-inner"
-                d="M292 86
-                   L210 188
-                   L128 290"/>
-
-
-            <!-- 점선 -->
-            <path class="x-dots"
-                d="M142 94
-                   L210 180
-                   L278 266"/>
-
-            <path class="x-dots"
-                d="M278 94
-                   L210 180
-                   L142 266"/>
-
-
-            <!-- 끝부분 단면 -->
-            <path class="x-section"
-                d="M78 78 L88 70 L98 62
-                   M88 70 L113 74
-                   M98 62 L128 86"/>
-
-            <path class="x-section"
-                d="M342 78 L332 70 L322 62
-                   M332 70 L307 74
-                   M322 62 L292 86"/>
-
-            <path class="x-section"
-                d="M78 342 L88 334 L98 314
-                   M88 334 L113 302
-                   M98 314 L128 290"/>
-
-            <path class="x-section"
-                d="M342 342 L332 334 L322 314
-                   M332 334 L307 302
-                   M322 314 L292 290"/>
-
-
-            <circle class="x-point"
-                    cx="210"
-                    cy="188"
-                    r="3"/>
-
-        </svg>
+        </div>
 
     </div>
-
-</div>
-
-
-<div class="hero-inner">
-
-<h1>
-
-From Complexity<br>
-to Clarity.
-
-</h1>
-
-<div class="subtitle">
-
-Better UX. Better Business.
-
-</div>
-
-<div class="description">
-
-복잡한 서비스를 누구나 이해하기 쉬운 경험으로 설계합니다.<br>
-운영 중인 제품의 UX/UI 개선부터 AI 서비스와 정부 R&D 프로젝트까지,<br>
-브랜드와 제품이 함께 성장하는 디자인을 만듭니다.
-
-</div>
-
-<div class="hero-action">
-
-<a href="https://pf.kakao.com/_sgDBX/chat"
-   class="btn-primary"
-   target="_blank"
-   rel="noopener">
-    Let's Talk <span>→</span>
-</a>
-
-<a href="https://uxxxu-studio.com" class="portfolio">
-
-View Portfolio
-
-</a>
-
-</div>
-
-</div>
 
 </section>
