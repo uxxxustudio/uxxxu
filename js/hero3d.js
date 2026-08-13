@@ -3,7 +3,7 @@ import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 
 /* =========================================================
-   HERO THREE.JS (오류 수정 및 통 입체 최적화)
+   HERO THREE.JS (U/X 통 입체 와이어프레임 최종 완결)
 ========================================================= */
 
 export function initHero3D() {
@@ -67,25 +67,14 @@ export function initHero3D() {
      CREATE 3D LINE LETTER
   ===================================================== */
   function createLetter(character, font, x, y, rotationY, scale, phase) {
-    const textOptions = {
+    // U와 X 모두 bevel을 끄고 순수 직각 Extrude 단면을 생성합니다.
+    const geometry = new TextGeometry(character, {
       font: font,
       size: 4.1,
       depth: 0.72,
-      curveSegments: 6, // 부드러우면서도 선이 뭉치지 않는 적절한 분할
-    };
-
-    if (character === "U") {
-      // U는 베벨을 꺼서 지저분하게 겹치는 이중 선을 방지합니다.
-      textOptions.bevelEnabled = false;
-    } else {
-      // X는 입체감을 위해 베벨을 유지합니다.
-      textOptions.bevelEnabled = true;
-      textOptions.bevelThickness = 0.09;
-      textOptions.bevelSize = 0.055;
-      textOptions.bevelSegments = 2;
-    }
-
-    const geometry = new TextGeometry(character, textOptions);
+      curveSegments: 8,    // U자의 곡면을 부드럽게 유지
+      bevelEnabled: false, // 이중 선(베벨 잔선) 완전 제거
+    });
 
     geometry.computeBoundingBox();
 
@@ -97,10 +86,11 @@ export function initHero3D() {
     geometry.translate(-centerX, -centerY, 0);
 
     /* =================================================
-       OUTLINE EDGES ONLY (임계각 조정으로 통 입체 유지)
+       OUTLINE EDGES ONLY (통 입체 두께선 완전 복원)
     ================================================= */
-    // thresholdAngle: 15도 이상 꺾이는 외곽 및 통 입체 연결 테두리선만 남깁니다.
-    const wireGeometry = new THREE.EdgesGeometry(geometry, 15);
+    // 임계각을 2도로 설정하여 평면 대각선은 지우고, 
+    // U 곡선의 두께 연결 기둥선과 X의 모든 모서리선만 깔끔하게 남깁니다.
+    const wireGeometry = new THREE.EdgesGeometry(geometry, 2);
 
     const wire = new THREE.LineSegments(wireGeometry, material);
 
