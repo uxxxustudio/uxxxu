@@ -3,7 +3,7 @@ import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 
 /* =========================================================
-   HERO THREE.JS (글래스 차폐 & 뒷선 감쇄 최종 적용)
+   HERO THREE.JS (맑은 프리미엄 글래스 질감 수정 버전)
 ========================================================= */
 
 export function initHero3D() {
@@ -19,14 +19,20 @@ export function initHero3D() {
   camera.position.set(0, 0, 15);
 
   /* =====================================================
-     LIGHTS
+     LIGHTS (유리 반사 및 림라이트)
   ===================================================== */
-  const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
+  const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
   scene.add(ambientLight);
 
-  const dirLight = new THREE.DirectionalLight(0xdce2df, 1.0);
-  dirLight.position.set(5, 8, 10);
-  scene.add(dirLight);
+  // 유리 모서리 하이라이트를 위한 메인 조명
+  const mainLight = new THREE.DirectionalLight(0xffffff, 2.0);
+  mainLight.position.set(6, 10, 8);
+  scene.add(mainLight);
+
+  // 은은한 #DCE2DF 림라이트
+  const rimLight = new THREE.DirectionalLight(0xdce2df, 1.2);
+  rimLight.position.set(-8, -6, 5);
+  scene.add(rimLight);
 
   /* =====================================================
      RENDERER
@@ -48,31 +54,37 @@ export function initHero3D() {
   scene.add(group);
 
   /* =====================================================
-     MATERIALS (3단계 레이어용 재질)
+     MATERIALS
   ===================================================== */
   // 1. 앞쪽 선명한 외곽선
   const frontLineMaterial = new THREE.LineBasicMaterial({
     color: 0x111111,
     transparent: true,
-    opacity: 0.58,
+    opacity: 0.55,
     depthTest: true,
   });
 
-  // 2. 뒤쪽 흐린 잔선 (투과선)
+  // 2. 유리 너머 비치는 뒷선 (약간 굴절되어 비치는 느낌)
   const backLineMaterial = new THREE.LineBasicMaterial({
-    color: 0x111111,
+    color: 0x222222,
     transparent: true,
-    opacity: 0.12, // 뒷선 농도를 낮춰 글래스 뒤에 있음을 표현
+    opacity: 0.22,
     depthTest: false,
   });
 
-  // 3. #DCE2DF 글래스 면 (깊이 버퍼 기록 설정)
-  const glassMaterial = new THREE.MeshLambertMaterial({
-    color: 0xdce2df,
+  // 3. 물리 기반 맑은 글래스 재질 (MeshPhysicalMaterial)
+  const clearGlassMaterial = new THREE.MeshPhysicalMaterial({
+    color: 0xdce2df,         // 메인 틴트 컬러
+    metalness: 0.0,          // 금속성 제거 (탁함 방지)
+    roughness: 0.08,         // 표면을 매우 매끄럽게
+    transmission: 0.88,      // 맑은 빛 투과율
+    ior: 1.18,               // 자연스러운 유리 굴절률
     transparent: true,
-    opacity: 0.72,      // 글래스 컬러 밀도
-    depthWrite: true,   // 뒷면 선을 가려주는 역할
-    depthTest: true,
+    opacity: 0.25,           // 베이스 알맹이 투명도
+    clearcoat: 1.0,          // 유리 표면 쨍한 코팅층
+    clearcoatRoughness: 0.05,
+    reflectivity: 0.5,
+    depthWrite: false,       // 맑게 겹쳐보이도록 처리
   });
 
   /* =====================================================
@@ -83,7 +95,7 @@ export function initHero3D() {
   loader.load(
     "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/fonts/helvetiker_bold.typeface.json",
     (font) => {
-      // 1. 메인 U (글래스 차폐 적용)
+      // 1. 메인 U (맑은 글래스 적용)
       createLetter("U", font, -2.9, -0.65, -0.42, 0.92, 0);
 
       // 2. 메인 X
@@ -125,26 +137,24 @@ export function initHero3D() {
     geometry.translate(-centerX, -centerY, 0);
 
     const letterGroup = new THREE.Group();
-
     const wireGeometry = new THREE.EdgesGeometry(geometry, 20);
 
     if (isU) {
-      // [1단계] 가장 뒤에 그려질 흐린 뒷선
+      // [1] 유리 너머로 은은하게 비치는 뒷선
       const backWire = new THREE.LineSegments(wireGeometry, backLineMaterial);
       backWire.renderOrder = 0;
       letterGroup.add(backWire);
 
-      // [2단계] 중간에 위치하는 반투명 글래스 면 (뒷선을 70% 가려줌)
-      const mesh = new THREE.Mesh(geometry, glassMaterial);
+      // [2] 맑은 반투명 유리 메쉬
+      const mesh = new THREE.Mesh(geometry, clearGlassMaterial);
       mesh.renderOrder = 1;
       letterGroup.add(mesh);
 
-      // [3단계] 가장 위에 선명하게 그려질 앞쪽 외곽선
+      // [3] 가장 앞쪽 외곽선
       const frontWire = new THREE.LineSegments(wireGeometry, frontLineMaterial);
       frontWire.renderOrder = 2;
       letterGroup.add(frontWire);
     } else {
-      // X자는 기존 와이어프레임 유지
       const wire = new THREE.LineSegments(wireGeometry, frontLineMaterial);
       letterGroup.add(wire);
     }
