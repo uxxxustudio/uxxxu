@@ -64,51 +64,49 @@ export function initHero3D() {
   );
 
   /* =====================================================
-     CREATE 3D LINE LETTER (EDGES GEOMETRY)
-  ===================================================== */
-  function createLetter(character, font, x, y, rotationY, scale, phase) {
-    const geometry = new TextGeometry(character, {
-      font: font,
-      size: 4.1,
-      depth: 0.72,
-      curveSegments: 8, // 곡선 잔선 방지를 위해 세그먼트 최적화
-      bevelEnabled: true,
-      bevelThickness: 0.09,
-      bevelSize: 0.055,
-      bevelSegments: 2, // 베벨 꺾임선 단순화
-    });
+   CREATE 3D LINE LETTER (EDGES GEOMETRY FIX)
+===================================================== */
+function createLetter(character, font, x, y, rotationY, scale, phase) {
+  // 1. bevelEnabled를 false로 설정하거나 베벨 값을 최소화하여 명확한 3D 두께 형성
+  const geometry = new TextGeometry(character, {
+    font: font,
+    size: 4.1,
+    depth: 0.8,         // 입체 두께감 유지
+    curveSegments: 12,  // U자의 곡면을 더 부드럽게 표현
+    bevelEnabled: false, // 통 입체감을 위해 베벨 비활성화 (권장)
+  });
 
-    geometry.computeBoundingBox();
+  geometry.computeBoundingBox();
 
-    /* Center Geometry */
-    const box = geometry.boundingBox;
-    const centerX = (box.max.x + box.min.x) / 2;
-    const centerY = (box.max.y + box.min.y) / 2;
+  /* Center Geometry */
+  const box = geometry.boundingBox;
+  const centerX = (box.max.x + box.min.x) / 2;
+  const centerY = (box.max.y + box.min.y) / 2;
 
-    geometry.translate(-centerX, -centerY, 0);
+  geometry.translate(-centerX, -centerY, 0);
 
-    /* =================================================
-       OUTLINE EDGES ONLY (내부 겹침선 제거)
-    ================================================= */
-    // 20도 이상 꺾이는 외곽 모서리선만 추출
-    const wireGeometry = new THREE.EdgesGeometry(geometry, 20);
+  /* =================================================
+      OUTLINE EDGES (임계각을 낮추어 앞/뒤 연결선 복원)
+  ================================================= */
+  // 20도 -> 3도로 변경하여 U자의 곡면 측면 연결선(Depth Edges)이 생략되지 않도록 처리
+  const wireGeometry = new THREE.EdgesGeometry(geometry, 3);
 
-    const wire = new THREE.LineSegments(wireGeometry, material);
+  const wire = new THREE.LineSegments(wireGeometry, material);
 
-    wire.position.set(x, y, 0);
-    wire.scale.setScalar(scale);
-    wire.rotation.y = rotationY;
-    wire.rotation.x = -0.08;
+  wire.position.set(x, y, 0);
+  wire.scale.setScalar(scale);
+  wire.rotation.y = rotationY;
+  wire.rotation.x = -0.08;
 
-    wire.userData = {
-      baseX: x,
-      baseY: y,
-      baseRotationY: rotationY,
-      phase: phase,
-    };
+  wire.userData = {
+    baseX: x,
+    baseY: y,
+    baseRotationY: rotationY,
+    phase: phase,
+  };
 
-    group.add(wire);
-  }
+  group.add(wire);
+}
 
   /* =====================================================
      MOUSE & INTERACTION
