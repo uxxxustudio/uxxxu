@@ -3,7 +3,7 @@ import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 
 /* =========================================================
-   HERO THREE.JS
+   HERO THREE.JS (U 곡선 복원 및 통 입체 최적화 버전)
 ========================================================= */
 
 export function initHero3D() {
@@ -63,54 +63,63 @@ export function initHero3D() {
     }
   );
 
-  /* =====================================================
-     CREATE 3D LINE LETTER (U/X 외곽선 깔끔화)
-  ===================================================== */
-  function createLetter(character, font, x, y, rotationY, scale, phase) {
-    // curveSegments를 4로 설정하여 곡면 모서리를 명확히 구분
-    const geometry = new TextGeometry(character, {
-      font: font,
-      size: 4.1,
-      depth: 0.72,
-      curveSegments: 4,    // U자 곡면을 적절한 수의 다각형으로 나누어 꺾임각 형성
-      bevelEnabled: true,
-      bevelThickness: 0.08,
-      bevelSize: 0.05,
-      bevelSegments: 1,    // 베벨 분할을 1로 단순화
-    });
+/* =====================================================
+   CREATE 3D LINE LETTER (U/X 개별 최적화 - 최종 해결책)
+===================================================== */
+function createLetter(character, font, x, y, rotationY, scale, phase) {
+  
+  // [핵심 수정 포인트] U와 X에 대해 각각 다른 지오메트리 옵션을 설정합니다.
+  const textOptions = {
+    font: font,
+    size: 4.1,
+    depth: 0.72,
+    curveSegments: 8, // 부드러운 곡선을 위해 기본 세그먼트를 8로 복원
+  };
 
-    geometry.computeBoundingBox();
-
-    /* Center Geometry */
-    const box = geometry.boundingBox;
-    const centerX = (box.max.x + box.min.x) / 2;
-    const centerY = (box.max.y + box.min.y) / 2;
-
-    geometry.translate(-centerX, -centerY, 0);
-
-    /* =================================================
-       [EdgesGeometry로 내부 삼각망 완전히 제거]
-    ================================================= */
-    // EdgesGeometry(geometry, 15)를 사용하여 내부 대각선은 제거하고
-    // 앞/뒤를 연결하는 외곽 테두리선 및 주요 꺾임선만 유지
-    const wireGeometry = new THREE.EdgesGeometry(geometry, 15);
-
-    const wire = new THREE.LineSegments(wireGeometry, material);
-
-    wire.position.set(x, y, 0);
-    wire.scale.setScalar(scale);
-    wire.rotation.y = rotationY;
-    wire.rotation.x = -0.08;
-
-    wire.userData = {
-      baseX: x,
-      baseY: y,
-      baseRotationY: rotationY,
-      phase: phase,
-    };
-
-    group.add(wire);
+  if (character === "U") {
+    // [U 해결책] 곡면 겹침 및 지저분한 선 발생을 완전히 막기 위해 베벨을 끕니다. (깔끔한 직각 입체 형성)
+    textOptions.bevelEnabled = false;
+  } else {
+    // [X 유지] 각진 형태를 위해 베벨 옵션을 기존처럼 유지합니다.
+    textOptions.bevelEnabled = true;
+    textOptions.bevelThickness = 0.09;
+    textOptions.bevelSize = 0.055;
+    textOptions.bevelSegments: 2;
   }
+
+  const geometry = new TextGeometry(character, textOptions);
+
+  geometry.computeBoundingBox();
+
+  /* Center Geometry */
+  const box = geometry.boundingBox;
+  const centerX = (box.max.x + box.min.x) / 2;
+  const centerY = (box.max.y + box.min.y) / 2;
+
+  geometry.translate(-centerX, -centerY, 0);
+
+  /* =================================================
+     OUTLINE EDGES ONLY (임계각 최적화)
+   ================================================= */
+  // 꺾임 기준 각도를 대폭 낮추어(2도), 부드러운 U자의 곡면 기둥 선들이 생략되지 않도록 처리
+  const wireGeometry = new THREE.EdgesGeometry(geometry, 2);
+
+  const wire = new THREE.LineSegments(wireGeometry, material);
+
+  wire.position.set(x, y, 0);
+  wire.scale.setScalar(scale);
+  wire.rotation.y = rotationY;
+  wire.rotation.x = -0.08;
+
+  wire.userData = {
+    baseX: x,
+    baseY: y,
+    baseRotationY: rotationY,
+    phase: phase,
+  };
+
+  group.add(wire);
+}
 
   /* =====================================================
      MOUSE & INTERACTION
