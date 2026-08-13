@@ -260,11 +260,11 @@ nav a:hover{
 .graphic-u{
     position:absolute;
 
-    width:245px;
-    height:300px;
+    width:250px;
+    height:250px;
 
-    left:15px;
-    top:135px;
+    left:20px;
+    top:145px;
 
     overflow:visible;
 
@@ -280,11 +280,11 @@ nav a:hover{
 .graphic-x{
     position:absolute;
 
-    width:255px;
-    height:255px;
+    width:250px;
+    height:250px;
 
-    right:0;
-    top:20px;
+    right:5px;
+    top:30px;
 
     overflow:visible;
 
