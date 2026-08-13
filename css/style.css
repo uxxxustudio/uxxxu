@@ -456,14 +456,12 @@ nav a:hover{
 ========================================================= */
 
 .hero-action{
-
-    margin-top:48px;
+    margin-top:62px;
 
     display:flex;
-
-    align-items:center;
-
-    gap:36px;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:18px;
 }
 
 .cta{
