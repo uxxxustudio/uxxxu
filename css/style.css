@@ -144,7 +144,6 @@ nav a:hover{
     pointer-events:none;
 
     opacity:1;
-
     filter:blur(45px);
 
     transform:translate3d(0,0,0) scale(1);
@@ -153,36 +152,40 @@ nav a:hover{
 
         /* 전체적인 라이트 그레이 빛 */
         radial-gradient(
-            ellipse 72% 55% at 62% 58%,
-            rgba(215,217,215,.32) 0%,
-            rgba(215,217,215,.18) 32%,
-            rgba(215,217,215,.07) 58%,
-            transparent 82%
+            ellipse 85% 62% at 64% 58%,
+            rgba(218,220,219,.32) 0%,
+            rgba(218,220,219,.22) 30%,
+            rgba(218,220,219,.10) 52%,
+            rgba(218,220,219,.035) 70%,
+            transparent 88%
         ),
 
-        /* 사선으로 길게 퍼지는 딥그린 */
-        linear-gradient(
-            132deg,
-            transparent 30%,
-            rgba(52,72,61,.025) 42%,
-            rgba(52,72,61,.09) 54%,
-            rgba(52,72,61,.045) 66%,
-            transparent 78%
-        ),
-
-        /* 그린 중심을 아주 부드럽게 */
+        /* 그레이에서 아주 옅은 그린으로 자연스럽게 변화 */
         radial-gradient(
-            ellipse 38% 62% at 67% 63%,
-            rgba(48,70,58,.075) 0%,
-            rgba(48,70,58,.035) 42%,
-            transparent 75%
+            ellipse 58% 70% at 70% 66%,
+            rgba(168,178,171,.075) 0%,
+            rgba(168,178,171,.055) 25%,
+            rgba(168,178,171,.035) 48%,
+            rgba(168,178,171,.015) 68%,
+            transparent 86%
+        ),
+
+        /* 빛이 지나가는 밝은 영역 */
+        linear-gradient(
+            135deg,
+            rgba(255,255,255,0) 28%,
+            rgba(245,246,245,.18) 43%,
+            rgba(255,255,255,.08) 55%,
+            rgba(255,255,255,0) 72%
         );
 
     animation:heroLightFlow 14s ease-in-out infinite alternate;
 }
 
 
-/* 콘텐츠 */
+/* =========================================================
+   HERO CONTENT
+========================================================= */
 
 .hero-inner{
     position:relative;
