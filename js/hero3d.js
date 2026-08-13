@@ -3,7 +3,7 @@ import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 
 /* =========================================================
-   HERO THREE.JS (맑은 틴트 투과 3D 글래스 - 회색 뭉개짐 해결)
+   HERO THREE.JS (흰색 -> 라이트그레이 수직 그라데이션)
 ========================================================= */
 
 export function initHero3D() {
@@ -17,12 +17,6 @@ export function initHero3D() {
 
   const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 100);
   camera.position.set(0, 0, 15);
-
-  /* =====================================================
-     LIGHTS
-  ===================================================== */
-  const ambientLight = new THREE.AmbientLight(0xffffff, 1.0);
-  scene.add(ambientLight);
 
   /* =====================================================
      RENDERER
@@ -53,12 +47,34 @@ export function initHero3D() {
     opacity: 0.55,
   });
 
-  // 2. #DCE2DF 맑은 틴트 매터리얼 (어두운 음영 제거 버전)
-  const glassMaterial = new THREE.MeshBasicMaterial({
-    color: 0xdce2df,
+  // 2. 수직 그라데이션 커스텀 쉐이더 (상단: pure white, 하단: light gray)
+  const gradientGlassMaterial = new THREE.ShaderMaterial({
+    uniforms: {
+      colorTop: { value: new THREE.Color(0xffffff) },       // 상단: 맑은 순백색
+      colorBottom: { value: new THREE.Color(0xdce2df) },    // 하단: 은은한 라이트 그레이
+      opacity: { value: 0.35 },                             // 투명도
+    },
+    vertexShader: `
+      varying vec2 vUv;
+      void main() {
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+    fragmentShader: `
+      uniform vec3 colorTop;
+      uniform vec3 colorBottom;
+      uniform float opacity;
+      varying vec2 vUv;
+
+      void main() {
+        // vUv.y 축에 따라 수직 그라데이션 혼합
+        vec3 mixColor = mix(colorBottom, colorTop, clamp(vUv.y, 0.0, 1.0));
+        gl_FragColor = vec4(mixColor, opacity);
+      }
+    `,
     transparent: true,
-    opacity: 0.22,           // 회색 뭉개짐 없이 맑고 가벼운 틴트
-    depthWrite: false,       // 뒤쪽 HTML 및 레이어 깔끔 투과
+    depthWrite: false,
     side: THREE.DoubleSide,
   });
 
@@ -70,7 +86,7 @@ export function initHero3D() {
   loader.load(
     "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/fonts/helvetiker_bold.typeface.json",
     (font) => {
-      // 1. 메인 U (맑은 틴트 면 + 테두리 라인)
+      // 1. 메인 U (그라데이션 면 + 테두리 라인)
       createLetter("U", font, -2.9, -0.65, -0.42, 0.92, 0);
 
       // 2. 메인 X
@@ -113,13 +129,13 @@ export function initHero3D() {
 
     const letterGroup = new THREE.Group();
 
-    // U 글자에 맑은 틴트 Mesh 추가
+    // U 글자에 그라데이션 쉐이더 Mesh 적용
     if (isU) {
-      const mesh = new THREE.Mesh(geometry, glassMaterial);
+      const mesh = new THREE.Mesh(geometry, gradientGlassMaterial);
       letterGroup.add(mesh);
     }
 
-    // 모든 글자 테두리선 유지
+    // 테두리 라인 유지
     const wireGeometry = new THREE.EdgesGeometry(geometry, 20);
     const wire = new THREE.LineSegments(wireGeometry, lineMaterial);
     letterGroup.add(wire);
