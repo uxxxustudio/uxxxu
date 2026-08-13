@@ -1281,17 +1281,17 @@ footer{
         text-align:left;
     }
 
-    .hero h1 .title-line-2{
-        display:block;
-        position:relative;
-
-        left:0;
-        top:16px;
-        margin-left:0;
-
-        width:100%;
-        text-align:left;
-    }
+   .hero h1 .title-line-2{
+       display:block;
+       position:relative;
+   
+       left:28%;
+       top:16px;
+       margin-left:0;
+   
+       width:calc(100% - 28%);
+       text-align:left;
+   }
 
 
     /* -------------------------
