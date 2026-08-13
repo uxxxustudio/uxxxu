@@ -3,7 +3,7 @@ import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 
 /* =========================================================
-   HERO THREE.JS (흰색 -> 라이트그레이 수직 그라데이션)
+   HERO THREE.JS (2번 Subsurface Scattering 밀키 글래스 적용)
 ========================================================= */
 
 export function initHero3D() {
@@ -44,37 +44,57 @@ export function initHero3D() {
   const lineMaterial = new THREE.LineBasicMaterial({
     color: 0x111111,
     transparent: true,
-    opacity: 0.55,
+    opacity: 0.5,
   });
 
-  // 2. 수직 그라데이션 커스텀 쉐이더 (상단: pure white, 하단: light gray)
-  const gradientGlassMaterial = new THREE.ShaderMaterial({
+  // 2. Subsurface Scattering (밀키 글래스) 커스텀 쉐이더
+  const milkyGlassMaterial = new THREE.ShaderMaterial({
     uniforms: {
-      colorTop: { value: new THREE.Color(0xffffff) },       // 상단: 맑은 순백색
-      colorBottom: { value: new THREE.Color(0xdce2df) },    // 하단: 은은한 라이트 그레이
-      opacity: { value: 0.35 },                             // 투명도
+      colorBase: { value: new THREE.Color(0xf1f5f9) },   // 은은한 우유빛 순백색
+      colorSub: { value: new THREE.Color(0xdce2df) },    // 내부 굴절 라이트 그레이
+      fresnelColor: { value: new THREE.Color(0xffffff) },// 모서리 쨍한 하이라이트
     },
     vertexShader: `
+      varying vec3 vNormal;
+      varying vec3 vViewPosition;
       varying vec2 vUv;
+
       void main() {
         vUv = uv;
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        vNormal = normalize(normalMatrix * normal);
+        vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+        vViewPosition = -mvPosition.xyz;
+        gl_Position = projectionMatrix * mvPosition;
       }
     `,
     fragmentShader: `
-      uniform vec3 colorTop;
-      uniform vec3 colorBottom;
-      uniform float opacity;
+      uniform vec3 colorBase;
+      uniform vec3 colorSub;
+      uniform vec3 fresnelColor;
+
+      varying vec3 vNormal;
+      varying vec3 vViewPosition;
       varying vec2 vUv;
 
       void main() {
-        // vUv.y 축에 따라 수직 그라데이션 혼합
-        vec3 mixColor = mix(colorBottom, colorTop, clamp(vUv.y, 0.0, 1.0));
-        gl_FragColor = vec4(mixColor, opacity);
+        vec3 normal = normalize(vNormal);
+        vec3 viewDir = normalize(vViewPosition);
+
+        // 프레넬 효과 (외곽으로 갈수록 빛이 은은하게 감싸는 반사)
+        float fresnel = pow(1.0 - max(dot(normal, viewDir), 0.0), 2.5);
+
+        // 위아래 부드러운 음영 혼합
+        vec3 baseMix = mix(colorSub, colorBase, vUv.y * 0.7 + 0.3);
+
+        // 밀키 글래스 최종 색상 산출
+        vec3 finalColor = mix(baseMix, fresnelColor, fresnel * 0.6);
+
+        // 뒷선이 투명하게 비치지 않도록 적절히 밀도 있는 불투명도(0.82) 적용
+        gl_FragColor = vec4(finalColor, 0.82);
       }
     `,
     transparent: true,
-    depthWrite: false,
+    depthWrite: true,  // 뒷선 비침 및 왜곡 방지
     side: THREE.DoubleSide,
   });
 
@@ -86,7 +106,7 @@ export function initHero3D() {
   loader.load(
     "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/fonts/helvetiker_bold.typeface.json",
     (font) => {
-      // 1. 메인 U (그라데이션 면 + 테두리 라인)
+      // 1. 메인 U (밀키 글래스 면 + 테두리 라인)
       createLetter("U", font, -2.9, -0.65, -0.42, 0.92, 0);
 
       // 2. 메인 X
@@ -129,9 +149,9 @@ export function initHero3D() {
 
     const letterGroup = new THREE.Group();
 
-    // U 글자에 그라데이션 쉐이더 Mesh 적용
+    // U 글자에 밀키 글래스 쉐이더 Mesh 추가
     if (isU) {
-      const mesh = new THREE.Mesh(geometry, gradientGlassMaterial);
+      const mesh = new THREE.Mesh(geometry, milkyGlassMaterial);
       letterGroup.add(mesh);
     }
 
