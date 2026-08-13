@@ -3,7 +3,7 @@ import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 
 /* =========================================================
-   HERO THREE.JS (U/X 각도 및 분할수 완전 분리 최적화)
+   HERO THREE.JS (곡면 잔선 완전 제거 최종 코드)
 ========================================================= */
 
 export function initHero3D() {
@@ -67,33 +67,16 @@ export function initHero3D() {
      CREATE 3D LINE LETTER
   ===================================================== */
   function createLetter(character, font, x, y, rotationY, scale, phase) {
-    let textOptions = {};
-    let thresholdAngle = 15;
+    const isU = character === "U";
 
-    if (character === "U") {
-      // U: 곡면 분할을 널찍하게 잡고(4), threshold를 10도로 설정해 
-      // 바닥 잔선 뭉침(그릴 현상)을 막고 깔끔한 입체 기둥선만 생성
-      textOptions = {
-        font: font,
-        size: 4.1,
-        depth: 0.72,
-        curveSegments: 4,
-        bevelEnabled: false,
-      };
-      thresholdAngle = 10;
-    } else {
-      // X: 직선 구조이므로 15도 적용하여 내부 선 없는 깨끗한 상자 테두리만 유지
-      textOptions = {
-        font: font,
-        size: 4.1,
-        depth: 0.72,
-        curveSegments: 1,
-        bevelEnabled: false,
-      };
-      thresholdAngle = 15;
-    }
-
-    const geometry = new TextGeometry(character, textOptions);
+    const geometry = new TextGeometry(character, {
+      font: font,
+      size: 4.1,
+      depth: 0.72,
+      // U자는 curveSegments를 30으로 올려 곡면 각도를 6도 미만으로 미세화
+      curveSegments: isU ? 30 : 1,
+      bevelEnabled: false,
+    });
 
     geometry.computeBoundingBox();
 
@@ -105,9 +88,10 @@ export function initHero3D() {
     geometry.translate(-centerX, -centerY, 0);
 
     /* =================================================
-       OUTLINE EDGES ONLY
+       OUTLINE EDGES ONLY (임계각 20도 설정)
     ================================================= */
-    const wireGeometry = new THREE.EdgesGeometry(geometry, thresholdAngle);
+    // 20도보다 큰 꺾임(90도 직각 외곽/두께선)만 남기고 곡면 잔선은 제거
+    const wireGeometry = new THREE.EdgesGeometry(geometry, 20);
     const wire = new THREE.LineSegments(wireGeometry, material);
 
     wire.position.set(x, y, 0);
