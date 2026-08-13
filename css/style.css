@@ -144,39 +144,50 @@ nav a:hover{
     pointer-events:none;
 
     opacity:1;
-    filter:blur(45px);
+
+    /* 너무 퍼지지 않도록 blur 조정 */
+    filter:blur(32px);
 
     transform:translate3d(0,0,0) scale(1);
 
-background:
+    background:
 
-    radial-gradient(
-        ellipse 85% 62% at 64% 58%,
-        rgba(218,220,219,.40) 0%,
-        rgba(218,220,219,.28) 30%,
-        rgba(218,220,219,.13) 52%,
-        rgba(218,220,219,.045) 70%,
-        transparent 88%
-    ),
+        /* -------------------------------------------------
+           1. 메인 라이트 그레이
+        ------------------------------------------------- */
+        radial-gradient(
+            ellipse 82% 60% at 64% 58%,
+            rgba(205,208,206,.52) 0%,
+            rgba(205,208,206,.34) 28%,
+            rgba(205,208,206,.17) 50%,
+            rgba(205,208,206,.065) 68%,
+            transparent 88%
+        ),
 
-    radial-gradient(
-        ellipse 58% 70% at 70% 66%,
-        rgba(168,178,171,.095) 0%,
-        rgba(168,178,171,.070) 25%,
-        rgba(168,178,171,.045) 48%,
-        rgba(168,178,171,.020) 68%,
-        transparent 86%
-    ),
+        /* -------------------------------------------------
+           2. 아주 옅은 그레이시 그린
+        ------------------------------------------------- */
+        radial-gradient(
+            ellipse 48% 62% at 70% 64%,
+            rgba(145,158,149,.14) 0%,
+            rgba(145,158,149,.10) 24%,
+            rgba(145,158,149,.055) 45%,
+            rgba(145,158,149,.018) 66%,
+            transparent 86%
+        ),
 
-    linear-gradient(
-        135deg,
-        rgba(255,255,255,0) 28%,
-        rgba(245,246,245,.20) 43%,
-        rgba(255,255,255,.09) 55%,
-        rgba(255,255,255,0) 72%
-    );
+        /* -------------------------------------------------
+           3. 빛이 퍼지는 밝은 영역
+        ------------------------------------------------- */
+        radial-gradient(
+            ellipse 42% 48% at 78% 42%,
+            rgba(250,251,250,.42) 0%,
+            rgba(250,251,250,.18) 35%,
+            rgba(250,251,250,.05) 60%,
+            transparent 82%
+        );
 
-animation:heroLightFlow 10s ease-in-out infinite alternate;
+    animation:heroLightFlow 8s ease-in-out infinite alternate;
 }
 
 
