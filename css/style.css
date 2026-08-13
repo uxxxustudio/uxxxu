@@ -135,57 +135,37 @@ nav a:hover{
     position:absolute;
     z-index:0;
 
-    width:42vw;
-    height:48vh;
+    width:62vw;
+    height:62vh;
 
-    right:7vw;
-    top:22vh;
+    right:-2vw;
+    top:16vh;
 
     pointer-events:none;
 
-    opacity:1;
-    filter:blur(70px);
+    opacity:.9;
 
-    transform:translate3d(0,0,0);
+    filter:blur(38px);
 
-    background:
-        radial-gradient(
-            ellipse 55% 45% at 35% 50%,
-            rgba(145,148,146,.055) 0%,
-            rgba(145,148,146,.025) 45%,
-            transparent 75%
-        );
-
-    animation:heroLightMove 24s ease-in-out infinite alternate;
-}
-
-
-/* 아주 약한 딥그린 영역 */
-
-.hero-light::before{
-    content:"";
-
-    position:absolute;
-
-    width:65%;
-    height:65%;
-
-    left:30%;
-    top:15%;
-
-    border-radius:50%;
+    transform:translate3d(0,0,0) scale(.98);
 
     background:
         radial-gradient(
-            ellipse at center,
-            rgba(43,65,54,.12) 0%,
-            rgba(43,65,54,.05) 42%,
+            ellipse 78% 52% at 58% 48%,
+            rgba(150,154,152,.105) 0%,
+            rgba(150,154,152,.055) 38%,
+            rgba(150,154,152,.018) 58%,
+            transparent 78%
+        ),
+
+        radial-gradient(
+            ellipse 24% 32% at 62% 48%,
+            rgba(45,68,56,.055) 0%,
+            rgba(45,68,56,.025) 42%,
             transparent 72%
         );
 
-    filter:blur(60px);
-
-    animation:heroGreenMove 18s ease-in-out infinite alternate;
+    animation:heroLightFlow 22s ease-in-out infinite alternate;
 }
 
 
@@ -195,39 +175,24 @@ nav a:hover{
 }
 
 
-/* 전체 빛의 아주 느린 이동 */
-
-@keyframes heroLightMove{
+@keyframes heroLightFlow{
 
     0%{
-        transform:translate3d(3%,2%,0) scale(.94);
+        transform:
+            translate3d(3%,2%,0)
+            scale(.96);
     }
 
     50%{
-        transform:translate3d(-3%,-2%,0) scale(1.05);
+        transform:
+            translate3d(-2%,-1%,0)
+            scale(1.035);
     }
 
     100%{
-        transform:translate3d(1%,3%,0) scale(.98);
-    }
-
-}
-
-
-/* 그린 영역은 별도로 아주 미세하게 움직임 */
-
-@keyframes heroGreenMove{
-
-    0%{
-        transform:translate3d(5%,3%,0) scale(.9);
-    }
-
-    50%{
-        transform:translate3d(-6%,-4%,0) scale(1.08);
-    }
-
-    100%{
-        transform:translate3d(3%,-2%,0) scale(.96);
+        transform:
+            translate3d(2%,1%,0)
+            scale(.99);
     }
 
 }
