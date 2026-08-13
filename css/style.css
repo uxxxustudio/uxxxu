@@ -179,7 +179,7 @@ nav a:hover{
             rgba(255,255,255,0) 72%
         );
 
-    animation:heroLightFlow 14s ease-in-out infinite alternate;
+    animation:heroLightFlow 8s ease-in-out infinite alternate;
 }
 
 
