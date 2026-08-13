@@ -134,13 +134,13 @@ nav a:hover{
 .hero-light{
     position:absolute;
     z-index:0;
-    width:72vw;
-    height:78vh;
-    right:-14vw;
-    top:8vh;
+    width:48vw;
+    height:58vh;
+    right:2vw;
+    top:18vh;
     pointer-events:none;
     opacity:.82;
-    filter:blur(52px);
+    filter:blur(42px);
     transform:translate3d(4%,0,0) scale(1);
     background:
         radial-gradient(
