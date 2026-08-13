@@ -63,61 +63,50 @@ export function initHero3D() {
     }
   );
 
-/* =====================================================
-   CREATE 3D LINE LETTER (U/X 개별 최적화)
-===================================================== */
-function createLetter(character, font, x, y, rotationY, scale, phase) {
-  // 베벨 옵션을 사용하여 3D 볼륨감을 극대화합니다. (기존 옵션 유지)
-  const geometry = new TextGeometry(character, {
-    font: font,
-    size: 4.1,
-    depth: 0.72,
-    curveSegments: 8,
-    bevelEnabled: true,
-    bevelThickness: 0.09,
-    bevelSize: 0.055,
-    bevelSegments: 2,
-  });
+  /* =====================================================
+     CREATE 3D LINE LETTER (단일 통 입체 최적화)
+  ===================================================== */
+  function createLetter(character, font, x, y, rotationY, scale, phase) {
+    // bevelEnabled를 false로 설정하여 면이 겹치는 이중 선 현상 방지
+    const geometry = new TextGeometry(character, {
+      font: font,
+      size: 4.1,
+      depth: 0.72,
+      curveSegments: 6,   // U자 곡면을 적절히 단순화하여 자잘한 잔선 제거
+      bevelEnabled: false, // 베벨 깎임을 꺼서 명확한 단일 통 입체 형성
+    });
 
-  geometry.computeBoundingBox();
+    geometry.computeBoundingBox();
 
-  /* Center Geometry */
-  const box = geometry.boundingBox;
-  const centerX = (box.max.x + box.min.x) / 2;
-  const centerY = (box.max.y + box.min.y) / 2;
+    /* Center Geometry */
+    const box = geometry.boundingBox;
+    const centerX = (box.max.x + box.min.x) / 2;
+    const centerY = (box.max.y + box.min.y) / 2;
 
-  geometry.translate(-centerX, -centerY, 0);
+    geometry.translate(-centerX, -centerY, 0);
 
-  /* =================================================
-     [U/X 개별 처리 로직] (여기서 해결!)
-   ================================================= */
-  let wireGeometry;
+    /* =================================================
+       OUTLINE EDGES ONLY (내부 삼각망 및 지저분한 선 제거)
+    ================================================= */
+    // 15도 이상 꺾이는 외곽 모서리 및 두께 연결선만 추출
+    const wireGeometry = new THREE.EdgesGeometry(geometry, 15);
 
-  if (character === "U") {
-    // [U 해결책] 곡면의 기둥 선들이 모두 보이도록 임계각 기준을 20 -> 3도로 낮춥니다.
-    // 이렇게 하면 곡면 측면 연결선(Depth Edges)이 생략되지 않고 촘촘하게 복원됩니다.
-    wireGeometry = new THREE.EdgesGeometry(geometry, 3);
-  } else {
-    // [X 해결책] 직선 기반이라 뭉치지 않으므로, 깔끔한 외곽선(Edges)을 위해 20도를 유지합니다.
-    wireGeometry = new THREE.EdgesGeometry(geometry, 20);
+    const wire = new THREE.LineSegments(wireGeometry, material);
+
+    wire.position.set(x, y, 0);
+    wire.scale.setScalar(scale);
+    wire.rotation.y = rotationY;
+    wire.rotation.x = -0.08;
+
+    wire.userData = {
+      baseX: x,
+      baseY: y,
+      baseRotationY: rotationY,
+      phase: phase,
+    };
+
+    group.add(wire);
   }
-
-  const wire = new THREE.LineSegments(wireGeometry, material);
-
-  wire.position.set(x, y, 0);
-  wire.scale.setScalar(scale);
-  wire.rotation.y = rotationY;
-  wire.rotation.x = -0.08;
-
-  wire.userData = {
-    baseX: x,
-    baseY: y,
-    baseRotationY: rotationY,
-    phase: phase,
-  };
-
-  group.add(wire);
-}
 
   /* =====================================================
      MOUSE & INTERACTION
