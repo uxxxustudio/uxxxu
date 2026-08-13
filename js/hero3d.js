@@ -136,55 +136,230 @@ export function initHero3D() {
   /* =====================================================
      CREATE 3D LINE LETTER (EDGES GEOMETRY)
   ===================================================== */
-  function createLetter(
-    character,
-    font,
-    x,
-    y,
-    rotationY,
-    rotationX,
-    scale,
-    phase
-  ) {
-    const geometry = new TextGeometry(character, {
-      font: font,
-      size: 4.1,
-      depth: 0.72,
-      curveSegments: 8,
-      bevelEnabled: true,
-      bevelThickness: 0.09,
-      bevelSize: 0.055,
-      bevelSegments: 2,
+ function createLetter(
+  character,
+  font,
+  x,
+  y,
+  rotationY,
+  rotationX,
+  scale,
+  phase
+) {
+
+  /* =================================================
+     2D SHAPE
+     앞면의 U / X 외곽선을 기준으로 생성
+  ================================================= */
+
+  const shapes = font.generateShapes(character, 4.1);
+
+  const depth = 0.72;
+
+  const points = [];
+
+  /* =================================================
+     SHAPE PATH 추출
+     앞면 외곽선 + 홀( U 내부 ) 외곽선
+  ================================================= */
+
+  shapes.forEach((shape) => {
+
+    const outer = shape.getPoints(32);
+
+    points.push({
+      type: "outer",
+      points: outer
     });
 
-    geometry.computeBoundingBox();
+    shape.holes.forEach((hole) => {
 
-    /* Center Geometry */
-    const box = geometry.boundingBox;
-    const centerX = (box.max.x + box.min.x) / 2;
-    const centerY = (box.max.y + box.min.y) / 2;
+      const holePoints = hole.getPoints(32);
 
-    geometry.translate(-centerX, -centerY, 0);
+      points.push({
+        type: "hole",
+        points: holePoints
+      });
 
-    /* OUTLINE EDGES ONLY */
-    const wireGeometry = new THREE.EdgesGeometry(geometry, 20);
-    const wire = new THREE.LineSegments(wireGeometry, material);
+    });
 
-    wire.position.set(x, y, 0);
-    wire.scale.setScalar(scale);
-    wire.rotation.y = rotationY;
-    wire.rotation.x = rotationX; // 기본 기울기 적용
+  });
 
-    wire.userData = {
-      baseX: x,
-      baseY: y,
-      baseRotationY: rotationY,
-      baseRotationX: rotationX, // 애니메이션 기준값으로 저장
-      phase: phase,
-    };
 
-    group.add(wire);
-  }
+  /* =================================================
+     전체 중심 계산
+  ================================================= */
+
+  let minX = Infinity;
+  let maxX = -Infinity;
+  let minY = Infinity;
+  let maxY = -Infinity;
+
+  points.forEach((path) => {
+
+    path.points.forEach((p) => {
+
+      minX = Math.min(minX, p.x);
+      maxX = Math.max(maxX, p.x);
+
+      minY = Math.min(minY, p.y);
+      maxY = Math.max(maxY, p.y);
+
+    });
+
+  });
+
+  const centerX = (minX + maxX) / 2;
+  const centerY = (minY + maxY) / 2;
+
+
+  /* =================================================
+     LINE POSITION
+  ================================================= */
+
+  const positions = [];
+
+  const frontZ = depth / 2;
+  const backZ = -depth / 2;
+
+
+  /* =================================================
+     ① 앞면 외곽선
+     
+     앞쪽 U 라인은 하나만 존재
+  ================================================= */
+
+  points.forEach((path) => {
+
+    const pts = path.points;
+
+    for (let i = 0; i < pts.length; i++) {
+
+      const a = pts[i];
+      const b = pts[(i + 1) % pts.length];
+
+      positions.push(
+        a.x - centerX,
+        a.y - centerY,
+        frontZ,
+
+        b.x - centerX,
+        b.y - centerY,
+        frontZ
+      );
+
+    }
+
+  });
+
+
+  /* =================================================
+     ② 측면 깊이선
+     
+     뒤쪽 외곽선을 그리지 않고
+     앞 → 뒤로 연결되는 선만 생성
+  ================================================= */
+
+  points.forEach((path) => {
+
+    const pts = path.points;
+
+    /*
+      모든 점에 선을 만들면 너무 촘촘해지므로
+      일정 간격으로만 측면선을 생성
+    */
+
+    const step = Math.max(
+      1,
+      Math.floor(pts.length / 18)
+    );
+
+    for (let i = 0; i < pts.length; i += step) {
+
+      const p = pts[i];
+
+      positions.push(
+        p.x - centerX,
+        p.y - centerY,
+        frontZ,
+
+        p.x - centerX,
+        p.y - centerY,
+        backZ
+      );
+
+    }
+
+  });
+
+
+  /* =================================================
+     BUFFER GEOMETRY
+  ================================================= */
+
+  const lineGeometry =
+    new THREE.BufferGeometry();
+
+  lineGeometry.setAttribute(
+    "position",
+    new THREE.Float32BufferAttribute(
+      positions,
+      3
+    )
+  );
+
+
+  /* =================================================
+     LINE
+  ================================================= */
+
+  const wire =
+    new THREE.LineSegments(
+      lineGeometry,
+      material
+    );
+
+
+  /* =================================================
+     POSITION / SCALE / ROTATION
+  ================================================= */
+
+  wire.position.set(
+    x,
+    y,
+    0
+  );
+
+  wire.scale.setScalar(scale);
+
+  wire.rotation.y = rotationY;
+
+  wire.rotation.x = rotationX;
+
+
+  /* =================================================
+     MOTION DATA
+  ================================================= */
+
+  wire.userData = {
+
+    baseX: x,
+
+    baseY: y,
+
+    baseRotationY:
+      rotationY,
+
+    baseRotationX:
+      rotationX,
+
+    phase: phase
+
+  };
+
+
+  group.add(wire);
+}
 
   /* =====================================================
      MOUSE & INTERACTION (모션 느낌 유지)
