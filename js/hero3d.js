@@ -3,7 +3,7 @@ import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 
 /* =========================================================
-   HERO THREE.JS (Option A: Minimal Crystal Glass)
+   HERO THREE.JS (면 경계가 명확히 살아나는 입체 아크릴 글래스)
 ========================================================= */
 
 export function initHero3D() {
@@ -19,25 +19,25 @@ export function initHero3D() {
   camera.position.set(0, 0, 15);
 
   /* =====================================================
-     LIGHTS (맑고 깨끗한 스튜디오 조명)
+     LIGHTS (면의 각도 명암 대비를 극대화하는 조명 세팅)
   ===================================================== */
-  const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
+  const ambientLight = new THREE.AmbientLight(0xffffff, 1.0);
   scene.add(ambientLight);
 
-  // 1. 메인 핀 조명 (모서리 하이라이트)
-  const keyLight = new THREE.DirectionalLight(0xffffff, 5.0);
-  keyLight.position.set(10, 15, 12);
-  scene.add(keyLight);
+  // 1. 앞면을 밝게 비추는 직사광
+  const frontLight = new THREE.DirectionalLight(0xffffff, 4.0);
+  frontLight.position.set(5, 10, 15);
+  scene.add(frontLight);
 
-  // 2. 소프트 반사 림라이트
-  const rimLight = new THREE.DirectionalLight(0xe2e8f0, 3.5);
-  rimLight.position.set(-10, 10, -5);
+  // 2. 측면 음영을 살려주는 우측 쿨그레이 조명
+  const sideLight = new THREE.DirectionalLight(0xc1c7cd, 3.5);
+  sideLight.position.set(-15, -5, 5);
+  scene.add(sideLight);
+
+  // 3. 모서리 베벨 선을 쨍하게 찍어주는 림라이트
+  const rimLight = new THREE.DirectionalLight(0xffffff, 5.0);
+  rimLight.position.set(12, 12, -2);
   scene.add(rimLight);
-
-  // 3. 하단 입체 보조광
-  const fillLight = new THREE.DirectionalLight(0xffffff, 2.0);
-  fillLight.position.set(0, -10, 8);
-  scene.add(fillLight);
 
   /* =====================================================
      RENDERER
@@ -60,31 +60,41 @@ export function initHero3D() {
   scene.add(group);
 
   /* =====================================================
-     MATERIALS
+     MATERIALS (앞면과 측면 분리 적용)
   ===================================================== */
   // 1. 외곽 테두리선 (X 글자용)
   const lineMaterial = new THREE.LineBasicMaterial({
     color: 0x0f172a,
     transparent: true,
-    opacity: 0.35,
+    opacity: 0.3,
   });
 
-  // 2. 무채색 크리스탈 글래스 (U 글자용)
-  const glassMaterial = new THREE.MeshPhysicalMaterial({
-    color: 0xffffff,            // Pure White
-    roughness: 0.04,            // 매끄러운 유리 질감
+  // 2-A. 앞면 매터리얼 (맑고 높은 투과율)
+  const frontMaterial = new THREE.MeshPhysicalMaterial({
+    color: 0xffffff,
+    roughness: 0.05,
     metalness: 0.0,
-    transmission: 0.95,         // 높은 투과율 (뒤쪽 텍스트 명확히 투과)
-    ior: 1.48,                  // 크리스탈/아크릴 굴절률
-    thickness: 1.0,             // 맑고 가벼운 두께감
-    attenuationColor: 0xffffff, // 둔탁함 없는 Pure White 산란
+    transmission: 0.92,        // 뒤쪽 글자 맑게 투과
+    ior: 1.45,
     transparent: true,
-    opacity: 0.3,               // 맑게 떨어지는 틴트
-    clearcoat: 1.0,             // 표면 쨍한 투명 코팅
+    opacity: 0.35,
+    clearcoat: 1.0,
     clearcoatRoughness: 0.02,
-    reflectivity: 0.9,
+    reflectivity: 0.8,
     depthWrite: true,
-    side: THREE.DoubleSide,
+  });
+
+  // 2-B. 측면/두께 매터리얼 (살짝 톤이 잡히며 꺾이는 경계 강조)
+  const sideMaterial = new THREE.MeshPhysicalMaterial({
+    color: 0xdce2df,            // 옅은 음영 톤
+    roughness: 0.15,            // 약간 매트하게 꺾이는 텍스처
+    metalness: 0.0,
+    transmission: 0.75,         // 측면은 좀 더 밀도감 있게
+    ior: 1.5,
+    transparent: true,
+    opacity: 0.55,              // 앞면보다 짙어서 경계선이 뚜렷해짐
+    clearcoat: 0.5,
+    depthWrite: true,
   });
 
   /* =====================================================
@@ -95,7 +105,7 @@ export function initHero3D() {
   loader.load(
     "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/fonts/helvetiker_bold.typeface.json",
     (font) => {
-      // 1. 메인 U (크리스탈 글래스 + 테두리)
+      // 1. 메인 U (멀티 매터리얼 분리 + 테두리)
       createLetter("U", font, -2.9, -0.65, -0.42, 0.92, 0);
 
       // 2. 메인 X
@@ -123,13 +133,13 @@ export function initHero3D() {
       ? {
           font: font,
           size: 4.1,
-          depth: 0.65,
+          depth: 0.75,               // 두께감을 조금 늘려 각도 부각
           curveSegments: 32,
           bevelEnabled: true,
-          bevelThickness: 0.09,
-          bevelSize: 0.07,
+          bevelThickness: 0.1,       // 깎이는 모서리 강화
+          bevelSize: 0.08,
           bevelOffset: 0,
-          bevelSegments: 8,
+          bevelSegments: 6,
         }
       : {
           font: font,
@@ -152,14 +162,14 @@ export function initHero3D() {
 
     const letterGroup = new THREE.Group();
 
-    // U 글자에 크리스탈 글래스 Mesh 추가
+    // U 글자에 앞면/측면 멀티 매터리얼 적용 [앞/뒷면, 측면]
     if (isU) {
-      const mesh = new THREE.Mesh(geometry, glassMaterial);
+      const mesh = new THREE.Mesh(geometry, [frontMaterial, sideMaterial]);
       letterGroup.add(mesh);
     }
 
-    // 테두리선 유지
-    const wireGeometry = new THREE.EdgesGeometry(geometry, 25);
+    // 외곽 테두리선
+    const wireGeometry = new THREE.EdgesGeometry(geometry, 20);
     const wire = new THREE.LineSegments(wireGeometry, lineMaterial);
     letterGroup.add(wire);
 
