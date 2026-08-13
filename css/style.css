@@ -360,7 +360,10 @@ nav a:hover{
 .hero h1 .title-line-2{
     display:block;
     text-align:right;
-    padding-right:4%;
+
+    position:relative;
+
+    left:-11vw;
 }
 
 /* =========================================================
