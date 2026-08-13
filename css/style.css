@@ -1402,8 +1402,9 @@ footer{
 
 @media (max-width: 767px){
 
-    .hero-action{
-        transform: translateY(90px);
-    }
-
+.hero-action .cta,
+.hero-action .portfolio{
+    position:relative !important;
+    top:80px !important;
+   }
 }
