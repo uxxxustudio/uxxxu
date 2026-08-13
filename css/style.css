@@ -327,11 +327,11 @@ nav a:hover{
 
     z-index:4;
 
-    left:4%;
+    left:2.5%;
 
     top:31%;
 
-    width:max-content;
+    width:95%;
 
     margin:0;
 
@@ -352,6 +352,16 @@ nav a:hover{
     animation:fade .8s .15s forwards;
 }
 
+.hero h1 .title-line-1{
+    display:block;
+    text-align:left;
+}
+
+.hero h1 .title-line-2{
+    display:block;
+    text-align:right;
+    padding-right:0;
+}
 
 /* =========================================================
    HERO MESSAGE COMMON
