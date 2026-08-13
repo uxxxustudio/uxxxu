@@ -359,17 +359,13 @@ nav a:hover{
 
 .hero h1 .title-line-2{
     display:block;
-
     position:relative;
-
-    left:-105px;
-
+    left:-220px;
     width:max-content;
-
     text-align:left;
-
     margin-left:48%;
 }
+
 
 /* =========================================================
    HERO MESSAGE COMMON
