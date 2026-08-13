@@ -3,7 +3,7 @@ import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 
 /* =========================================================
-   HERO THREE.JS (2번 Subsurface Scattering 밀키 글래스 적용)
+   HERO THREE.JS (하이엔드 베벨 글래스 & 스튜디오 림라이트)
 ========================================================= */
 
 export function initHero3D() {
@@ -19,11 +19,33 @@ export function initHero3D() {
   camera.position.set(0, 0, 15);
 
   /* =====================================================
+     STUDIO LIGHTING (유리 엣지 반사광 극대화)
+  ===================================================== */
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+  scene.add(ambientLight);
+
+  // 1. 모서리에 쨍한 하이라이트를 만드는 주 핀 조명
+  const keyLight = new THREE.DirectionalLight(0xffffff, 4.5);
+  keyLight.position.set(10, 15, 12);
+  scene.add(keyLight);
+
+  // 2. 우측 상단에서 비추어 입체감을 살리는 림 라이트
+  const rimLight = new THREE.DirectionalLight(0xffffff, 3.0);
+  rimLight.position.set(-10, 10, -5);
+  scene.add(rimLight);
+
+  // 3. 하단 입체감을 돋보이게 하는 리플렉션 조명
+  const fillLight = new THREE.DirectionalLight(0xdce2df, 2.0);
+  fillLight.position.set(-6, -10, 8);
+  scene.add(fillLight);
+
+  /* =====================================================
      RENDERER
   ===================================================== */
   const renderer = new THREE.WebGLRenderer({
     antialias: true,
     alpha: true,
+    powerPreference: "high-performance",
   });
 
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -40,61 +62,27 @@ export function initHero3D() {
   /* =====================================================
      MATERIALS
   ===================================================== */
-  // 1. 외곽 테두리선
+  // 1. 외곽 테두리선 (X 글자용)
   const lineMaterial = new THREE.LineBasicMaterial({
     color: 0x111111,
     transparent: true,
-    opacity: 0.5,
+    opacity: 0.4,
   });
 
-  // 2. Subsurface Scattering (밀키 글래스) 커스텀 쉐이더
-  const milkyGlassMaterial = new THREE.ShaderMaterial({
-    uniforms: {
-      colorBase: { value: new THREE.Color(0xf1f5f9) },   // 은은한 우유빛 순백색
-      colorSub: { value: new THREE.Color(0xdce2df) },    // 내부 굴절 라이트 그레이
-      fresnelColor: { value: new THREE.Color(0xffffff) },// 모서리 쨍한 하이라이트
-    },
-    vertexShader: `
-      varying vec3 vNormal;
-      varying vec3 vViewPosition;
-      varying vec2 vUv;
-
-      void main() {
-        vUv = uv;
-        vNormal = normalize(normalMatrix * normal);
-        vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-        vViewPosition = -mvPosition.xyz;
-        gl_Position = projectionMatrix * mvPosition;
-      }
-    `,
-    fragmentShader: `
-      uniform vec3 colorBase;
-      uniform vec3 colorSub;
-      uniform vec3 fresnelColor;
-
-      varying vec3 vNormal;
-      varying vec3 vViewPosition;
-      varying vec2 vUv;
-
-      void main() {
-        vec3 normal = normalize(vNormal);
-        vec3 viewDir = normalize(vViewPosition);
-
-        // 프레넬 효과 (외곽으로 갈수록 빛이 은은하게 감싸는 반사)
-        float fresnel = pow(1.0 - max(dot(normal, viewDir), 0.0), 2.5);
-
-        // 위아래 부드러운 음영 혼합
-        vec3 baseMix = mix(colorSub, colorBase, vUv.y * 0.7 + 0.3);
-
-        // 밀키 글래스 최종 색상 산출
-        vec3 finalColor = mix(baseMix, fresnelColor, fresnel * 0.6);
-
-        // 뒷선이 투명하게 비치지 않도록 적절히 밀도 있는 불투명도(0.82) 적용
-        gl_FragColor = vec4(finalColor, 0.82);
-      }
-    `,
+  // 2. 프리미엄 아크릴 글래스 재질 (U 글자용)
+  const glassMaterial = new THREE.MeshPhysicalMaterial({
+    color: 0xffffff,
+    roughness: 0.08,           // 매끄러운 표면광
+    metalness: 0.0,
+    transmission: 0.9,         // 높은 투과율로 뒤쪽 HTML 글자 투과
+    ior: 1.48,                 // 아크릴/유리 고유 굴절률
+    thickness: 1.2,            // 두께감 있는 빛 분산
     transparent: true,
-    depthWrite: true,  // 뒷선 비침 및 왜곡 방지
+    opacity: 0.35,              // 맑게 떨어지는 틴트
+    clearcoat: 1.0,            // 표면 강한 코팅 반사층
+    clearcoatRoughness: 0.05,  // 엣지 반사를 선명하게
+    reflectivity: 0.8,
+    depthWrite: true,
     side: THREE.DoubleSide,
   });
 
@@ -106,7 +94,7 @@ export function initHero3D() {
   loader.load(
     "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/fonts/helvetiker_bold.typeface.json",
     (font) => {
-      // 1. 메인 U (밀키 글래스 면 + 테두리 라인)
+      // 1. 메인 U (베벨 글래스 + 테두리 라인)
       createLetter("U", font, -2.9, -0.65, -0.42, 0.92, 0);
 
       // 2. 메인 X
@@ -125,18 +113,33 @@ export function initHero3D() {
   );
 
   /* =====================================================
-     CREATE 3D LETTER
+     CREATE 3D LETTER (Bevel 입체 곡면 추가)
   ===================================================== */
   function createLetter(character, font, x, y, rotationY, scale, phase) {
     const isU = character === "U";
 
-    const geometry = new TextGeometry(character, {
-      font: font,
-      size: 4.1,
-      depth: 0.72,
-      curveSegments: isU ? 30 : 1,
-      bevelEnabled: false,
-    });
+    // U 글자에 고급스러운 모서리 Bevel(라운딩 깎기) 적용
+    const geometryOptions = isU
+      ? {
+          font: font,
+          size: 4.1,
+          depth: 0.65,
+          curveSegments: 32,
+          bevelEnabled: true,       // ★ 핵심: 모서리 곡면 깎기 활성화
+          bevelThickness: 0.08,    // 깎이는 깊이
+          bevelSize: 0.06,         // 깎이는 너비
+          bevelOffset: 0,
+          bevelSegments: 8,        // 모서리를 아주 부드럽게
+        }
+      : {
+          font: font,
+          size: 4.1,
+          depth: 0.72,
+          curveSegments: 1,
+          bevelEnabled: false,
+        };
+
+    const geometry = new TextGeometry(character, geometryOptions);
 
     geometry.computeBoundingBox();
 
@@ -149,14 +152,14 @@ export function initHero3D() {
 
     const letterGroup = new THREE.Group();
 
-    // U 글자에 밀키 글래스 쉐이더 Mesh 추가
+    // U 글자에 베벨 글래스 Mesh 추가
     if (isU) {
-      const mesh = new THREE.Mesh(geometry, milkyGlassMaterial);
+      const mesh = new THREE.Mesh(geometry, glassMaterial);
       letterGroup.add(mesh);
     }
 
     // 테두리 라인 유지
-    const wireGeometry = new THREE.EdgesGeometry(geometry, 20);
+    const wireGeometry = new THREE.EdgesGeometry(geometry, 25);
     const wire = new THREE.LineSegments(wireGeometry, lineMaterial);
     letterGroup.add(wire);
 
@@ -191,7 +194,7 @@ export function initHero3D() {
   );
 
   /* =====================================================
-     RESIZE & RESPONSIVE SCALE (모바일 자동 대응)
+     RESIZE & RESPONSIVE SCALE
   ===================================================== */
   function updateResponsiveScale() {
     const width = container.clientWidth;
