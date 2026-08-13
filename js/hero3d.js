@@ -3,7 +3,7 @@ import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 
 /* =========================================================
-   HERO THREE.JS (반투명 아크릴 글래스 재질 완성 버전)
+   HERO THREE.JS (U 테두리 라인 유지 + 모바일 반응형 최적화)
 ========================================================= */
 
 export function initHero3D() {
@@ -84,7 +84,7 @@ export function initHero3D() {
   loader.load(
     "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/fonts/helvetiker_bold.typeface.json",
     (font) => {
-      // 1. 메인 U (아크릴 글래스 + 테두리)
+      // 1. 메인 U (아크릴 글래스 + 테두리 라인)
       createLetter("U", font, -2.9, -0.65, -0.42, 0.92, 0);
 
       // 2. 메인 X
@@ -133,7 +133,7 @@ export function initHero3D() {
       letterGroup.add(mesh);
     }
 
-    // 외곽 테두리선 추가
+    // 모든 글자(U, X)에 외곽 테두리선 유지
     const wireGeometry = new THREE.EdgesGeometry(geometry, 20);
     const wire = new THREE.LineSegments(wireGeometry, lineMaterial);
     letterGroup.add(wire);
@@ -169,18 +169,30 @@ export function initHero3D() {
   );
 
   /* =====================================================
-     RESIZE
+     RESIZE & RESPONSIVE SCALE (모바일 대응 자동 축소)
   ===================================================== */
-  function resize() {
+  function updateResponsiveScale() {
     const width = container.clientWidth;
     const height = container.clientHeight;
 
     if (!width || !height) return;
 
+    const isMobile = window.innerWidth < 768;
+
+    // 1. 비율 및 카메라 거리 보정
     camera.aspect = width / height;
+    camera.position.z = isMobile ? 18.5 : 15; // 모바일에서 카메라를 뒤로 이동해 여백 확보
     camera.updateProjectionMatrix();
 
+    // 2. 전체 3D 그룹 크기 축소 (데스크톱 100% / 모바일 68%)
+    const targetScale = isMobile ? 0.68 : 1.0;
+    group.scale.setScalar(targetScale);
+
     renderer.setSize(width, height, false);
+  }
+
+  function resize() {
+    updateResponsiveScale();
   }
 
   window.addEventListener("resize", resize);
