@@ -292,50 +292,48 @@ nav a:hover{
 
     height:100vh;
 
-    display:flex;
+    min-height:720px;
 
-    align-items:center;
+    display:block;
 
-    padding:0 64px;
+    padding:0;
 
     position:relative;
 }
 
 .hero-inner{
 
-    max-width:1200px;
+    position:relative;
 
     width:100%;
 
+    height:100%;
+
+    max-width:none;
+
     min-width:0;
+
+    margin:0;
 }
 
-.eyebrow{
 
-    font-size:14px;
-
-    font-weight:600;
-
-    letter-spacing:.18em;
-
-    text-transform:uppercase;
-
-    color:#999;
-
-    margin-bottom:28px;
-
-    opacity:0;
-
-    transform:translateY(30px);
-
-    animation:fade .8s forwards;
-}
+/* =========================================================
+   HERO MAIN COPY
+========================================================= */
 
 .hero h1{
 
-    position:relative;
+    position:absolute;
 
     z-index:4;
+
+    left:4%;
+
+    top:31%;
+
+    width:max-content;
+
+    margin:0;
 
     font-size:clamp(72px,7vw,118px);
 
@@ -343,9 +341,9 @@ nav a:hover{
 
     line-height:.90;
 
-    letter-spacing:-0.03em;
+    letter-spacing:-0.045em;
 
-    margin-bottom:36px;
+    color:#111;
 
     opacity:0;
 
@@ -354,17 +352,58 @@ nav a:hover{
     animation:fade .8s .15s forwards;
 }
 
-.subtitle{
 
-    font-size:30px;
+/* =========================================================
+   HERO MESSAGE COMMON
+========================================================= */
 
-    font-weight:600;
+.hero-message{
 
-    letter-spacing:-.03em;
+    position:absolute;
 
-    color:#444;
+    z-index:4;
 
-    margin-bottom:26px;
+    margin:0;
+
+    color:#111;
+}
+
+.hero-message h2{
+
+    margin:0 0 14px;
+
+    font-size:24px;
+
+    line-height:1.1;
+
+    font-weight:700;
+
+    letter-spacing:-.035em;
+}
+
+.hero-message p{
+
+    margin:0;
+
+    font-size:16px;
+
+    line-height:1.7;
+
+    color:#666;
+
+    letter-spacing:-.025em;
+}
+
+
+/* =========================================================
+   BETTER UX
+========================================================= */
+
+.hero-message-ux{
+
+    left:4%;
+
+    top:57%;
 
     opacity:0;
 
@@ -373,15 +412,16 @@ nav a:hover{
     animation:fade .8s .35s forwards;
 }
 
-.description{
 
-    max-width:650px;
+/* =========================================================
+   BETTER UI
+========================================================= */
 
-    font-size:20px;
+.hero-message-ui{
 
-    line-height:1.9;
+    left:42%;
 
-    color:#666;
+    top:62%;
 
     opacity:0;
 
@@ -390,34 +430,38 @@ nav a:hover{
     animation:fade .8s .55s forwards;
 }
 
+.hero-message-ui p{
+
+    white-space:nowrap;
+}
+
+
+/* =========================================================
+   HERO ACTION
+========================================================= */
+
 .hero-action{
 
-    margin-top:70px;
+    margin-top:48px;
 
     display:flex;
 
     align-items:center;
 
     gap:36px;
-
-    opacity:0;
-
-    transform:translateY(30px);
-
-    animation:fade .8s .75s forwards;
 }
 
 .cta{
 
-    font-size:16px;
+    font-size:15px;
 
-    font-weight:700;
+    font-weight:600;
 
     display:flex;
 
     align-items:center;
 
-    gap:10px;
+    gap:8px;
 }
 
 .cta span{
@@ -432,7 +476,7 @@ nav a:hover{
 
 .portfolio{
 
-    font-size:16px;
+    font-size:15px;
 
     color:#888;
 
@@ -954,9 +998,15 @@ footer{
     .hero{
 
         padding:0 26px;
+
+        min-height:720px;
     }
 
     .hero h1{
+
+        left:26px;
+
+        top:28%;
 
         font-size:clamp(52px,13vw,72px);
 
@@ -965,14 +1015,35 @@ footer{
         letter-spacing:-0.04em;
     }
 
-    .subtitle{
+    .hero-message-ux{
 
-        font-size:22px;
+        left:26px;
+
+        top:58%;
     }
 
-    .description{
+    .hero-message-ui{
 
-        font-size:17px;
+        left:48%;
+
+        top:68%;
+    }
+
+    .hero-message h2{
+
+        font-size:20px;
+    }
+
+    .hero-message p{
+
+        font-size:14px;
+    }
+
+    .hero-message-ui p{
+
+        white-space:normal;
+
+        max-width:260px;
     }
 
     .hero-action{
@@ -982,6 +1053,8 @@ footer{
         align-items:flex-start;
 
         gap:18px;
+
+        margin-top:36px;
     }
 
     .scroll{
