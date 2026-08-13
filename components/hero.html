@@ -1,230 +1,15 @@
 <section class="hero">
 
-    <!-- 기존 배경 라이트 -->
     <div class="hero-light" aria-hidden="true"></div>
 
-
-    <!-- =====================================================
-         3D UX GRAPHIC
-    ====================================================== -->
-<div class="hero-graphic" aria-hidden="true">
-
-    <svg
-        viewBox="0 0 900 650"
-        xmlns="http://www.w3.org/2000/svg"
-        preserveAspectRatio="xMidYMid meet"
-    >
-
-        <!-- =====================================================
-             U
-        ====================================================== -->
-
-        <g class="ux-u">
-
-            <!-- BACK / REAR : 점선 -->
-            <path
-                class="u-rear"
-                d="
-                    M275 150
-                    L275 355
-                    C275 470 348 535 445 535
-                    C542 535 615 470 615 355
-                    L615 150
-                "
-            />
-
-            <path
-                class="u-rear"
-                d="
-                    M307 150
-                    L307 350
-                    C307 447 362 500 445 500
-                    C528 500 583 447 583 350
-                    L583 150
-                "
-            />
+    <!-- Three.js가 들어갈 영역 -->
+    <div
+        id="hero-3d"
+        class="hero-3d"
+        aria-hidden="true"
+    ></div>
 
 
-            <!-- FRONT : 기본 실선 -->
-            <path
-                class="u-front"
-                d="
-                    M255 135
-                    L255 350
-                    C255 475 330 545 445 545
-                    C560 545 635 475 635 350
-                    L635 135
-                "
-            />
-
-            <path
-                class="u-front"
-                d="
-                    M285 135
-                    L285 347
-                    C285 452 346 512 445 512
-                    C544 512 605 452 605 347
-                    L605 135
-                "
-            />
-
-
-            <!-- SIDE : 앞/뒤를 연결하는 입체 면 -->
-            <path
-                class="u-side"
-                d="M255 135 L275 150"
-            />
-
-            <path
-                class="u-side"
-                d="M635 135 L615 150"
-            />
-
-            <path
-                class="u-side"
-                d="M285 135 L307 150"
-            />
-
-            <path
-                class="u-side"
-                d="M605 135 L583 150"
-            />
-
-
-            <!-- U 아래쪽의 깊이 -->
-            <path
-                class="u-side"
-                d="
-                    M275 355
-                    C275 470 348 535 445 535
-                    C542 535 615 470 615 355
-                "
-            />
-
-            <!-- 중심 포인트 -->
-            <circle
-                cx="445"
-                cy="512"
-                r="3"
-                class="ux-point"
-            />
-
-        </g>
-
-
-        <!-- =====================================================
-             X
-        ====================================================== -->
-
-        <g class="ux-x">
-
-            <!-- BACK / REAR : 점선 -->
-
-            <path
-                class="x-rear"
-                d="
-                    M635 125
-                    L665 95
-                    L825 275
-                    L795 305
-                    Z
-                "
-            />
-
-            <path
-                class="x-rear"
-                d="
-                    M795 95
-                    L825 125
-                    L665 305
-                    L635 275
-                    Z
-                "
-            />
-
-
-            <!-- FRONT : 기본 실선 -->
-
-            <path
-                class="x-front"
-                d="
-                    M615 105
-                    L645 75
-                    L825 275
-                    L795 305
-                    Z
-                "
-            />
-
-            <path
-                class="x-front"
-                d="
-                    M795 75
-                    L825 105
-                    L645 305
-                    L615 275
-                    Z
-                "
-            />
-
-
-            <!-- SIDE : 입체 두께 -->
-
-            <path
-                class="x-side"
-                d="
-                    M615 105
-                    L635 125
-                    L795 305
-                "
-            />
-
-            <path
-                class="x-side"
-                d="
-                    M645 75
-                    L665 95
-                    L825 275
-                "
-            />
-
-            <path
-                class="x-side"
-                d="
-                    M795 75
-                    L815 95
-                    L655 275
-                "
-            />
-
-            <path
-                class="x-side"
-                d="
-                    M825 105
-                    L825 125
-                    L665 305
-                "
-            />
-
-
-            <!-- 중심 포인트 -->
-            <circle
-                cx="715"
-                cy="190"
-                r="3"
-                class="ux-point"
-            />
-
-        </g>
-
-    </svg>
-
-</div>
-
-
-    <!-- =====================================================
-         HERO CONTENT
-    ====================================================== -->
     <div class="hero-inner">
 
         <h1>
@@ -244,15 +29,20 @@
 
         <div class="hero-action">
 
-            <a href="https://pf.kakao.com/_sgDBX/chat"
-               class="btn-primary"
-               target="_blank"
-               rel="noopener">
-                Let's Talk <span>→</span>
+            <a
+                href="https://pf.kakao.com/_sgDBX/chat"
+                class="cta"
+                target="_blank"
+                rel="noopener"
+            >
+                Let's Talk
+                <span>→</span>
             </a>
 
-            <a href="https://uxxxu-studio.com"
-               class="portfolio">
+            <a
+                href="https://uxxxu-studio.com"
+                class="portfolio"
+            >
                 View Portfolio
             </a>
 
