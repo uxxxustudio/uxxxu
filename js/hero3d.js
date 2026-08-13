@@ -3,7 +3,7 @@ import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 
 /* =========================================================
-   HERO THREE.JS (Chromatic Dispersion 프리즘 글래스 적용)
+   HERO THREE.JS (HTML 텍스트 투과 맑은 프리미엄 글래스)
 ========================================================= */
 
 export function initHero3D() {
@@ -19,19 +19,19 @@ export function initHero3D() {
   camera.position.set(0, 0, 15);
 
   /* =====================================================
-     LIGHTS (프리즘 하이라이트 극대화 조명 세팅)
+     LIGHTS (유리 반사 하이라이트 극대화)
   ===================================================== */
-  const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
+  const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
   scene.add(ambientLight);
 
-  // 프리즘 빛갈림을 만들어내는 메인 딥 조명
-  const keyLight = new THREE.DirectionalLight(0xffffff, 3.2);
-  keyLight.position.set(7, 12, 8);
+  // 유리 곡면에 쨍한 반사를 만드는 주 조명
+  const keyLight = new THREE.DirectionalLight(0xffffff, 3.5);
+  keyLight.position.set(8, 12, 10);
   scene.add(keyLight);
 
-  // 은은한 #DCE2DF 보조 림라이트
-  const fillLight = new THREE.DirectionalLight(0xdce2df, 1.8);
-  fillLight.position.set(-7, -6, 6);
+  // 은은한 윤곽선을 살려주는 보조 림라이트
+  const fillLight = new THREE.DirectionalLight(0xdce2df, 2.0);
+  fillLight.position.set(-8, -6, 6);
   scene.add(fillLight);
 
   /* =====================================================
@@ -60,23 +60,20 @@ export function initHero3D() {
   const lineMaterial = new THREE.LineBasicMaterial({
     color: 0x111111,
     transparent: true,
-    opacity: 0.65,
+    opacity: 0.5,
   });
 
-  // 2. Chromatic Dispersion 프리즘 글래스 재질 (U 전용)
+  // 2. HTML 텍스트를 맑게 뚫어주는 프리스틴 글래스 재질 (U 전용)
   const glassMaterial = new THREE.MeshPhysicalMaterial({
-    color: 0xdce2df,
-    roughness: 0.06,          // 표면을 아주 매끄럽게 잡아 분광을 선명하게 함
-    metalness: 0.02,
-    transmission: 0.88,       // 맑은 빛 투과율
-    ior: 1.52,                // 유리 고유 굴절률 (Glass IOR)
-    thickness: 1.8,           // 두께감이 입혀져 내부 빛갈림 형성
-    dispersion: 0.18,         // ★ 프리즘 무지갯빛 분광 효과
-    clearcoat: 1.0,           // 유리 표면 쨍한 반사 코팅
-    clearcoatRoughness: 0.04,
+    color: 0xffffff,          // 순백색으로 변경하여 뒤쪽 HTML 텍스트 탁함 방지
+    roughness: 0.05,         // 매끄러운 유리 표면
+    metalness: 0.05,
     transparent: true,
-    opacity: 0.85,
-    depthWrite: true,
+    opacity: 0.22,           // HTML 글자가 맑게 비쳐 보이도록 투명도 조정
+    clearcoat: 1.0,          // 유리 표면의 쨍한 코팅 반사층
+    clearcoatRoughness: 0.03,
+    reflectivity: 0.9,
+    depthWrite: false,       // 렌더링 뒤틀림 방지
     side: THREE.DoubleSide,
   });
 
@@ -88,7 +85,7 @@ export function initHero3D() {
   loader.load(
     "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/fonts/helvetiker_bold.typeface.json",
     (font) => {
-      // 1. 메인 U (프리즘 글래스 + 테두리 라인)
+      // 1. 메인 U (맑은 글래스 + 테두리 라인)
       createLetter("U", font, -2.9, -0.65, -0.42, 0.92, 0);
 
       // 2. 메인 X
@@ -131,13 +128,13 @@ export function initHero3D() {
 
     const letterGroup = new THREE.Group();
 
-    // U 글자에 프리즘 글래스 Mesh 추가
+    // U 글자에 맑은 글래스 Mesh 추가
     if (isU) {
       const mesh = new THREE.Mesh(geometry, glassMaterial);
       letterGroup.add(mesh);
     }
 
-    // 테두리 라인 유지
+    // 모든 글자 테두리선 유지
     const wireGeometry = new THREE.EdgesGeometry(geometry, 20);
     const wire = new THREE.LineSegments(wireGeometry, lineMaterial);
     letterGroup.add(wire);
@@ -173,7 +170,7 @@ export function initHero3D() {
   );
 
   /* =====================================================
-     RESIZE & RESPONSIVE SCALE (모바일 자동 보정)
+     RESIZE & RESPONSIVE SCALE (모바일 자동 대응)
   ===================================================== */
   function updateResponsiveScale() {
     const width = container.clientWidth;
