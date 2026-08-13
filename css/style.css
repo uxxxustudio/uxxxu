@@ -135,107 +135,107 @@ nav a:hover{
     position:absolute;
     z-index:0;
 
-    width:105vw;
-    height:72vh;
+    width:78vw;
+    height:62vh;
 
-    right:-28vw;
-    top:12vh;
+    right:-12vw;
+    top:17vh;
 
     pointer-events:none;
 
-    opacity:.92;
+    opacity:1;
 
-    filter:blur(38px);
+    filter:blur(34px);
 
-    transform:translate3d(0,0,0) scale(1);
+    transform:translate3d(0,0,0);
+
+    /* =====================================================
+       1. 큰 라이트 그레이 영역
+       화이트와 확실히 구분되도록 중심을 조금 어둡게
+    ===================================================== */
 
     background:
-
-        /* -----------------------------------------------
-           넓은 라이트 그레이 빛
-        ----------------------------------------------- */
-        linear-gradient(
-            118deg,
-            rgba(255,255,255,0) 15%,
-            rgba(232,234,233,.16) 30%,
-            rgba(211,215,212,.28) 44%,
-            rgba(194,201,196,.22) 53%,
-            rgba(222,225,223,.12) 66%,
-            rgba(255,255,255,0) 82%
-        ),
-
-        /* -----------------------------------------------
-           아주 옅은 그레이시 그린
-        ----------------------------------------------- */
-        linear-gradient(
-            118deg,
-            rgba(255,255,255,0) 28%,
-            rgba(214,220,215,.04) 38%,
-            rgba(166,179,169,.10) 48%,
-            rgba(135,153,141,.13) 56%,
-            rgba(173,184,176,.08) 65%,
-            rgba(255,255,255,0) 78%
-        ),
-
-        /* -----------------------------------------------
-           부드러운 밝은 영역
-        ----------------------------------------------- */
-        linear-gradient(
-            118deg,
-            rgba(255,255,255,0) 38%,
-            rgba(255,255,255,.20) 48%,
-            rgba(246,247,246,.12) 58%,
-            rgba(255,255,255,0) 72%
+        radial-gradient(
+            ellipse 58% 48% at 62% 52%,
+            rgba(185,188,186,.30) 0%,
+            rgba(195,198,196,.23) 25%,
+            rgba(210,213,211,.14) 48%,
+            rgba(225,227,226,.055) 68%,
+            transparent 84%
         );
-
-    background-size:
-        180% 180%,
-        165% 165%,
-        190% 190%;
-
-    background-position:
-        35% 50%,
-        48% 52%,
-        55% 45%;
 
     animation:heroLightFlow 8s ease-in-out infinite alternate;
 }
 
 
-/* ---------------------------------------------------------
-   두 번째 흐름 레이어
---------------------------------------------------------- */
+/* =========================================================
+   2. 그레이 영역 안에만 들어가는 그린빛
+========================================================= */
 
 .hero-light::before{
     content:"";
 
     position:absolute;
 
-    inset:-25%;
+    width:48%;
+    height:58%;
+
+    left:47%;
+    top:27%;
+
+    pointer-events:none;
+
+    background:
+        radial-gradient(
+            ellipse 55% 52% at 50% 50%,
+            rgba(126,145,133,.15) 0%,
+            rgba(145,160,150,.105) 30%,
+            rgba(166,176,169,.06) 54%,
+            rgba(190,197,192,.025) 72%,
+            transparent 88%
+        );
+
+    filter:blur(30px);
+
+    animation:heroGreenFlow 8s ease-in-out infinite alternate;
+}
+
+
+/* =========================================================
+   3. 그린 위를 지나가는 아주 약한 빛
+========================================================= */
+
+.hero-light::after{
+    content:"";
+
+    position:absolute;
+
+    width:55%;
+    height:38%;
+
+    left:38%;
+    top:25%;
 
     pointer-events:none;
 
     background:
         linear-gradient(
-            118deg,
-            rgba(255,255,255,0) 25%,
-            rgba(193,202,196,.05) 40%,
-            rgba(145,162,151,.09) 51%,
-            rgba(174,186,178,.055) 61%,
-            rgba(255,255,255,0) 76%
+            125deg,
+            transparent 20%,
+            rgba(255,255,255,.18) 44%,
+            rgba(255,255,255,.07) 57%,
+            transparent 76%
         );
 
-    filter:blur(30px);
+    filter:blur(25px);
 
-    background-size:160% 160%;
-
-    animation:heroGreenFlow 7s ease-in-out infinite alternate;
+    animation:heroHighlightFlow 8s ease-in-out infinite alternate;
 }
 
 
-/* ---------------------------------------------------------
+/* =========================================================
    HERO CONTENT
---------------------------------------------------------- */
+========================================================= */
 
 .hero-inner{
     position:relative;
@@ -244,7 +244,7 @@ nav a:hover{
 
 
 /* =========================================================
-   LIGHT MOVEMENT
+   GRAY LIGHT MOVEMENT
 ========================================================= */
 
 @keyframes heroLightFlow{
@@ -252,56 +252,41 @@ nav a:hover{
     0%{
         transform:
             translate3d(5%,2%,0)
-            scale(.96);
-
-        background-position:
-            28% 48%,
-            42% 52%,
-            50% 45%;
+            scale(.94);
     }
 
     50%{
         transform:
-            translate3d(-3%,-1%,0)
-            scale(1.03);
-
-        background-position:
-            52% 54%,
-            62% 47%,
-            68% 50%;
+            translate3d(-2%,-1%,0)
+            scale(1.02);
     }
 
     100%{
         transform:
-            translate3d(-8%,3%,0)
-            scale(1.06);
-
-        background-position:
-            72% 50%,
-            78% 55%,
-            82% 46%;
+            translate3d(-7%,3%,0)
+            scale(1.05);
     }
 
 }
 
 
-/* ---------------------------------------------------------
-   그레이시 그린 흐름
---------------------------------------------------------- */
+/* =========================================================
+   GREEN LIGHT MOVEMENT
+========================================================= */
 
 @keyframes heroGreenFlow{
 
     0%{
         transform:
-            translate3d(7%,2%,0)
-            scale(.94);
+            translate3d(8%,3%,0)
+            scale(.90);
 
         opacity:.55;
     }
 
     50%{
         transform:
-            translate3d(-4%,-2%,0)
+            translate3d(-3%,-2%,0)
             scale(1.04);
 
         opacity:.85;
@@ -309,10 +294,46 @@ nav a:hover{
 
     100%{
         transform:
-            translate3d(-9%,3%,0)
-            scale(1);
+            translate3d(-10%,3%,0)
+            scale(.96);
 
         opacity:.62;
+    }
+
+}
+
+
+/* =========================================================
+   HIGHLIGHT MOVEMENT
+========================================================= */
+
+@keyframes heroHighlightFlow{
+
+    0%{
+        transform:
+            translate3d(10%,4%,0)
+            rotate(-4deg)
+            scale(.92);
+
+        opacity:.35;
+    }
+
+    50%{
+        transform:
+            translate3d(-2%,-2%,0)
+            rotate(1deg)
+            scale(1.05);
+
+        opacity:.65;
+    }
+
+    100%{
+        transform:
+            translate3d(-10%,2%,0)
+            rotate(4deg)
+            scale(.96);
+
+        opacity:.38;
     }
 
 }
