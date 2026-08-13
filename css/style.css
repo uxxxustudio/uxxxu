@@ -1274,13 +1274,12 @@ nav.open{
     fill:none;
 
     stroke:#111111;
-
-    stroke-width:2.2;
+    stroke-width:8;
 
     stroke-linecap:round;
     stroke-linejoin:round;
 
-    opacity:.78;
+    opacity:.82;
 }
 
 
@@ -1289,9 +1288,8 @@ nav.open{
 .ux-inner{
     fill:none;
 
-    stroke:#202020;
-
-    stroke-width:1.35;
+    stroke:#303030;
+    stroke-width:2.2;
 
     stroke-linecap:round;
     stroke-linejoin:round;
@@ -1300,20 +1298,22 @@ nav.open{
 }
 
 
+
 /* 뒤쪽 깊이선 */
 
 .ux-back{
     fill:none;
 
-    stroke:#333333;
-
-    stroke-width:1.25;
+    stroke:#555555;
+    stroke-width:2;
 
     stroke-linecap:round;
     stroke-linejoin:round;
 
-    opacity:.38;
+    opacity:.35;
 }
+
+
 
 
 /* 입체 연결선 */
@@ -1321,14 +1321,13 @@ nav.open{
 .ux-depth{
     fill:none;
 
-    stroke:#111111;
-
-    stroke-width:1.25;
+    stroke:#222222;
+    stroke-width:2;
 
     stroke-linecap:round;
     stroke-linejoin:round;
 
-    opacity:.42;
+    opacity:.5;
 }
 
 
@@ -1339,27 +1338,26 @@ nav.open{
 .ux-dots{
     fill:none;
 
-    stroke:#555555;
-
-    stroke-width:1;
+    stroke:#444444;
+    stroke-width:1.4;
 
     stroke-linecap:round;
     stroke-linejoin:round;
 
     stroke-dasharray:1 7;
 
-    opacity:.55;
+    opacity:.58;
 }
+
 
 
 /* 중심 노드 */
 
+
 .ux-node{
     fill:#111111;
-
-    opacity:.65;
+    opacity:.7;
 }
-
 
 /* -----------------------------------------
    Floating motion
