@@ -63,61 +63,54 @@ export function initHero3D() {
     }
   );
 
-/* =====================================================
-   CREATE 3D LINE LETTER (U/X 개별 최적화 - 통 입체 복원)
-===================================================== */
-function createLetter(character, font, x, y, rotationY, scale, phase) {
-  // 베벨 옵션을 사용하여 3D 볼륨감을 극대화합니다. (기존 옵션 유지)
-  const geometry = new TextGeometry(character, {
-    font: font,
-    size: 4.1,
-    depth: 0.72,
-    curveSegments: 8, // 곡선 잔선 방지를 위해 세그먼트 최적화
-    bevelEnabled: true,
-    bevelThickness: 0.09,
-    bevelSize: 0.055,
-    bevelSegments: 2, // 베벨 꺾임선 단순화
-  });
+  /* =====================================================
+     CREATE 3D LINE LETTER (U/X 외곽선 깔끔화)
+  ===================================================== */
+  function createLetter(character, font, x, y, rotationY, scale, phase) {
+    // curveSegments를 4로 설정하여 곡면 모서리를 명확히 구분
+    const geometry = new TextGeometry(character, {
+      font: font,
+      size: 4.1,
+      depth: 0.72,
+      curveSegments: 4,    // U자 곡면을 적절한 수의 다각형으로 나누어 꺾임각 형성
+      bevelEnabled: true,
+      bevelThickness: 0.08,
+      bevelSize: 0.05,
+      bevelSegments: 1,    // 베벨 분할을 1로 단순화
+    });
 
-  geometry.computeBoundingBox();
+    geometry.computeBoundingBox();
 
-  /* Center Geometry */
-  const box = geometry.boundingBox;
-  const centerX = (box.max.x + box.min.x) / 2;
-  const centerY = (box.max.y + box.min.y) / 2;
+    /* Center Geometry */
+    const box = geometry.boundingBox;
+    const centerX = (box.max.x + box.min.x) / 2;
+    const centerY = (box.max.y + box.min.y) / 2;
 
-  geometry.translate(-centerX, -centerY, 0);
+    geometry.translate(-centerX, -centerY, 0);
 
-  /* =================================================
-     [U/X 개별 처리 로직] (여기서 해결!)
-   ================================================= */
-  let wireGeometry;
+    /* =================================================
+       [EdgesGeometry로 내부 삼각망 완전히 제거]
+    ================================================= */
+    // EdgesGeometry(geometry, 15)를 사용하여 내부 대각선은 제거하고
+    // 앞/뒤를 연결하는 외곽 테두리선 및 주요 꺾임선만 유지
+    const wireGeometry = new THREE.EdgesGeometry(geometry, 15);
 
-  if (character === "U") {
-    // [U 해결책] 곡면 부위의 기둥 선들이 생략되지 않도록 True Wireframe을 사용합니다.
-    // 이렇게 해야 앞/뒤 U 껍질 사이의 두께 공간이 선들로 촘촘하게 연결되어 '통'처럼 보입니다.
-    wireGeometry = new THREE.WireframeGeometry(geometry);
-  } else {
-    // [X 해결책] 직선 기반이라 뭉치지 않으므로, 깔끔한 외곽선(Edges)을 위해 20도를 유지합니다.
-    wireGeometry = new THREE.EdgesGeometry(geometry, 20);
+    const wire = new THREE.LineSegments(wireGeometry, material);
+
+    wire.position.set(x, y, 0);
+    wire.scale.setScalar(scale);
+    wire.rotation.y = rotationY;
+    wire.rotation.x = -0.08;
+
+    wire.userData = {
+      baseX: x,
+      baseY: y,
+      baseRotationY: rotationY,
+      phase: phase,
+    };
+
+    group.add(wire);
   }
-
-  const wire = new THREE.LineSegments(wireGeometry, material);
-
-  wire.position.set(x, y, 0);
-  wire.scale.setScalar(scale);
-  wire.rotation.y = rotationY;
-  wire.rotation.x = -0.08;
-
-  wire.userData = {
-    baseX: x,
-    baseY: y,
-    baseRotationY: rotationY,
-    phase: phase,
-  };
-
-  group.add(wire);
-}
 
   /* =====================================================
      MOUSE & INTERACTION
