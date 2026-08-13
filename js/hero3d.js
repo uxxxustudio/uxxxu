@@ -63,17 +63,20 @@ export function initHero3D() {
     }
   );
 
-  /* =====================================================
-   CREATE 3D LINE LETTER (EDGES GEOMETRY FIX)
+/* =====================================================
+   CREATE 3D LINE LETTER (U/X 개별 최적화)
 ===================================================== */
 function createLetter(character, font, x, y, rotationY, scale, phase) {
-  // 1. bevelEnabled를 false로 설정하거나 베벨 값을 최소화하여 명확한 3D 두께 형성
+  // 베벨 옵션을 사용하여 3D 볼륨감을 극대화합니다. (기존 옵션 유지)
   const geometry = new TextGeometry(character, {
     font: font,
     size: 4.1,
-    depth: 0.8,         // 입체 두께감 유지
-    curveSegments: 12,  // U자의 곡면을 더 부드럽게 표현
-    bevelEnabled: false, // 통 입체감을 위해 베벨 비활성화 (권장)
+    depth: 0.72,
+    curveSegments: 8,
+    bevelEnabled: true,
+    bevelThickness: 0.09,
+    bevelSize: 0.055,
+    bevelSegments: 2,
   });
 
   geometry.computeBoundingBox();
@@ -86,10 +89,18 @@ function createLetter(character, font, x, y, rotationY, scale, phase) {
   geometry.translate(-centerX, -centerY, 0);
 
   /* =================================================
-      OUTLINE EDGES (임계각을 낮추어 앞/뒤 연결선 복원)
-  ================================================= */
-  // 20도 -> 3도로 변경하여 U자의 곡면 측면 연결선(Depth Edges)이 생략되지 않도록 처리
-  const wireGeometry = new THREE.EdgesGeometry(geometry, 3);
+     [U/X 개별 처리 로직] (여기서 해결!)
+   ================================================= */
+  let wireGeometry;
+
+  if (character === "U") {
+    // [U 해결책] 곡면의 기둥 선들이 모두 보이도록 임계각 기준을 20 -> 3도로 낮춥니다.
+    // 이렇게 하면 곡면 측면 연결선(Depth Edges)이 생략되지 않고 촘촘하게 복원됩니다.
+    wireGeometry = new THREE.EdgesGeometry(geometry, 3);
+  } else {
+    // [X 해결책] 직선 기반이라 뭉치지 않으므로, 깔끔한 외곽선(Edges)을 위해 20도를 유지합니다.
+    wireGeometry = new THREE.EdgesGeometry(geometry, 20);
+  }
 
   const wire = new THREE.LineSegments(wireGeometry, material);
 
