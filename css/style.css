@@ -134,43 +134,35 @@ nav a:hover{
 .hero-light{
     position:absolute;
     z-index:0;
-    width:48vw;
-    height:58vh;
-    right:10vw;
-    top:18vh;
+
+    width:52vw;
+    height:52vh;
+
+    right:4vw;
+    top:20vh;
+
     pointer-events:none;
-    opacity:.82;
-    filter:blur(42px);
-    transform:translate3d(4%,0,0) scale(1);
+
+    opacity:.72;
+    filter:blur(55px);
+
+    transform:translate3d(3%,1%,0) scale(.96);
+
     background:
         radial-gradient(
-            ellipse 34% 38% at 72% 43%,
-            rgba(57,78,68,.075) 0%,
-            rgba(57,78,68,.045) 28%,
-            rgba(57,78,68,0) 68%
+            ellipse 48% 42% at 62% 48%,
+            rgba(135,140,137,.075) 0%,
+            rgba(135,140,137,.035) 42%,
+            rgba(135,140,137,0) 75%
         ),
         radial-gradient(
-            ellipse 62% 56% at 64% 48%,
-            rgba(125,130,128,.075) 0%,
-            rgba(160,163,161,.045) 34%,
-            rgba(255,255,255,0) 72%
+            ellipse 22% 28% at 70% 46%,
+            rgba(47,70,59,.045) 0%,
+            rgba(47,70,59,.018) 38%,
+            rgba(47,70,59,0) 72%
         );
-    animation:heroLightFlow 20s ease-in-out infinite alternate;
-}
 
-.hero-light::after{
-    content:"";
-    position:absolute;
-    inset:-18%;
-    background:
-        radial-gradient(
-            ellipse 28% 45% at 76% 52%,
-            rgba(255,255,255,.34) 0%,
-            rgba(255,255,255,.14) 28%,
-            rgba(255,255,255,0) 70%
-        );
-    filter:blur(28px);
-    animation:heroLightPulse 15s ease-in-out infinite alternate;
+    animation:heroLightFlow 22s ease-in-out infinite alternate;
 }
 
 .hero-inner{
@@ -179,17 +171,20 @@ nav a:hover{
 }
 
 @keyframes heroLightFlow{
-    0%{ transform:translate3d(5%,-2%,0) scale(1); }
-    45%{ transform:translate3d(-1%,3%,0) scale(1.055); }
-    100%{ transform:translate3d(-6%,-1%,0) scale(1.02); }
-}
 
-@keyframes heroLightPulse{
-    0%{ transform:translate3d(5%,-2%,0) scale(.92); opacity:.48; }
-    50%{ transform:translate3d(-2%,2%,0) scale(1.04); opacity:.72; }
-    100%{ transform:translate3d(-7%,-1%,0) scale(.96); opacity:.42; }
-}
+    0%{
+        transform:translate3d(3%,1%,0) scale(.96);
+    }
 
+    50%{
+        transform:translate3d(-2%,-1%,0) scale(1.04);
+    }
+
+    100%{
+        transform:translate3d(2%,2%,0) scale(1);
+    }
+
+}
 /* =========================================================
    HERO
 ========================================================= */
