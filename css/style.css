@@ -143,7 +143,7 @@ nav a:hover{
 
     pointer-events:none;
 
-    opacity:.65;
+    opacity:1;
     filter:blur(70px);
 
     transform:translate3d(0,0,0);
@@ -178,8 +178,8 @@ nav a:hover{
     background:
         radial-gradient(
             ellipse at center,
-            rgba(43,65,54,.035) 0%,
-            rgba(43,65,54,.015) 42%,
+            rgba(43,65,54,.12) 0%,
+            rgba(43,65,54,.05) 42%,
             transparent 72%
         );
 
