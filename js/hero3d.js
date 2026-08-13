@@ -3,7 +3,7 @@ import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 
 /* =========================================================
-   HERO THREE.JS (하이엔드 베벨 글래스 & 스튜디오 림라이트)
+   HERO THREE.JS (트렌디 이리디센트 틴트 글래스)
 ========================================================= */
 
 export function initHero3D() {
@@ -19,24 +19,24 @@ export function initHero3D() {
   camera.position.set(0, 0, 15);
 
   /* =====================================================
-     STUDIO LIGHTING (유리 엣지 반사광 극대화)
+     LIGHTS (유색 오로라 하이라이트 조합)
   ===================================================== */
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+  const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
   scene.add(ambientLight);
 
-  // 1. 모서리에 쨍한 하이라이트를 만드는 주 핀 조명
-  const keyLight = new THREE.DirectionalLight(0xffffff, 4.5);
-  keyLight.position.set(10, 15, 12);
+  // 1. 우측 상단 메인 키 라이트 (시원한 청록/사이언 빛 반사)
+  const keyLight = new THREE.DirectionalLight(0x00f0ff, 4.0);
+  keyLight.position.set(10, 14, 10);
   scene.add(keyLight);
 
-  // 2. 우측 상단에서 비추어 입체감을 살리는 림 라이트
-  const rimLight = new THREE.DirectionalLight(0xffffff, 3.0);
-  rimLight.position.set(-10, 10, -5);
+  // 2. 좌측 상단 림 라이트 (몽환적인 바이올렛/퍼플 모서리 하이라이트)
+  const rimLight = new THREE.DirectionalLight(0xa855f7, 3.5);
+  rimLight.position.set(-10, 12, -4);
   scene.add(rimLight);
 
-  // 3. 하단 입체감을 돋보이게 하는 리플렉션 조명
-  const fillLight = new THREE.DirectionalLight(0xdce2df, 2.0);
-  fillLight.position.set(-6, -10, 8);
+  // 3. 하단 부드러운 화이트 보조광
+  const fillLight = new THREE.DirectionalLight(0xffffff, 1.8);
+  fillLight.position.set(0, -10, 8);
   scene.add(fillLight);
 
   /* =====================================================
@@ -64,24 +64,26 @@ export function initHero3D() {
   ===================================================== */
   // 1. 외곽 테두리선 (X 글자용)
   const lineMaterial = new THREE.LineBasicMaterial({
-    color: 0x111111,
+    color: 0x0f172a,
     transparent: true,
-    opacity: 0.4,
+    opacity: 0.35,
   });
 
-  // 2. 프리미엄 아크릴 글래스 재질 (U 글자용)
+  // 2. 트렌디 이리디센트 글래스 재질 (U 글자용)
   const glassMaterial = new THREE.MeshPhysicalMaterial({
-    color: 0xffffff,
-    roughness: 0.08,           // 매끄러운 표면광
-    metalness: 0.0,
-    transmission: 0.9,         // 높은 투과율로 뒤쪽 HTML 글자 투과
-    ior: 1.48,                 // 아크릴/유리 고유 굴절률
-    thickness: 1.2,            // 두께감 있는 빛 분산
+    color: 0xe0e7ff,            // 아이시 퍼리윙클 베이스
+    roughness: 0.06,            // 매끄러운 유리 광택
+    metalness: 0.05,
+    transmission: 0.88,         // 뒤쪽 텍스트 투과율
+    ior: 1.5,                   // 유리 고유 굴절률
+    thickness: 1.8,             // 내부 빛 스며듦 깊이
+    attenuationColor: 0x6366f1, // 유리 내부 딥 인디고 컬러 스며듦
+    attenuationDistance: 2.2,   // 입체감 표현 거리
     transparent: true,
-    opacity: 0.35,              // 맑게 떨어지는 틴트
-    clearcoat: 1.0,            // 표면 강한 코팅 반사층
-    clearcoatRoughness: 0.05,  // 엣지 반사를 선명하게
-    reflectivity: 0.8,
+    opacity: 0.4,
+    clearcoat: 1.0,             // 표면 쨍한 투명 코팅
+    clearcoatRoughness: 0.03,
+    reflectivity: 0.9,
     depthWrite: true,
     side: THREE.DoubleSide,
   });
@@ -94,7 +96,7 @@ export function initHero3D() {
   loader.load(
     "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/fonts/helvetiker_bold.typeface.json",
     (font) => {
-      // 1. 메인 U (베벨 글래스 + 테두리 라인)
+      // 1. 메인 U (이리디센트 글래스 + 테두리)
       createLetter("U", font, -2.9, -0.65, -0.42, 0.92, 0);
 
       // 2. 메인 X
@@ -113,23 +115,22 @@ export function initHero3D() {
   );
 
   /* =====================================================
-     CREATE 3D LETTER (Bevel 입체 곡면 추가)
+     CREATE 3D LETTER
   ===================================================== */
   function createLetter(character, font, x, y, rotationY, scale, phase) {
     const isU = character === "U";
 
-    // U 글자에 고급스러운 모서리 Bevel(라운딩 깎기) 적용
     const geometryOptions = isU
       ? {
           font: font,
           size: 4.1,
           depth: 0.65,
           curveSegments: 32,
-          bevelEnabled: true,       // ★ 핵심: 모서리 곡면 깎기 활성화
-          bevelThickness: 0.08,    // 깎이는 깊이
-          bevelSize: 0.06,         // 깎이는 너비
+          bevelEnabled: true,
+          bevelThickness: 0.09,
+          bevelSize: 0.07,
           bevelOffset: 0,
-          bevelSegments: 8,        // 모서리를 아주 부드럽게
+          bevelSegments: 8,
         }
       : {
           font: font,
@@ -152,13 +153,13 @@ export function initHero3D() {
 
     const letterGroup = new THREE.Group();
 
-    // U 글자에 베벨 글래스 Mesh 추가
+    // U 글자에 이리디센트 글래스 Mesh 추가
     if (isU) {
       const mesh = new THREE.Mesh(geometry, glassMaterial);
       letterGroup.add(mesh);
     }
 
-    // 테두리 라인 유지
+    // 모든 글자 테두리선 유지
     const wireGeometry = new THREE.EdgesGeometry(geometry, 25);
     const wire = new THREE.LineSegments(wireGeometry, lineMaterial);
     letterGroup.add(wire);
