@@ -1,6 +1,6 @@
 /* =========================================================
    HERO 3D
-   U / X — clean outer-edge 3D wire form
+   U / X — clean 3D outline
 ========================================================= */
 
 export async function initHero3D() {
@@ -22,10 +22,6 @@ export async function initHero3D() {
             "https://esm.sh/three@0.180.0/examples/jsm/loaders/FontLoader.js"
         );
 
-        const { TextGeometry } = await import(
-            "https://esm.sh/three@0.180.0/examples/jsm/geometries/TextGeometry.js"
-        );
-
 
         /* =====================================================
            SCENE
@@ -45,7 +41,7 @@ export async function initHero3D() {
             100
         );
 
-        camera.position.set(0, 0, 16);
+        camera.position.set(0, 0, 15);
 
 
         /* =====================================================
@@ -66,7 +62,10 @@ export async function initHero3D() {
             container.clientHeight
         );
 
-        renderer.setClearColor(0x000000, 0);
+        renderer.setClearColor(
+            0x000000,
+            0
+        );
 
         container.appendChild(
             renderer.domElement
@@ -74,7 +73,7 @@ export async function initHero3D() {
 
 
         /* =====================================================
-           GROUP
+           MAIN GROUP
         ===================================================== */
 
         const group = new THREE.Group();
@@ -83,12 +82,36 @@ export async function initHero3D() {
 
 
         /* =====================================================
+           MATERIAL
+        ===================================================== */
+
+        const lineMaterial =
+            new THREE.LineBasicMaterial({
+                color: 0x171717,
+                transparent: true,
+                opacity: 0.62
+            });
+
+
+        const faceMaterial =
+            new THREE.MeshBasicMaterial({
+                color: 0xffffff,
+                transparent: true,
+                opacity: 0.055,
+                side: THREE.DoubleSide,
+                depthWrite: false
+            });
+
+
+        /* =====================================================
            FONT
         ===================================================== */
 
-        const fontLoader = new FontLoader();
+        const loader =
+            new FontLoader();
 
-        fontLoader.load(
+
+        loader.load(
 
             "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/fonts/helvetiker_bold.typeface.json",
 
@@ -97,19 +120,20 @@ export async function initHero3D() {
                 createLetter(
                     "U",
                     font,
-                    -3.0,
-                    -0.25,
-                    -0.30,
-                    0.92
+                    -2.8,
+                    -0.35,
+                    -0.34,
+                    0.82
                 );
+
 
                 createLetter(
                     "X",
                     font,
-                    2.15,
-                    0.75,
+                    2.05,
+                    0.65,
                     0.30,
-                    0.86
+                    0.78
                 );
 
             },
@@ -119,16 +143,17 @@ export async function initHero3D() {
             function(error) {
 
                 console.error(
-                    "Hero font load failed:",
+                    "Hero font loading failed:",
                     error
                 );
 
             }
+
         );
 
 
         /* =====================================================
-           LETTER
+           CREATE LETTER
         ===================================================== */
 
         function createLetter(
@@ -140,102 +165,75 @@ export async function initHero3D() {
             scale
         ) {
 
-            const geometry = new TextGeometry(
-                character,
-                {
-                    font: font,
+            const size = 4.5;
 
-                    size: 4.2,
+            const shapes =
+                font.generateShapes(
+                    character,
+                    size
+                );
 
-                    depth: 0.62,
 
-                    curveSegments: 18,
+            if (!shapes || !shapes.length) {
+                return;
+            }
 
-                    bevelEnabled: true,
 
-                    bevelThickness: 0.055,
+            /* =================================================
+               BOUNDING BOX
+            ================================================= */
 
-                    bevelSize: 0.035,
+            let minX = Infinity;
+            let maxX = -Infinity;
+            let minY = Infinity;
+            let maxY = -Infinity;
 
-                    bevelSegments: 3
+
+            shapes.forEach(
+                function(shape) {
+
+                    const points =
+                        shape.getPoints(80);
+
+                    points.forEach(
+                        function(point) {
+
+                            minX =
+                                Math.min(
+                                    minX,
+                                    point.x
+                                );
+
+                            maxX =
+                                Math.max(
+                                    maxX,
+                                    point.x
+                                );
+
+                            minY =
+                                Math.min(
+                                    minY,
+                                    point.y
+                                );
+
+                            maxY =
+                                Math.max(
+                                    maxY,
+                                    point.y
+                                );
+
+                        }
+                    );
+
                 }
             );
 
 
-            /* -------------------------------------------------
-               CENTER
-            ------------------------------------------------- */
+            const centerX =
+                (minX + maxX) / 2;
 
-            geometry.computeBoundingBox();
-
-            const box =
-                geometry.boundingBox;
-
-            geometry.translate(
-                -(box.max.x + box.min.x) / 2,
-                -(box.max.y + box.min.y) / 2,
-                0
-            );
-
-
-            /* =================================================
-               WHITE TRANSPARENT FACE
-            ================================================= */
-
-            const faceMaterial =
-                new THREE.MeshBasicMaterial({
-
-                    color: 0xffffff,
-
-                    transparent: true,
-
-                    opacity: 0.075,
-
-                    side: THREE.DoubleSide,
-
-                    depthWrite: false
-
-                });
-
-
-            const face =
-                new THREE.Mesh(
-                    geometry,
-                    faceMaterial
-                );
-
-
-            /* =================================================
-               OUTER EDGE ONLY
-               
-               WireframeGeometry ❌
-               EdgesGeometry     ⭕
-            ================================================= */
-
-            const edgeGeometry =
-                new THREE.EdgesGeometry(
-                    geometry,
-                    35
-                );
-
-
-            const edgeMaterial =
-                new THREE.LineBasicMaterial({
-
-                    color: 0x111111,
-
-                    transparent: true,
-
-                    opacity: 0.72
-
-                });
-
-
-            const edges =
-                new THREE.LineSegments(
-                    edgeGeometry,
-                    edgeMaterial
-                );
+            const centerY =
+                (minY + maxY) / 2;
 
 
             /* =================================================
@@ -245,13 +243,6 @@ export async function initHero3D() {
             const letter =
                 new THREE.Group();
 
-            letter.add(face);
-            letter.add(edges);
-
-
-            /* =================================================
-               POSITION
-            ================================================= */
 
             letter.position.set(
                 x,
@@ -260,18 +251,11 @@ export async function initHero3D() {
             );
 
 
-            /* =================================================
-               SIDE VIEW
-               
-               정면이 아니라 살짝 측면으로
-               실제 depth가 보이도록 회전
-            ================================================= */
-
             letter.rotation.y =
                 rotationY;
 
             letter.rotation.x =
-                -0.055;
+                -0.035;
 
 
             letter.scale.setScalar(
@@ -280,12 +264,117 @@ export async function initHero3D() {
 
 
             /* =================================================
-               FLOAT DATA
+               DEPTH
+               
+               얇은 3D 깊이
             ================================================= */
 
-            letter.userData.baseX = x;
+            const depth = 0.58;
 
-            letter.userData.baseY = y;
+
+            /* =================================================
+               FACE
+               
+               실제 면은 아주 약하게만 보이게
+               선을 방해하지 않도록 처리
+            ================================================= */
+
+            const extrudeSettings = {
+
+                depth: depth,
+
+                bevelEnabled: false,
+
+                curveSegments: 24
+
+            };
+
+
+            const faceGeometry =
+                new THREE.ExtrudeGeometry(
+                    shapes,
+                    extrudeSettings
+                );
+
+
+            faceGeometry.translate(
+                -centerX,
+                -centerY,
+                -depth / 2
+            );
+
+
+            const face =
+                new THREE.Mesh(
+                    faceGeometry,
+                    faceMaterial
+                );
+
+
+            letter.add(face);
+
+
+            /* =================================================
+               OUTLINE
+               
+               앞면 + 뒷면의 실제 Shape 외곽선만 사용
+               
+               ❌ Wireframe
+               ❌ 삼각형
+               ❌ 내부 대각선
+            ================================================= */
+
+            shapes.forEach(
+                function(shape) {
+
+                    drawContour(
+                        shape,
+                        depth,
+                        centerX,
+                        centerY,
+                        letter
+                    );
+
+
+                    /* -----------------------------------------
+                       HOLE
+                       
+                       U의 안쪽 곡선도 외곽선으로 처리
+                    ----------------------------------------- */
+
+                    if (
+                        shape.holes &&
+                        shape.holes.length
+                    ) {
+
+                        shape.holes.forEach(
+                            function(hole) {
+
+                                drawContour(
+                                    hole,
+                                    depth,
+                                    centerX,
+                                    centerY,
+                                    letter
+                                );
+
+                            }
+                        );
+
+                    }
+
+                }
+            );
+
+
+            group.add(letter);
+
+
+            letter.userData.baseX =
+                x;
+
+            letter.userData.baseY =
+                y;
 
             letter.userData.baseRotationY =
                 rotationY;
@@ -295,8 +384,183 @@ export async function initHero3D() {
                     ? 0
                     : Math.PI * 0.65;
 
+        }
 
-            group.add(letter);
+
+        /* =====================================================
+           DRAW CONTOUR
+        ===================================================== */
+
+        function drawContour(
+            contour,
+            depth,
+            centerX,
+            centerY,
+            parent
+        ) {
+
+            let points =
+                contour.getPoints(72);
+
+
+            /* -----------------------------------------------
+               마지막 중복점 제거
+            ----------------------------------------------- */
+
+            if (
+                points.length > 1 &&
+                points[0].distanceTo(
+                    points[points.length - 1]
+                ) < 0.001
+            ) {
+
+                points.pop();
+
+            }
+
+
+            if (points.length < 3) {
+                return;
+            }
+
+
+            const frontPoints = [];
+
+            const backPoints = [];
+
+
+            /* =================================================
+               FRONT / BACK
+            ================================================= */
+
+            points.forEach(
+                function(point) {
+
+                    frontPoints.push(
+                        new THREE.Vector3(
+                            point.x - centerX,
+                            point.y - centerY,
+                            depth / 2
+                        )
+                    );
+
+
+                    backPoints.push(
+                        new THREE.Vector3(
+                            point.x - centerX,
+                            point.y - centerY,
+                            -depth / 2
+                        )
+                    );
+
+                }
+            );
+
+
+            /* =================================================
+               FRONT OUTLINE
+            ================================================= */
+
+            const frontGeometry =
+                new THREE.BufferGeometry()
+                    .setFromPoints(
+                        frontPoints
+                    );
+
+
+            const frontLine =
+                new THREE.LineLoop(
+                    frontGeometry,
+                    lineMaterial
+                );
+
+
+            parent.add(
+                frontLine
+            );
+
+
+            /* =================================================
+               BACK OUTLINE
+            ================================================= */
+
+            const backGeometry =
+                new THREE.BufferGeometry()
+                    .setFromPoints(
+                        backPoints
+                    );
+
+
+            const backLine =
+                new THREE.LineLoop(
+                    backGeometry,
+                    lineMaterial
+                );
+
+
+            parent.add(
+                backLine
+            );
+
+
+            /* =================================================
+               SIDE DEPTH
+               
+               전체 면을 선으로 채우지 않고
+               깊이를 보여주는 연결선만 선택
+            ================================================= */
+
+            const sidePoints = [];
+
+
+            /*
+             * U/X의 외곽에서 일정 간격으로
+             * 중요한 지점만 연결.
+             *
+             * 이렇게 해야 곡선 전체가
+             * 빗살처럼 보이지 않는다.
+             */
+
+            const step =
+                Math.max(
+                    1,
+                    Math.floor(
+                        points.length / 12
+                    )
+                );
+
+
+            for (
+                let i = 0;
+                i < points.length;
+                i += step
+            ) {
+
+                sidePoints.push(
+                    frontPoints[i],
+                    backPoints[i]
+                );
+
+            }
+
+
+            const sideGeometry =
+                new THREE.BufferGeometry()
+                    .setFromPoints(
+                        sidePoints
+                    );
+
+
+            const sideLines =
+                new THREE.LineSegments(
+                    sideGeometry,
+                    lineMaterial
+                );
+
+
+            parent.add(
+                sideLines
+            );
 
         }
 
@@ -309,6 +573,7 @@ export async function initHero3D() {
             x: 0,
             y: 0
         };
+
 
         const targetMouse = {
             x: 0,
@@ -323,6 +588,7 @@ export async function initHero3D() {
                 targetMouse.x =
                     (event.clientX /
                     window.innerWidth) * 2 - 1;
+
 
                 targetMouse.y =
                     (event.clientY /
@@ -344,13 +610,18 @@ export async function initHero3D() {
             const height =
                 container.clientHeight;
 
-            if (!width || !height) {
+
+            if (
+                width <= 0 ||
+                height <= 0
+            ) {
                 return;
             }
 
 
             camera.aspect =
                 width / height;
+
 
             camera.updateProjectionMatrix();
 
@@ -370,7 +641,7 @@ export async function initHero3D() {
 
 
         /* =====================================================
-           FLOAT ANIMATION
+           FLOAT
         ===================================================== */
 
         const clock =
@@ -388,10 +659,6 @@ export async function initHero3D() {
                 clock.getElapsedTime();
 
 
-            /* -------------------------------------------------
-               SMOOTH MOUSE
-            ------------------------------------------------- */
-
             mouse.x +=
                 (
                     targetMouse.x -
@@ -406,10 +673,6 @@ export async function initHero3D() {
                 ) * 0.035;
 
 
-            /* -------------------------------------------------
-               FLOAT
-            ------------------------------------------------- */
-
             group.children.forEach(
                 function(letter) {
 
@@ -420,7 +683,7 @@ export async function initHero3D() {
                     letter.position.x =
                         letter.userData.baseX +
                         Math.sin(
-                            time * 0.65 +
+                            time * 0.55 +
                             phase
                         ) * 0.13;
 
@@ -428,23 +691,24 @@ export async function initHero3D() {
                     letter.position.y =
                         letter.userData.baseY +
                         Math.cos(
-                            time * 0.75 +
+                            time * 0.68 +
                             phase
                         ) * 0.13;
 
 
-                    /* -------------------------------------------------
-                       SIDE VIEW + MOUSE
-                    ------------------------------------------------- */
+                    /*
+                     * 기본 측면 각도는 유지하고
+                     * 마우스에 따라 아주 조금만 움직임
+                     */
 
                     letter.rotation.y =
                         letter.userData.baseRotationY +
-                        mouse.x * 0.12;
+                        mouse.x * 0.075;
 
 
                     letter.rotation.x =
-                        -0.055 +
-                        mouse.y * 0.045;
+                        -0.035 +
+                        mouse.y * 0.035;
 
                 }
             );
@@ -466,11 +730,13 @@ export async function initHero3D() {
 
         animate();
 
+    }
 
-    } catch (error) {
+
+    catch (error) {
 
         console.error(
-            "Hero Three.js initialization failed:",
+            "Hero 3D initialization failed:",
             error
         );
 
