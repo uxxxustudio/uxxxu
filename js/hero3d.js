@@ -3,7 +3,7 @@ import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 
 /* =========================================================
-   HERO THREE.JS (트렌디 이리디센트 틴트 글래스)
+   HERO THREE.JS (Acid Lime & Cyber Mint Glass)
 ========================================================= */
 
 export function initHero3D() {
@@ -19,23 +19,23 @@ export function initHero3D() {
   camera.position.set(0, 0, 15);
 
   /* =====================================================
-     LIGHTS (유색 오로라 하이라이트 조합)
+     LIGHTS (애시드 라임 & 민트 조명 조합)
   ===================================================== */
-  const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
+  const ambientLight = new THREE.AmbientLight(0xffffff, 1.0);
   scene.add(ambientLight);
 
-  // 1. 우측 상단 메인 키 라이트 (시원한 청록/사이언 빛 반사)
-  const keyLight = new THREE.DirectionalLight(0x00f0ff, 4.0);
+  // 1. 우측 상단 메인 키 라이트 (쨍한 네온 라임)
+  const keyLight = new THREE.DirectionalLight(0xa3e635, 4.5);
   keyLight.position.set(10, 14, 10);
   scene.add(keyLight);
 
-  // 2. 좌측 상단 림 라이트 (몽환적인 바이올렛/퍼플 모서리 하이라이트)
-  const rimLight = new THREE.DirectionalLight(0xa855f7, 3.5);
+  // 2. 좌측 상단 림 라이트 (시원한 사이버 민트 그린)
+  const rimLight = new THREE.DirectionalLight(0x22c55e, 4.0);
   rimLight.position.set(-10, 12, -4);
   scene.add(rimLight);
 
-  // 3. 하단 부드러운 화이트 보조광
-  const fillLight = new THREE.DirectionalLight(0xffffff, 1.8);
+  // 3. 하단 레몬 일루미네이션 보조광
+  const fillLight = new THREE.DirectionalLight(0xfacc15, 2.0);
   fillLight.position.set(0, -10, 8);
   scene.add(fillLight);
 
@@ -69,20 +69,20 @@ export function initHero3D() {
     opacity: 0.35,
   });
 
-  // 2. 트렌디 이리디센트 글래스 재질 (U 글자용)
+  // 2. 애시드 라이트 틴트 글래스 재질 (U 글자용)
   const glassMaterial = new THREE.MeshPhysicalMaterial({
-    color: 0xe0e7ff,            // 아이시 퍼리윙클 베이스
-    roughness: 0.06,            // 매끄러운 유리 광택
-    metalness: 0.05,
-    transmission: 0.88,         // 뒤쪽 텍스트 투과율
-    ior: 1.5,                   // 유리 고유 굴절률
-    thickness: 1.8,             // 내부 빛 스며듦 깊이
-    attenuationColor: 0x6366f1, // 유리 내부 딥 인디고 컬러 스며듦
-    attenuationDistance: 2.2,   // 입체감 표현 거리
+    color: 0xfef08a,            // 은은하고 밝은 옐로우/라임 베이스
+    roughness: 0.05,            // 아주 매끄러운 반사광
+    metalness: 0.0,
+    transmission: 0.9,         // 높고 맑은 투과율
+    ior: 1.52,                  // 선명한 굴절감
+    thickness: 1.5,             // 볼륨감 있는 빛 산란
+    attenuationColor: 0x65a30d, // 내부 깊은 올리브/애시드 그린 스며듦
+    attenuationDistance: 2.0,
     transparent: true,
-    opacity: 0.4,
+    opacity: 0.45,
     clearcoat: 1.0,             // 표면 쨍한 투명 코팅
-    clearcoatRoughness: 0.03,
+    clearcoatRoughness: 0.02,
     reflectivity: 0.9,
     depthWrite: true,
     side: THREE.DoubleSide,
@@ -96,7 +96,7 @@ export function initHero3D() {
   loader.load(
     "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/fonts/helvetiker_bold.typeface.json",
     (font) => {
-      // 1. 메인 U (이리디센트 글래스 + 테두리)
+      // 1. 메인 U (애시드 글래스 + 테두리)
       createLetter("U", font, -2.9, -0.65, -0.42, 0.92, 0);
 
       // 2. 메인 X
@@ -153,13 +153,13 @@ export function initHero3D() {
 
     const letterGroup = new THREE.Group();
 
-    // U 글자에 이리디센트 글래스 Mesh 추가
+    // U 글자에 애시드 글래스 Mesh 추가
     if (isU) {
       const mesh = new THREE.Mesh(geometry, glassMaterial);
       letterGroup.add(mesh);
     }
 
-    // 모든 글자 테두리선 유지
+    // 테두리선 유지
     const wireGeometry = new THREE.EdgesGeometry(geometry, 25);
     const wire = new THREE.LineSegments(wireGeometry, lineMaterial);
     letterGroup.add(wire);
