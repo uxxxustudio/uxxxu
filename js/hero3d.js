@@ -3,7 +3,7 @@ import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 
 /* =========================================================
-   HERO THREE.JS (U 테두리 라인 유지 + 모바일 반응형 최적화)
+   HERO THREE.JS (Chromatic Dispersion 프리즘 글래스 적용)
 ========================================================= */
 
 export function initHero3D() {
@@ -19,19 +19,19 @@ export function initHero3D() {
   camera.position.set(0, 0, 15);
 
   /* =====================================================
-     LIGHTS (유리/아크릴 표면 하이라이트 생성용 조명)
+     LIGHTS (프리즘 하이라이트 극대화 조명 세팅)
   ===================================================== */
-  const ambientLight = new THREE.AmbientLight(0xffffff, 1.1);
+  const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
   scene.add(ambientLight);
 
-  // 상단에서 비추어 글래스 곡면에 쨍한 빛 반사를 만드는 주 조명
-  const keyLight = new THREE.DirectionalLight(0xffffff, 2.8);
-  keyLight.position.set(6, 12, 8);
+  // 프리즘 빛갈림을 만들어내는 메인 딥 조명
+  const keyLight = new THREE.DirectionalLight(0xffffff, 3.2);
+  keyLight.position.set(7, 12, 8);
   scene.add(keyLight);
 
-  // 하단 측면에서 입체감을 살려주는 보조 조명
-  const fillLight = new THREE.DirectionalLight(0xdce2df, 1.5);
-  fillLight.position.set(-6, -5, 5);
+  // 은은한 #DCE2DF 보조 림라이트
+  const fillLight = new THREE.DirectionalLight(0xdce2df, 1.8);
+  fillLight.position.set(-7, -6, 6);
   scene.add(fillLight);
 
   /* =====================================================
@@ -56,23 +56,27 @@ export function initHero3D() {
   /* =====================================================
      MATERIALS
   ===================================================== */
-  // 1. 선명한 외곽 테두리선
+  // 1. 외곽 테두리선
   const lineMaterial = new THREE.LineBasicMaterial({
     color: 0x111111,
     transparent: true,
     opacity: 0.65,
   });
 
-  // 2. #DCE2DF 아크릴 글래스 물리 재질
+  // 2. Chromatic Dispersion 프리즘 글래스 재질 (U 전용)
   const glassMaterial = new THREE.MeshPhysicalMaterial({
     color: 0xdce2df,
-    roughness: 0.18,          // 표면을 매끄럽게 하여 광택 유지
-    metalness: 0.08,         // 은은한 아크릴 느낌의 은빛 광택
-    clearcoat: 1.0,           // 유리 표면의 강한 코팅 반사층
-    clearcoatRoughness: 0.1,  // 하이라이트를 또렷하게 표현
+    roughness: 0.06,          // 표면을 아주 매끄럽게 잡아 분광을 선명하게 함
+    metalness: 0.02,
+    transmission: 0.88,       // 맑은 빛 투과율
+    ior: 1.52,                // 유리 고유 굴절률 (Glass IOR)
+    thickness: 1.8,           // 두께감이 입혀져 내부 빛갈림 형성
+    dispersion: 0.18,         // ★ 프리즘 무지갯빛 분광 효과
+    clearcoat: 1.0,           // 유리 표면 쨍한 반사 코팅
+    clearcoatRoughness: 0.04,
     transparent: true,
-    opacity: 0.62,            // 덩어리감이 느껴지는 적절한 불투명도
-    depthWrite: true,         // 내부 복잡한 뒷선 차단
+    opacity: 0.85,
+    depthWrite: true,
     side: THREE.DoubleSide,
   });
 
@@ -84,7 +88,7 @@ export function initHero3D() {
   loader.load(
     "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/fonts/helvetiker_bold.typeface.json",
     (font) => {
-      // 1. 메인 U (아크릴 글래스 + 테두리 라인)
+      // 1. 메인 U (프리즘 글래스 + 테두리 라인)
       createLetter("U", font, -2.9, -0.65, -0.42, 0.92, 0);
 
       // 2. 메인 X
@@ -127,13 +131,13 @@ export function initHero3D() {
 
     const letterGroup = new THREE.Group();
 
-    // U 글자인 경우 아크릴 글래스 Mesh 추가
+    // U 글자에 프리즘 글래스 Mesh 추가
     if (isU) {
       const mesh = new THREE.Mesh(geometry, glassMaterial);
       letterGroup.add(mesh);
     }
 
-    // 모든 글자(U, X)에 외곽 테두리선 유지
+    // 테두리 라인 유지
     const wireGeometry = new THREE.EdgesGeometry(geometry, 20);
     const wire = new THREE.LineSegments(wireGeometry, lineMaterial);
     letterGroup.add(wire);
@@ -169,7 +173,7 @@ export function initHero3D() {
   );
 
   /* =====================================================
-     RESIZE & RESPONSIVE SCALE (모바일 대응 자동 축소)
+     RESIZE & RESPONSIVE SCALE (모바일 자동 보정)
   ===================================================== */
   function updateResponsiveScale() {
     const width = container.clientWidth;
@@ -179,12 +183,10 @@ export function initHero3D() {
 
     const isMobile = window.innerWidth < 768;
 
-    // 1. 비율 및 카메라 거리 보정
     camera.aspect = width / height;
-    camera.position.z = isMobile ? 18.5 : 15; // 모바일에서 카메라를 뒤로 이동해 여백 확보
+    camera.position.z = isMobile ? 18.5 : 15;
     camera.updateProjectionMatrix();
 
-    // 2. 전체 3D 그룹 크기 축소 (데스크톱 100% / 모바일 68%)
     const targetScale = isMobile ? 0.68 : 1.0;
     group.scale.setScalar(targetScale);
 
