@@ -1205,57 +1205,66 @@ nav.open{
 }
 
 
-/* -----------------------------------------
-   Graphic area
------------------------------------------ */
+/* =========================================================
+   UX 3D WIREFRAME GRAPHIC
+========================================================= */
 
 .hero-graphic{
     position:absolute;
 
-    width:650px;
-    height:540px;
+    width:680px;
+    height:580px;
 
-    right:3vw;
+    right:2vw;
     top:52%;
 
     transform:translateY(-50%);
 
     z-index:3;
     pointer-events:none;
+
+    perspective:1000px;
 }
 
 
-/* -----------------------------------------
-   U / X object
------------------------------------------ */
+/* =========================================================
+   OBJECT
+========================================================= */
 
 .ux-object{
     position:absolute;
 
+    transform-style:preserve-3d;
+
     will-change:transform;
 }
 
-/* U — 정사각형에 가까운 통통한 비율 */
+
+/* U */
 
 .ux-u-object{
-    width:340px;
-    height:340px;
+    width:370px;
+    height:370px;
 
-    left:20px;
-    top:135px;
+    left:5px;
+    top:155px;
+
+    transform-origin:center center;
 
     animation:uxUFloat 8s ease-in-out infinite;
 }
 
 
-/* X — U와 비슷한 크기 */
+/* X */
 
 .ux-x-object{
-    width:320px;
-    height:320px;
+    width:350px;
+    height:350px;
 
     right:0;
     top:25px;
+
+    transform-origin:center center;
 
     animation:uxXFloat 7s ease-in-out infinite;
 }
@@ -1266,71 +1275,62 @@ nav.open{
     height:100%;
 
     display:block;
+
     overflow:visible;
+
+    transform-style:preserve-3d;
 }
 
 
 /* =========================================================
-   TUBE BODY
+   U WIREFRAME
 ========================================================= */
 
-/* 가장 두꺼운 3D 몸체 */
+.u-back{
+    fill:none;
 
-.ux-main{
+    stroke:#777;
+
+    stroke-width:1;
+
+    stroke-linecap:round;
+    stroke-linejoin:round;
+
+    opacity:.35;
+}
+
+.u-layer{
+    fill:none;
+
+    stroke:#555;
+
+    stroke-width:1.15;
+
+    stroke-linecap:round;
+    stroke-linejoin:round;
+
+    opacity:.48;
+}
+
+.u-main{
     fill:none;
 
     stroke:#111;
 
-    stroke-width:12;
+    stroke-width:2.4;
 
     stroke-linecap:round;
     stroke-linejoin:round;
 
-    opacity:.92;
+    opacity:.86;
 }
 
-
-
-/* 튜브 안쪽 윤곽 */
-
-.ux-inner{
+.u-inner{
     fill:none;
 
-    stroke:#333;
+    stroke:#555;
 
-    stroke-width:2;
-
-    stroke-linecap:round;
-    stroke-linejoin:round;
-
-    opacity:.72;
-}
-
-
-/* 뒤쪽 깊이 */
-
-.ux-back{
-    fill:none;
-
-    stroke:#666;
-
-    stroke-width:2;
-
-    stroke-linecap:round;
-    stroke-linejoin:round;
-
-    opacity:.45;
-}
-
-
-/* 입체 연결선 */
-
-.ux-depth{
-    fill:none;
-
-    stroke:#222;
-
-    stroke-width:1.5;
+    stroke-width:1;
 
     stroke-linecap:round;
     stroke-linejoin:round;
@@ -1338,62 +1338,174 @@ nav.open{
     opacity:.55;
 }
 
-/* =========================================================
-   DOTTED CONSTRUCTION LINE
-========================================================= */
-
-.ux-dots{
+.u-section{
     fill:none;
 
-    stroke:#777;
+    stroke:#444;
 
-    stroke-width:1.2;
+    stroke-width:.9;
 
     stroke-linecap:round;
     stroke-linejoin:round;
 
-    stroke-dasharray:1 6;
-
-    opacity:.7;
+    opacity:.5;
 }
 
+.u-dots{
+    fill:none;
 
+    stroke:#666;
 
+    stroke-width:.9;
 
-/* 중심 노드 */
+    stroke-linecap:round;
 
-.ux-node{
+    stroke-dasharray:1 5;
+
+    opacity:.62;
+}
+
+.u-point{
     fill:#111;
 
-    opacity:.75;
+    opacity:.65;
 }
-
 
 
 /* =========================================================
-   FLOATING
+   X WIREFRAME
+========================================================= */
+
+.x-back{
+    fill:none;
+
+    stroke:#777;
+
+    stroke-width:1;
+
+    stroke-linecap:round;
+    stroke-linejoin:round;
+
+    opacity:.34;
+}
+
+.x-layer{
+    fill:none;
+
+    stroke:#555;
+
+    stroke-width:1.15;
+
+    stroke-linecap:round;
+    stroke-linejoin:round;
+
+    opacity:.48;
+}
+
+.x-main{
+    fill:none;
+
+    stroke:#111;
+
+    stroke-width:2.4;
+
+    stroke-linecap:round;
+    stroke-linejoin:round;
+
+    opacity:.86;
+}
+
+.x-inner{
+    fill:none;
+
+    stroke:#555;
+
+    stroke-width:1;
+
+    stroke-linecap:round;
+    stroke-linejoin:round;
+
+    opacity:.55;
+}
+
+.x-section{
+    fill:none;
+
+    stroke:#444;
+
+    stroke-width:.9;
+
+    stroke-linecap:round;
+    stroke-linejoin:round;
+
+    opacity:.5;
+}
+
+.x-dots{
+    fill:none;
+
+    stroke:#666;
+
+    stroke-width:.9;
+
+    stroke-linecap:round;
+
+    stroke-dasharray:1 5;
+
+    opacity:.62;
+}
+
+.x-point{
+    fill:#111;
+
+    opacity:.65;
+}
+
+
+/* =========================================================
+   FLOAT + PERSPECTIVE
 ========================================================= */
 
 @keyframes uxUFloat{
 
     0%{
-        transform:translate3d(0,0,0) rotate(-2deg);
+        transform:
+            translate3d(0,0,0)
+            rotateY(-18deg)
+            rotateX(4deg)
+            rotateZ(-2deg);
     }
 
     25%{
-        transform:translate3d(-5px,-10px,0) rotate(-1deg);
+        transform:
+            translate3d(-8px,-8px,0)
+            rotateY(-23deg)
+            rotateX(6deg)
+            rotateZ(-1deg);
     }
 
     50%{
-        transform:translate3d(7px,-17px,0) rotate(2deg);
+        transform:
+            translate3d(8px,-15px,0)
+            rotateY(-17deg)
+            rotateX(3deg)
+            rotateZ(2deg);
     }
 
     75%{
-        transform:translate3d(10px,-7px,0) rotate(1deg);
+        transform:
+            translate3d(11px,-6px,0)
+            rotateY(-21deg)
+            rotateX(5deg)
+            rotateZ(1deg);
     }
 
     100%{
-        transform:translate3d(0,0,0) rotate(-2deg);
+        transform:
+            translate3d(0,0,0)
+            rotateY(-18deg)
+            rotateX(4deg)
+            rotateZ(-2deg);
     }
 }
 
@@ -1401,61 +1513,72 @@ nav.open{
 @keyframes uxXFloat{
 
     0%{
-        transform:translate3d(0,0,0) rotate(3deg);
+        transform:
+            translate3d(0,0,0)
+            rotateY(20deg)
+            rotateX(5deg)
+            rotateZ(3deg);
     }
 
     25%{
-        transform:translate3d(8px,-7px,0) rotate(4deg);
+        transform:
+            translate3d(8px,-7px,0)
+            rotateY(25deg)
+            rotateX(7deg)
+            rotateZ(4deg);
     }
 
     50%{
-        transform:translate3d(4px,-15px,0) rotate(2deg);
+        transform:
+            translate3d(5px,-16px,0)
+            rotateY(18deg)
+            rotateX(4deg)
+            rotateZ(1deg);
     }
 
     75%{
-        transform:translate3d(-8px,-5px,0) rotate(-1deg);
+        transform:
+            translate3d(-8px,-5px,0)
+            rotateY(23deg)
+            rotateX(6deg)
+            rotateZ(-1deg);
     }
 
     100%{
-        transform:translate3d(0,0,0) rotate(3deg);
+        transform:
+            translate3d(0,0,0)
+            rotateY(20deg)
+            rotateX(5deg)
+            rotateZ(3deg);
     }
 }
 
 
 /* =========================================================
-   DESKTOP
+   RESPONSIVE
 ========================================================= */
 
-@media (min-width:1200px){
+@media (max-width:1200px){
 
     .hero-graphic{
-        width:650px;
-        height:540px;
-
-        right:3vw;
+        width:570px;
+        height:500px;
+        right:0;
     }
 
     .ux-u-object{
-        width:340px;
-        height:340px;
-
-        left:10px;
+        width:310px;
+        height:310px;
         top:150px;
     }
 
     .ux-x-object{
-        width:320px;
-        height:320px;
-
-        right:0;
-        top:20px;
+        width:295px;
+        height:295px;
+        top:30px;
     }
 }
 
-
-/* =========================================================
-   MOBILE
-========================================================= */
 
 @media (max-width:900px){
 
@@ -1464,22 +1587,18 @@ nav.open{
         height:400px;
 
         right:-60px;
-        top:62%;
+        top:65%;
     }
 
     .ux-u-object{
         width:240px;
         height:240px;
-
-        left:0;
-        top:120px;
+        top:130px;
     }
 
     .ux-x-object{
-        width:230px;
-        height:230px;
-
-        right:0;
+        width:225px;
+        height:225px;
         top:20px;
     }
 }
