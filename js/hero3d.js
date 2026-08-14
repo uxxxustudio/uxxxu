@@ -3,7 +3,7 @@ import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 
 /* =========================================================
-   HERO THREE.JS (면 경계가 명확히 살아나는 입체 아크릴 글래스)
+   HERO THREE.JS (Haoqi Design Style - Aurora Glass Tube)
 ========================================================= */
 
 export function initHero3D() {
@@ -19,25 +19,31 @@ export function initHero3D() {
   camera.position.set(0, 0, 15);
 
   /* =====================================================
-     LIGHTS (면의 각도 명암 대비를 극대화하는 조명 세팅)
+     LIGHTS (오로라/유리 림라이트 4점 조명)
   ===================================================== */
-  const ambientLight = new THREE.AmbientLight(0xffffff, 1.0);
+  // 기본 은은한 환경광
+  const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
   scene.add(ambientLight);
 
-  // 1. 앞면을 밝게 비추는 직사광
-  const frontLight = new THREE.DirectionalLight(0xffffff, 4.0);
-  frontLight.position.set(5, 10, 15);
-  scene.add(frontLight);
+  // 1. 우측 상단 쨍한 스카이블루 림라이트 (메인 반사)
+  const keyLight = new THREE.DirectionalLight(0x38bdf8, 6.0);
+  keyLight.position.set(12, 15, 10);
+  scene.add(keyLight);
 
-  // 2. 측면 음영을 살려주는 우측 쿨그레이 조명
-  const sideLight = new THREE.DirectionalLight(0xc1c7cd, 3.5);
-  sideLight.position.set(-15, -5, 5);
-  scene.add(sideLight);
+  // 2. 좌측 상단 은은한 핑크/바이올렛 림라이트
+  const violetLight = new THREE.DirectionalLight(0xc084fc, 5.0);
+  violetLight.position.set(-12, 10, -2);
+  scene.add(violetLight);
 
-  // 3. 모서리 베벨 선을 쨍하게 찍어주는 림라이트
-  const rimLight = new THREE.DirectionalLight(0xffffff, 5.0);
-  rimLight.position.set(12, 12, -2);
-  scene.add(rimLight);
+  // 3. 하단 레몬/화이트 하이라이트 (튜브 곡면 부각)
+  const bottomLight = new THREE.DirectionalLight(0xfef08a, 3.0);
+  bottomLight.position.set(0, -12, 8);
+  scene.add(bottomLight);
+
+  // 4. 중앙 쨍한 화이트 핀 조명 (글래스 반짝임 생성)
+  const pointLight = new THREE.PointLight(0xffffff, 4.0, 20);
+  pointLight.position.set(0, 2, 8);
+  scene.add(pointLight);
 
   /* =====================================================
      RENDERER
@@ -60,41 +66,30 @@ export function initHero3D() {
   scene.add(group);
 
   /* =====================================================
-     MATERIALS (앞면과 측면 분리 적용)
+     AURORA TUBE GLASS MATERIAL (레퍼런스 특유의 오로라 유리)
   ===================================================== */
-  // 1. 외곽 테두리선 (X 글자용)
+  const tubeGlassMaterial = new THREE.MeshPhysicalMaterial({
+    color: 0xc7d2fe,             // 소프트 퍼리윙클 블루 베이스
+    roughness: 0.08,             // 맑고 표면 광택이 강한 매끈함
+    metalness: 0.1,
+    transmission: 0.85,          // 뒤쪽 배경 및 텍스트 맑게 투과
+    ior: 1.42,                   // 튜브 유리 특유의 소프트한 굴절
+    thickness: 2.2,              // 오로라 빛이 내부에 차오르는 두께감
+    attenuationColor: 0x6366f1,  // 내부 산란 인디고/블루 틴트
+    attenuationDistance: 1.8,
+    transparent: true,
+    opacity: 0.5,
+    clearcoat: 1.0,              // 쨍한 코팅 반사 layer
+    clearcoatRoughness: 0.03,    // 모서리 반사를 아주 쨍하게
+    reflectivity: 0.95,
+    depthWrite: true,
+    side: THREE.DoubleSide,
+  });
+
   const lineMaterial = new THREE.LineBasicMaterial({
-    color: 0x0f172a,
+    color: 0x334155,
     transparent: true,
-    opacity: 0.3,
-  });
-
-  // 2-A. 앞면 매터리얼 (맑고 높은 투과율)
-  const frontMaterial = new THREE.MeshPhysicalMaterial({
-    color: 0xffffff,
-    roughness: 0.05,
-    metalness: 0.0,
-    transmission: 0.92,        // 뒤쪽 글자 맑게 투과
-    ior: 1.45,
-    transparent: true,
-    opacity: 0.35,
-    clearcoat: 1.0,
-    clearcoatRoughness: 0.02,
-    reflectivity: 0.8,
-    depthWrite: true,
-  });
-
-  // 2-B. 측면/두께 매터리얼 (살짝 톤이 잡히며 꺾이는 경계 강조)
-  const sideMaterial = new THREE.MeshPhysicalMaterial({
-    color: 0xdce2df,            // 옅은 음영 톤
-    roughness: 0.15,            // 약간 매트하게 꺾이는 텍스처
-    metalness: 0.0,
-    transmission: 0.75,         // 측면은 좀 더 밀도감 있게
-    ior: 1.5,
-    transparent: true,
-    opacity: 0.55,              // 앞면보다 짙어서 경계선이 뚜렷해짐
-    clearcoat: 0.5,
-    depthWrite: true,
+    opacity: 0.25,
   });
 
   /* =====================================================
@@ -102,19 +97,18 @@ export function initHero3D() {
   ===================================================== */
   const loader = new FontLoader();
 
+  // 곡선이 부드러운 폰트로 가져옵니다
   loader.load(
     "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/fonts/helvetiker_bold.typeface.json",
     (font) => {
-      // 1. 메인 U (멀티 매터리얼 분리 + 테두리)
+      // 1. 메인 U (통통하고 곡면 베벨이 진하게 들어간 튜브 폰트)
       createLetter("U", font, -2.9, -0.65, -0.42, 0.92, 0);
 
       // 2. 메인 X
       createLetter("X", font, 2.25, 0.55, 0.42, 0.88, 1.7);
 
-      // 3. 상단 미니 X
+      // 3. 미니 X들
       createLetter("X", font, -2.3, 3.8, 0.35, 0.52, 0.8);
-
-      // 4. 하단 우측 미니 X
       createLetter("X", font, 5.3, -3.2, 0.45, 0.55, 2.3);
     },
     undefined,
@@ -124,22 +118,23 @@ export function initHero3D() {
   );
 
   /* =====================================================
-     CREATE 3D LETTER
+     CREATE 3D LETTER (둥글둥글한 튜브 라운딩 베벨)
   ===================================================== */
   function createLetter(character, font, x, y, rotationY, scale, phase) {
     const isU = character === "U";
 
+    // 튜브 느낌을 내기 위해 Bevel Thickness와 Size를 크게 주어 둥글게 깎음
     const geometryOptions = isU
       ? {
           font: font,
           size: 4.1,
-          depth: 0.75,               // 두께감을 조금 늘려 각도 부각
+          depth: 0.4,                // 두께는 살짝 줄이고
           curveSegments: 32,
           bevelEnabled: true,
-          bevelThickness: 0.1,       // 깎이는 모서리 강화
-          bevelSize: 0.08,
+          bevelThickness: 0.35,      // ★ 극적으로 모서리를 둥글게 만들어 튜브 형태화
+          bevelSize: 0.25,           // ★ 볼륨감 있는 곡면
           bevelOffset: 0,
-          bevelSegments: 6,
+          bevelSegments: 16,         // 완벽히 부드러운 곡면
         }
       : {
           font: font,
@@ -162,14 +157,13 @@ export function initHero3D() {
 
     const letterGroup = new THREE.Group();
 
-    // U 글자에 앞면/측면 멀티 매터리얼 적용 [앞/뒷면, 측면]
     if (isU) {
-      const mesh = new THREE.Mesh(geometry, [frontMaterial, sideMaterial]);
+      const mesh = new THREE.Mesh(geometry, tubeGlassMaterial);
       letterGroup.add(mesh);
     }
 
-    // 외곽 테두리선
-    const wireGeometry = new THREE.EdgesGeometry(geometry, 20);
+    // 외곽 Wireframe
+    const wireGeometry = new THREE.EdgesGeometry(geometry, 25);
     const wire = new THREE.LineSegments(wireGeometry, lineMaterial);
     letterGroup.add(wire);
 
@@ -242,6 +236,10 @@ export function initHero3D() {
 
     mouse.x += (target.x - mouse.x) * 0.035;
     mouse.y += (target.y - mouse.y) * 0.035;
+
+    // 조명 약간 둥둥 뜨는 모션으로 오로라 반사 연출
+    pointLight.position.x = Math.sin(time * 0.8) * 4;
+    pointLight.position.y = Math.cos(time * 0.6) * 3 + 2;
 
     group.children.forEach((object) => {
       const phase = object.userData.phase;
