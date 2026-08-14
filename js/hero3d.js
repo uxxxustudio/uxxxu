@@ -3,7 +3,7 @@ import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 
 /* =========================================================
-   HERO THREE.JS (Smooth Bevel Edge & Clean Light Glass)
+   HERO THREE.JS (Crisp Glass Edge & Clear Form U)
 ========================================================= */
 
 export function initHero3D() {
@@ -136,15 +136,15 @@ export function initHero3D() {
   scene.add(gridGroup);
 
   /* =====================================================
-     U SMOOTH EDGE CUSTOM SHADER (★ 모서리 끊김 해결)
+     U CRISP GLASS SHADER (★ 형태 선명도 극대화)
   ===================================================== */
   const cleanWhiteEdgeMaterial = new THREE.ShaderMaterial({
     uniforms: {
       topColor: { value: new THREE.Color(0xffffff) },
-      bottomColor: { value: new THREE.Color(0xe2e8f0) }, // 밝은 쿨그레이
+      bottomColor: { value: new THREE.Color(0xcbd5e1) }, // 선명한 폼을 위한 미디엄 라이트 그레이
       edgeColor: { value: new THREE.Color(0xffffff) },
-      fresnelPower: { value: 2.5 },                      
-      opacity: { value: 0.55 },                          // 투명도 유지
+      fresnelPower: { value: 1.8 },                      // 빛 반사 범위를 넓혀 윤곽 또렷하게
+      baseOpacity: { value: 0.68 },                      // 투명하지만 흐리지 않은 알파
       lightDirection: { value: new THREE.Vector3(-0.5, 0.8, 1.0).normalize() }
     },
     vertexShader: `
@@ -153,9 +153,7 @@ export function initHero3D() {
       varying vec3 vWorldPosition;
 
       void main() {
-        // ★ [핵심] 모서리 법선을 부드럽게 보정 (NormalMatrix 전규화)
         vNormal = normalize(normalMatrix * normal);
-        
         vec4 worldPosition = modelMatrix * vec4(position, 1.0);
         vWorldPosition = worldPosition.xyz;
         vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
@@ -168,7 +166,7 @@ export function initHero3D() {
       uniform vec3 bottomColor;
       uniform vec3 edgeColor;
       uniform float fresnelPower;
-      uniform float opacity;
+      uniform float baseOpacity;
       uniform vec3 lightDirection;
 
       varying vec3 vNormal;
@@ -176,7 +174,6 @@ export function initHero3D() {
       varying vec3 vWorldPosition;
 
       void main() {
-        // ★ [핵심] 파편화된 Normal을 픽셀 단위로 다시 정규화하여 끊김 방지
         vec3 normal = normalize(vNormal);
         vec3 viewDir = normalize(vViewPosition);
 
@@ -184,31 +181,40 @@ export function initHero3D() {
         float heightRatio = clamp((vWorldPosition.y + 2.0) / 4.0, 0.0, 1.0);
         vec3 baseGradient = mix(bottomColor, topColor, heightRatio);
 
-        // 은은한 라이팅 (모서리 대비 감소)
+        // 음영 콘트라스트를 살려 3D 입체감 명확히 표현
         float NdotL = max(dot(normal, lightDirection), 0.0);
-        float lightIntensity = smoothstep(0.0, 1.0, 0.8 + 0.2 * NdotL);
+        float lightIntensity = 0.75 + 0.25 * NdotL;
         vec3 shadedColor = baseGradient * lightIntensity;
 
-        // 퓨어 화이트 외곽 프레넬 라이트 (모서리에서 자연스럽게 뭉개짐)
+        // ★ 모서리 윤곽 강조용 프레넬 (엣지에서 완전 선명한 White 맺힘)
         float fresnel = 1.0 - max(dot(normal, viewDir), 0.0);
-        // ★ 파워를 조절하여 경계선에서 프레넬이 칼같이 끊기지 않게 함
         fresnel = pow(fresnel, fresnelPower);
 
-        vec3 finalColor = mix(shadedColor, edgeColor, fresnel * 0.75);
+        vec3 finalColor = mix(shadedColor, edgeColor, fresnel * 0.95);
+        
+        // 중심부는 은은하게 비치고, 외곽으로 갈수록 또렷해지는 유기적 알파
+        float alpha = mix(baseOpacity, 0.9, fresnel);
 
-        gl_FragColor = vec4(finalColor, opacity);
+        gl_FragColor = vec4(finalColor, alpha);
       }
     `,
     transparent: true,
-    depthWrite: false,
+    depthWrite: true,  // 또렷한 전면 렌더링 유지
     side: THREE.FrontSide
   });
 
-  // X 글자용 와이어프레임 라인 재질
+  // X 와이어프레임 재질
   const xLineMaterial = new THREE.LineBasicMaterial({
-    color: 0x0f172a,
+    color: 0x94a3b8,
     transparent: true,
-    opacity: 0.65,
+    opacity: 0.38,
+  });
+
+  const xNodeMaterial = new THREE.PointsMaterial({
+    color: 0x64748b,
+    size: 0.06,
+    transparent: true,
+    opacity: 0.6,
   });
 
   /* =====================================================
@@ -259,12 +265,12 @@ export function initHero3D() {
     const letterGroup = new THREE.Group();
 
     if (isU) {
-      // 모서리 보정 셰이더 메시
       letterGroup.add(new THREE.Mesh(geometry, cleanWhiteEdgeMaterial));
     } else {
-      letterGroup.add(
-        new THREE.LineSegments(new THREE.EdgesGeometry(geometry, 25), xLineMaterial)
-      );
+      const edges = new THREE.EdgesGeometry(geometry, 25);
+      letterGroup.add(new THREE.LineSegments(edges, xLineMaterial));
+      const pointsMesh = new THREE.Points(geometry, xNodeMaterial);
+      letterGroup.add(pointsMesh);
     }
 
     letterGroup.position.set(x, y, 0);
