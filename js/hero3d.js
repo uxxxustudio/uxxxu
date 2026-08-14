@@ -3,7 +3,7 @@ import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 
 /* =========================================================
-   HERO THREE.JS (Original Ocean-Blue Glass & Pure Light Edge)
+   HERO THREE.JS (White-Grey Glass U with Crisp White Edges)
 ========================================================= */
 
 export function initHero3D() {
@@ -19,28 +19,21 @@ export function initHero3D() {
   camera.position.set(0, 0, 15);
 
   /* =====================================================
-     LIGHTS (테두리 음영을 밝혀주는 백색 림 조명)
+     LIGHTS (무채색 메탈릭/글래스 하이라이트 세팅)
   ===================================================== */
-  const ambientLight = new THREE.AmbientLight(0xf0f9ff, 2.0);
+  const ambientLight = new THREE.AmbientLight(0xffffff, 2.0);
   scene.add(ambientLight);
 
-  // U 모서리 백색 하이라이트 전용 핀 조명
-  const uHighlightLight = new THREE.DirectionalLight(0xffffff, 14.0);
-  uHighlightLight.position.set(-2, 6, 10);
-  scene.add(uHighlightLight);
+  const keyLight = new THREE.DirectionalLight(0xffffff, 8.0);
+  keyLight.position.set(-4, 8, 12);
+  scene.add(keyLight);
 
-  // 마우스 추적 조명
-  const mouseLight = new THREE.PointLight(0xffffff, 8.0, 25);
+  const fillLight = new THREE.DirectionalLight(0xe2e8f0, 4.0);
+  fillLight.position.set(10, -8, 8);
+  scene.add(fillLight);
+
+  const mouseLight = new THREE.PointLight(0xffffff, 6.0, 25);
   scene.add(mouseLight);
-
-  // 오로라 컬러 림 조명
-  const skyLight = new THREE.DirectionalLight(0x0284c7, 5.0);
-  skyLight.position.set(12, 10, 8);
-  scene.add(skyLight);
-
-  const pinkLight = new THREE.DirectionalLight(0xf43f5e, 3.5);
-  pinkLight.position.set(-12, -10, 6);
-  scene.add(pinkLight);
 
   /* =====================================================
      RENDERER
@@ -131,7 +124,7 @@ export function initHero3D() {
 
   gridGroup.add(new THREE.LineSegments(curvedGridGeo, gridMaterial));
 
-  // 미세한 노드
+  // 초소형 교차점 노드
   const nodeGeo = new THREE.BoxGeometry(0.035, 0.035, 0.035);
   const nodeMat = new THREE.MeshBasicMaterial({ color: 0x64748b, transparent: true, opacity: 0.35 });
 
@@ -148,37 +141,39 @@ export function initHero3D() {
   scene.add(gridGroup);
 
   /* =====================================================
-     U MATERIAL (이전의 투명 블루 틴트 컬러 + 맑은 백색 림 적용)
+     U MATERIAL (두 번째 이미지 무채색 화이트/그레이 모던 톤)
   ===================================================== */
   const tubeGlassMaterial = new THREE.MeshPhysicalMaterial({
-    vertexColors: true,            // 이전 블루 그라데이션 복구
-    roughness: 0.05,               // 매끈한 오션 젤리/글래스 질감
+    vertexColors: true,            // 화이트 ~ 라이트 쿨그레이 그라데이션
+    roughness: 0.04,
     metalness: 0.0,
-    transmission: 0.90,            // 뒤쪽 글자 비치는 투과율
-    ior: 1.12,                     // 굴절률을 낮춰 엣지의 칙칙한 그레이 음영 왜곡 방지
-    thickness: 0.3,                // 두께 음영 최소화
-    attenuationColor: new THREE.Color(0x2563eb), // 깊이감 있는 블루 틴트
-    attenuationDistance: 2.0,
-    
-    // 어두운 모서리 음영 방지용 미세 화이트 발광
-    emissive: new THREE.Color(0x38bdf8),
-    emissiveIntensity: 0.15,
+    transmission: 0.88,            // 뒤쪽 텍스트 비침
+    ior: 1.15,
+    thickness: 0.4,
+    attenuationColor: new THREE.Color(0xf8fafc),
+    attenuationDistance: 4.0,
 
     clearcoat: 1.0,
     clearcoatRoughness: 0.0,
 
-    // 테두리에 #FFFFFF 빛만 밝게 형성되도록 스페큘러 극대화
-    specularIntensity: 5.0,
+    specularIntensity: 3.5,
     specularColor: new THREE.Color(0xffffff),
 
     transparent: true,
-    opacity: 0.75,
+    opacity: 0.82,
     depthWrite: false,
     side: THREE.FrontSide,
   });
 
-  // X 글자용 와이어프레임 라인 재질
-  const lineMaterial = new THREE.LineBasicMaterial({
+  // ★ U 글자 외곽에 선명하게 들어갈 퓨어 화이트 라인 재질
+  const uWhiteLineMaterial = new THREE.LineBasicMaterial({
+    color: 0xffffff,
+    transparent: true,
+    opacity: 0.85,
+  });
+
+  // X 글자용 어두운 라인 재질
+  const xLineMaterial = new THREE.LineBasicMaterial({
     color: 0x0f172a,
     transparent: true,
     opacity: 0.65,
@@ -229,7 +224,7 @@ export function initHero3D() {
     const box = geometry.boundingBox;
     geometry.translate(-(box.max.x + box.min.x) / 2, -(box.max.y + box.min.y) / 2, 0);
 
-    // ★ 이전 마음에 들어 하셨던 블루-스카이블루 VERTEX COLOR 복구
+    // ★ 두 번째 이미지의 화이트-슬레이트 쿨그레이 그라데이션 적용
     if (isU) {
       const posAttr = geometry.attributes.position;
       const count = posAttr.count;
@@ -239,8 +234,8 @@ export function initHero3D() {
       const maxY = box.max.y;
       const height = maxY - minY;
 
-      const bottomColor = new THREE.Color(0x38bdf8); // 하단: 투명 스카이 블루
-      const topColor = new THREE.Color(0x1d4ed8);    // 상단: 딥 딥블루
+      const bottomColor = new THREE.Color(0x94a3b8); // 하단: 소프트 슬레이트 그레이
+      const topColor = new THREE.Color(0xffffff);    // 상단: 퓨어 화이트
 
       for (let i = 0; i < count; i++) {
         const posY = posAttr.getY(i);
@@ -258,11 +253,15 @@ export function initHero3D() {
     const letterGroup = new THREE.Group();
 
     if (isU) {
-      // U 글자는 추가 엣지 라인 없이 순수 반투명 메시만 배치 (어두운 외곽선 지우기)
+      // 1. U 글래스 3D 메인 바디
       letterGroup.add(new THREE.Mesh(geometry, tubeGlassMaterial));
+
+      // 2. ★ 외곽 어두운 음영을 차단하는 퓨어 화이트 라인 추가 (모서리 각도 30도 기준)
+      const uEdges = new THREE.EdgesGeometry(geometry, 30);
+      letterGroup.add(new THREE.LineSegments(uEdges, uWhiteLineMaterial));
     } else {
       letterGroup.add(
-        new THREE.LineSegments(new THREE.EdgesGeometry(geometry, 25), lineMaterial)
+        new THREE.LineSegments(new THREE.EdgesGeometry(geometry, 25), xLineMaterial)
       );
     }
 
