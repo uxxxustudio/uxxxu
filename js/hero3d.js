@@ -3,7 +3,7 @@ import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 
 /* =========================================================
-   HERO THREE.JS (White-Grey Glass U with Crisp White Edges)
+   HERO THREE.JS (No Grey Edge - Pure White Fresnel Glass U)
 ========================================================= */
 
 export function initHero3D() {
@@ -19,18 +19,14 @@ export function initHero3D() {
   camera.position.set(0, 0, 15);
 
   /* =====================================================
-     LIGHTS (무채색 메탈릭/글래스 하이라이트 세팅)
+     LIGHTS
   ===================================================== */
-  const ambientLight = new THREE.AmbientLight(0xffffff, 2.0);
+  const ambientLight = new THREE.AmbientLight(0xffffff, 2.5);
   scene.add(ambientLight);
 
-  const keyLight = new THREE.DirectionalLight(0xffffff, 8.0);
-  keyLight.position.set(-4, 8, 12);
-  scene.add(keyLight);
-
-  const fillLight = new THREE.DirectionalLight(0xe2e8f0, 4.0);
-  fillLight.position.set(10, -8, 8);
-  scene.add(fillLight);
+  const mainLight = new THREE.DirectionalLight(0xffffff, 6.0);
+  mainLight.position.set(-4, 8, 12);
+  scene.add(mainLight);
 
   const mouseLight = new THREE.PointLight(0xffffff, 6.0, 25);
   scene.add(mouseLight);
@@ -124,8 +120,8 @@ export function initHero3D() {
 
   gridGroup.add(new THREE.LineSegments(curvedGridGeo, gridMaterial));
 
-  // 초소형 교차점 노드
   const nodeGeo = new THREE.BoxGeometry(0.035, 0.035, 0.035);
+  nodeGeo.computeBoundingBox();
   const nodeMat = new THREE.MeshBasicMaterial({ color: 0x64748b, transparent: true, opacity: 0.35 });
 
   for (let x = -gridWidth / 2; x <= gridWidth / 2; x += stepX * 2) {
@@ -141,35 +137,67 @@ export function initHero3D() {
   scene.add(gridGroup);
 
   /* =====================================================
-     U MATERIAL (두 번째 이미지 무채색 화이트/그레이 모던 톤)
+     U CUSTOM SHADER MATERIAL (테두리 그레이 음영 완전 제거)
   ===================================================== */
-  const tubeGlassMaterial = new THREE.MeshPhysicalMaterial({
-    vertexColors: true,            // 화이트 ~ 라이트 쿨그레이 그라데이션
-    roughness: 0.04,
-    metalness: 0.0,
-    transmission: 0.88,            // 뒤쪽 텍스트 비침
-    ior: 1.15,
-    thickness: 0.4,
-    attenuationColor: new THREE.Color(0xf8fafc),
-    attenuationDistance: 4.0,
+  const cleanWhiteEdgeMaterial = new THREE.ShaderMaterial({
+    uniforms: {
+      topColor: { value: new THREE.Color(0xffffff) },
+      bottomColor: { value: new THREE.Color(0x94a3b8) }, // 소프트 슬레이트 그레이
+      edgeColor: { value: new THREE.Color(0xffffff) },   // 테두리를 퓨어 화이트로 교체
+      fresnelPower: { value: 1.8 },
+      opacity: { value: 0.85 },
+      lightDirection: { value: new THREE.Vector3(-0.5, 0.8, 1.0).normalize() }
+    },
+    vertexShader: `
+      varying vec3 vNormal;
+      varying vec3 vViewPosition;
+      varying vec3 vWorldPosition;
 
-    clearcoat: 1.0,
-    clearcoatRoughness: 0.0,
+      void main() {
+        vNormal = normalize(normalMatrix * normal);
+        vec4 worldPosition = modelMatrix * vec4(position, 1.0);
+        vWorldPosition = worldPosition.xyz;
+        vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+        vViewPosition = -mvPosition.xyz;
+        gl_Position = projectionMatrix * mvPosition;
+      }
+    `,
+    fragmentShader: `
+      uniform vec3 topColor;
+      uniform vec3 bottomColor;
+      uniform vec3 edgeColor;
+      uniform float fresnelPower;
+      uniform float opacity;
+      uniform vec3 lightDirection;
 
-    specularIntensity: 3.5,
-    specularColor: new THREE.Color(0xffffff),
+      varying vec3 vNormal;
+      varying vec3 vViewPosition;
+      varying vec3 vWorldPosition;
 
+      void main() {
+        vec3 normal = normalize(vNormal);
+        vec3 viewDir = normalize(vViewPosition);
+
+        // 상하 그라데이션 (기존 컬러 유지)
+        float heightRatio = clamp((vWorldPosition.y + 2.0) / 4.0, 0.0, 1.0);
+        vec3 baseGradient = mix(bottomColor, topColor, heightRatio);
+
+        // 기본 3D 은은한 조명 연산
+        float NdotL = max(dot(normal, lightDirection), 0.0);
+        vec3 shadedColor = baseGradient * (0.65 + 0.35 * NdotL);
+
+        // ★ 핵심: 시선과 모서리가 꺾이는 외곽(Fresnel)을 그레이 대신 퓨어 화이트로 강제 치환
+        float fresnel = 1.0 - max(dot(normal, viewDir), 0.0);
+        fresnel = pow(fresnel, fresnelPower);
+
+        vec3 finalColor = mix(shadedColor, edgeColor, fresnel * 0.95);
+
+        gl_FragColor = vec4(finalColor, opacity);
+      }
+    `,
     transparent: true,
-    opacity: 0.82,
     depthWrite: false,
-    side: THREE.FrontSide,
-  });
-
-  // ★ U 글자 외곽에 선명하게 들어갈 퓨어 화이트 라인 재질
-  const uWhiteLineMaterial = new THREE.LineBasicMaterial({
-    color: 0xffffff,
-    transparent: true,
-    opacity: 0.85,
+    side: THREE.FrontSide
   });
 
   // X 글자용 어두운 라인 재질
@@ -224,41 +252,11 @@ export function initHero3D() {
     const box = geometry.boundingBox;
     geometry.translate(-(box.max.x + box.min.x) / 2, -(box.max.y + box.min.y) / 2, 0);
 
-    // ★ 두 번째 이미지의 화이트-슬레이트 쿨그레이 그라데이션 적용
-    if (isU) {
-      const posAttr = geometry.attributes.position;
-      const count = posAttr.count;
-      const colors = new Float32Array(count * 3);
-
-      const minY = box.min.y;
-      const maxY = box.max.y;
-      const height = maxY - minY;
-
-      const bottomColor = new THREE.Color(0x94a3b8); // 하단: 소프트 슬레이트 그레이
-      const topColor = new THREE.Color(0xffffff);    // 상단: 퓨어 화이트
-
-      for (let i = 0; i < count; i++) {
-        const posY = posAttr.getY(i);
-        const ratio = Math.min(Math.max((posY - minY) / height, 0), 1);
-
-        const mixedColor = bottomColor.clone().lerp(topColor, ratio);
-        colors[i * 3] = mixedColor.r;
-        colors[i * 3 + 1] = mixedColor.g;
-        colors[i * 3 + 2] = mixedColor.b;
-      }
-
-      geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
-    }
-
     const letterGroup = new THREE.Group();
 
     if (isU) {
-      // 1. U 글래스 3D 메인 바디
-      letterGroup.add(new THREE.Mesh(geometry, tubeGlassMaterial));
-
-      // 2. ★ 외곽 어두운 음영을 차단하는 퓨어 화이트 라인 추가 (모서리 각도 30도 기준)
-      const uEdges = new THREE.EdgesGeometry(geometry, 30);
-      letterGroup.add(new THREE.LineSegments(uEdges, uWhiteLineMaterial));
+      // 외곽 그레이를 제거한 커스텀 셰이더 적용
+      letterGroup.add(new THREE.Mesh(geometry, cleanWhiteEdgeMaterial));
     } else {
       letterGroup.add(
         new THREE.LineSegments(new THREE.EdgesGeometry(geometry, 25), xLineMaterial)
