@@ -3,7 +3,7 @@ import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 
 /* =========================================================
-   HERO THREE.JS (Smooth Gradient Fade-out on Grid Material)
+   HERO THREE.JS (Kakao ESG Style - Curved Dome Spatial Grid)
 ========================================================= */
 
 export function initHero3D() {
@@ -15,32 +15,28 @@ export function initHero3D() {
   ===================================================== */
   const scene = new THREE.Scene();
 
-  // 배경은 흰색 (투명 처리)
-  const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 100);
+  const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
   camera.position.set(0, 0, 15);
 
   /* =====================================================
-     LIGHTS (마우스 추적 하이라이트 + 오로라 3색 광원)
+     LIGHTS
   ===================================================== */
-  // 은은한 베이스 환경광
   const ambientLight = new THREE.AmbientLight(0xe0f2fe, 1.2);
   scene.add(ambientLight);
 
-  // 마우스 추적 백색 핀 조명
+  // 마우스 추적 백색 핀 조명 (#fff 스펙큘러)
   const mouseLight = new THREE.PointLight(0xffffff, 18.0, 25);
   scene.add(mouseLight);
 
-  // 우측 상단 스카이블루 광원
+  // 멀티 컬러 오로라 광원들
   const skyLight = new THREE.DirectionalLight(0x0284c7, 6.0);
   skyLight.position.set(12, 10, 8);
   scene.add(skyLight);
 
-  // 좌측 하단 코랄 핑크 포인트 광원
   const pinkLight = new THREE.DirectionalLight(0xf43f5e, 5.0);
   pinkLight.position.set(-12, -10, 6);
   scene.add(pinkLight);
 
-  // 상단 태양광
   const sunLight = new THREE.DirectionalLight(0xfef08a, 4.0);
   sunLight.position.set(0, 15, 5);
   scene.add(sunLight);
@@ -66,67 +62,31 @@ export function initHero3D() {
   scene.add(group);
 
   /* =====================================================
-     BACKGROUND SPATIAL GRID (그 자체에 그라데이션 적용)
+     CURVED DOME GRID (공간을 감싸는 레퍼런스 스타일 곡면 그리드)
   ===================================================== */
   const gridGroup = new THREE.Group();
-  // 공간감을 주기 위해 텍스트 뒤편에 배치
-  gridGroup.position.set(0, 0, -4);
+  gridGroup.position.set(0, 0, -8); // 깊숙한 배경 공간에 배치
 
-  // 대형 그리드 선 기하학 생성 (기존과 동일)
-  const gridHelper = new THREE.GridHelper(32, 16, 0x94a3b8, 0xcbd5e1);
-  gridHelper.rotation.x = Math.PI / 2; // 평면으로 세움
+  // 볼록한 돔(Dome) 형태의 지오메트리 생성
+  const domeRadius = 22;
+  const domeGeo = new THREE.SphereGeometry(
+    domeRadius,
+    32, // 세로 격자 수
+    20, // 가로 격자 수
+    0,
+    Math.PI * 2,
+    0,
+    Math.PI * 0.48 // 화면을 감싸는 호 형태
+  );
 
-  // ★ [핵심수정] 그리드 선에 세로 그라데이션 Shader 적용
-  const gridMaterial = new THREE.ShaderMaterial({
-    uniforms: {
-      color: { value: new THREE.Color(0x94a3b8) },
-      // 이 Opacity는 전체적인 기본 선명도
-      baseOpacity: { value: 0.18 },
-      // 그라데이션이 시작될 Y축 비율 (0.0=하단, 1.0=상단)
-      // 하단 1/3 지점부터 페이드 시작하도록 설정
-      fadeStart: { value: 0.33 }, 
-    },
-    vertexShader: `
-      varying vec3 vPosition;
-      void main() {
-        vPosition = position;
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-      }
-    `,
-    fragmentShader: `
-      uniform vec3 color;
-      uniform float baseOpacity;
-      uniform float fadeStart;
-      varying vec3 vPosition;
+  // 와이어프레임 라인으로 추출
+  const wireGeo = new THREE.WireframeGeometry(domeGeo);
 
-      void main() {
-        // [중요] Y축 위치값에 따라 투명도 그라데이션 계산
-        // vPosition.y는 geometry 내에서의 위치 (-16 ~ 16)
-        // 이를 0.0 ~ 1.0 비율로 변환 (아래가 0.0, 위가 1.0)
-        float heightRatio = (vPosition.y + 16.0) / 32.0;
-
-        // fadeStart 이하일 때 smoothstep으로 부드럽게 페이드 아웃
-        float fade = smoothstep(0.0, fadeStart, heightRatio);
-
-        // 최종 컬러 (흰색 배경으로 빠지도록 흰색을 섞거나 투명도 조절)
-        // 여기서는 투명도 그라데이션으로 처리
-        gl_FragColor = vec4(color, baseOpacity * fade);
-      }
-    `,
-    transparent: true,
-    depthWrite: false, // 다른 오브젝트와 겹칠 때 아티팩트 방지
-  });
-
-  // GridHelper의 기본 재질을 커스텀 ShaderMaterial로 교체
-  gridHelper.material = gridMaterial;
-  gridGroup.add(gridHelper);
-
-  // 교차점십자(+) 포인트들 (그리드와 동일한 그라데이션 적용)
-  const crossMaterial = new THREE.ShaderMaterial({
+  // 1. 휘어지는 그리드 라인 재질 (하단 부드러운 페이드 처리)
+  const curvedGridMaterial = new THREE.ShaderMaterial({
     uniforms: {
       color: { value: new THREE.Color(0x64748b) },
-      baseOpacity: { value: 0.45 },
-      fadeStart: { value: 0.33 },
+      baseOpacity: { value: 0.28 },
     },
     vertexShader: `
       varying vec3 vPosition;
@@ -138,17 +98,11 @@ export function initHero3D() {
     fragmentShader: `
       uniform vec3 color;
       uniform float baseOpacity;
-      uniform float fadeStart;
       varying vec3 vPosition;
 
       void main() {
-        // 교차점 geometry는 각 포인트마다 원점에 있으므로,
-        // vPosition.y 대신 gridGroup 내의 월드 Y 좌표를 사용해야 함.
-        // 여기서는 편의상 그리드와 동일한 계산을 적용하기 위해
-        // 그리드 geometry 크기(-16 ~ 16)를 기준으로 vPosition.y를 사용.
-        // GridHelper의 크기가 32이므로 -16 ~ 16 범위를 가짐.
-        float heightRatio = (vPosition.y + 16.0) / 32.0;
-        float fade = smoothstep(0.0, fadeStart, heightRatio);
+        // Y축 아래쪽으로 갈수록 자연스럽게 녹아들며 연해지는 그라데이션
+        float fade = smoothstep(-10.0, 5.0, vPosition.y);
         gl_FragColor = vec4(color, baseOpacity * fade);
       }
     `,
@@ -156,74 +110,99 @@ export function initHero3D() {
     depthWrite: false,
   });
 
-  for (let x = -15; x <= 15; x += 4.0) {
-    for (let y = -11; y <= 11; y += 4.0) {
-      const crossGeo = new THREE.BufferGeometry();
-      const s = 0.12; // 십자 크기
-      const vertices = new Float32Array([
-        x - s, y, 0,  x + s, y, 0,
-        x, y - s, 0,  x, y + s, 0
-      ]);
-      crossGeo.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
-      // BufferGeometry로 직접 만들었으므로 vPosition.y가 로컬 좌표 y값을 가짐.
-      // -11 ~ 11 범위. 이를 -16 ~ 16 그리드 범위로 스케일링해야 함.
-      // Shader fragment에서 직접 스케일링하도록 vertexShader 수정 필요.
-      // or... 그냥 Shaderfragment에서 y값 범위를 -16~16으로 생각하고 계산
-      const crossMeshMat = crossMaterial.clone();
-      // 각 crossMeshMat의 uniforms.color는 공유되지만 다른 uniform은 별도 설정 가능.
-      // 하지만 vertexShader 내의 vPosition은 local 좌표이므로 그냥 두면 안됨.
-      // shaderFragment에서 y값 범위를 -16 ~ 16으로 보고 계산하도록 수정
+  const curvedGrid = new THREE.LineSegments(wireGeo, curvedGridMaterial);
+  // 카메라를 향해 돔의 안쪽 곡면이 보이도록 회전 및 위치 조정
+  curvedGrid.rotation.x = Math.PI * 0.55;
+  gridGroup.add(curvedGrid);
 
-      const cross = new THREE.LineSegments(crossGeo, crossMeshMat);
-      gridGroup.add(cross);
+  // 2. 레퍼런스 특유의 포인트 포인트(Node Dots) 추가
+  const nodeGeo = new THREE.BoxGeometry(0.12, 0.12, 0.12);
+  const nodeMat = new THREE.MeshBasicMaterial({ color: 0x0f172a });
+
+  // 돔 곡면의 일정 간격 노드에 사각형 점 배치
+  const posAttribute = domeGeo.attributes.position;
+  for (let i = 0; i < posAttribute.count; i += 18) {
+    const x = posAttribute.getX(i);
+    const y = posAttribute.getY(i);
+    const z = posAttribute.getZ(i);
+
+    // 하단 너무 깊은 곳은 생략
+    if (y > -8) {
+      const node = new THREE.Mesh(nodeGeo, nodeMat);
+      node.position.set(x, y, z);
+      node.rotation.x = Math.PI * 0.55;
+      gridGroup.add(node);
     }
   }
+
   scene.add(gridGroup);
 
   /* =====================================================
-     MATERIALS (오로라 틴트 글래스 + 또렷한 라인)
+     MATERIALS (오로라 틴트 글래스 + 또렷한 오브젝트 테두리)
   ===================================================== */
-  // 튜브 유리 재질 (기존과 동일)
   const tubeGlassMaterial = new THREE.MeshPhysicalMaterial({
-    color: 0xbae6fd, roughness: 0.02, metalness: 0.05,
-    transmission: 0.88, ior: 1.48, thickness: 2.0,
-    attenuationColor: 0x38bdf8, attenuationDistance: 2.0,
-    transparent: true, opacity: 0.45,
-    clearcoat: 1.0, clearcoatRoughness: 0.0,
-    reflectivity: 1.0, depthWrite: true,
+    color: 0xbae6fd,
+    roughness: 0.02,
+    metalness: 0.05,
+    transmission: 0.88,
+    ior: 1.48,
+    thickness: 2.0,
+    attenuationColor: 0x38bdf8,
+    attenuationDistance: 2.0,
+    transparent: true,
+    opacity: 0.45,
+    clearcoat: 1.0,
+    clearcoatRoughness: 0.0,
+    reflectivity: 1.0,
+    depthWrite: true,
     side: THREE.DoubleSide,
   });
 
-  // 선명한 오브젝트 도면 라인
   const lineMaterial = new THREE.LineBasicMaterial({
-    color: 0x0f172a, transparent: true, opacity: 0.7,
+    color: 0x0f172a,
+    transparent: true,
+    opacity: 0.72,
   });
 
   /* =====================================================
-     FONT LOADER & BATCH CREATION (기존과 동일)
+     FONT LOADER & BATCH CREATION
   ===================================================== */
   const loader = new FontLoader();
-  loader.load("https://cdn.jsdelivr.net/npm/three@0.180.0/examples/fonts/helvetiker_bold.typeface.json", (font) => {
-    // 1. 메인 U (둥근 튜브 베벨)
-    createLetter("U", font, -2.9, -0.65, -0.42, 0.92, 0);
-    // 2. 메인 X
-    createLetter("X", font, 2.25, 0.55, 0.42, 0.88, 1.7);
-    // 3. 미니 X들
-    createLetter("X", font, -2.3, 3.8, 0.35, 0.52, 0.8);
-    createLetter("X", font, 5.3, -3.2, 0.45, 0.55, 2.3);
-  });
+
+  loader.load(
+    "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/fonts/helvetiker_bold.typeface.json",
+    (font) => {
+      createLetter("U", font, -2.9, -0.65, -0.42, 0.92, 0);
+      createLetter("X", font, 2.25, 0.55, 0.42, 0.88, 1.7);
+      createLetter("X", font, -2.3, 3.8, 0.35, 0.52, 0.8);
+      createLetter("X", font, 5.3, -3.2, 0.45, 0.55, 2.3);
+    }
+  );
 
   /* =====================================================
-     CREATE 3D LETTER (기존과 동일)
+     CREATE 3D LETTER
   ===================================================== */
   function createLetter(character, font, x, y, rotationY, scale, phase) {
     const isU = character === "U";
-    const geometryOptions = isU ? {
-      font: font, size: 4.1, depth: 0.4, curveSegments: 32, bevelEnabled: true,
-      bevelThickness: 0.38, bevelSize: 0.28, bevelOffset: 0, bevelSegments: 16,
-    } : {
-      font: font, size: 4.1, depth: 0.72, curveSegments: 1, bevelEnabled: false,
-    };
+    const geometryOptions = isU
+      ? {
+          font: font,
+          size: 4.1,
+          depth: 0.4,
+          curveSegments: 32,
+          bevelEnabled: true,
+          bevelThickness: 0.38,
+          bevelSize: 0.28,
+          bevelOffset: 0,
+          bevelSegments: 16,
+        }
+      : {
+          font: font,
+          size: 4.1,
+          depth: 0.72,
+          curveSegments: 1,
+          bevelEnabled: false,
+        };
 
     const geometry = new TextGeometry(character, geometryOptions);
     geometry.computeBoundingBox();
@@ -243,47 +222,60 @@ export function initHero3D() {
   }
 
   /* =====================================================
-     MOUSE & INTERACTION (기존과 동일)
+     MOUSE & INTERACTION
   ===================================================== */
-  const target = { x: 0, y: 0 }, mouse = { x: 0, y: 0 };
-  window.addEventListener("mousemove", (e) => {
-    target.x = (e.clientX / window.innerWidth) * 2 - 1;
-    target.y = -(e.clientY / window.innerHeight) * 2 + 1;
-  }, { passive: true });
+  const target = { x: 0, y: 0 };
+  const mouse = { x: 0, y: 0 };
+
+  window.addEventListener(
+    "mousemove",
+    (e) => {
+      target.x = (e.clientX / window.innerWidth) * 2 - 1;
+      target.y = -(e.clientY / window.innerHeight) * 2 + 1;
+    },
+    { passive: true }
+  );
 
   /* =====================================================
-     RESIZE & RESPONSIVE (기존과 동일)
+     RESIZE & RESPONSIVE SCALE
   ===================================================== */
   function resize() {
-    const width = container.clientWidth, height = container.clientHeight;
+    const width = container.clientWidth;
+    const height = container.clientHeight;
     if (!width || !height) return;
+
     const isMobile = window.innerWidth < 768;
     camera.aspect = width / height;
     camera.position.z = isMobile ? 18.5 : 15;
     camera.updateProjectionMatrix();
+
     group.scale.setScalar(isMobile ? 0.68 : 1.0);
     renderer.setSize(width, height, false);
   }
+
   window.addEventListener("resize", resize);
 
   /* =====================================================
-     ANIMATION LOOP (기존과 동일)
+     ANIMATION LOOP
   ===================================================== */
   const clock = new THREE.Clock();
+
   function animate() {
     requestAnimationFrame(animate);
+
     const time = clock.getElapsedTime();
+
     mouse.x += (target.x - mouse.x) * 0.05;
     mouse.y += (target.y - mouse.y) * 0.05;
 
-    // 마우스 추적 하이라이트
+    // 마우스 하이라이트 핀 조명
     mouseLight.position.set(mouse.x * 12, mouse.y * 8, 6);
 
-    // 배경 그리드 미세 패럴랙스
-    gridGroup.position.x = -mouse.x * 0.4;
-    gridGroup.position.y = -mouse.y * 0.3;
+    // ★ 곡면 3D 돔 그리드의 다이내믹 시점 반응 (마우스 반응에 따라 공간이 회전)
+    gridGroup.rotation.y = mouse.x * 0.08;
+    gridGroup.rotation.x = -mouse.y * 0.05;
 
-    // 메인 그래픽 부유 모션
+    // 메인 그래픽 개체 부유 모션
     group.children.forEach((obj) => {
       const p = obj.userData;
       obj.position.x = p.baseX + Math.sin(time * 0.55 + p.phase) * 0.08;
@@ -295,5 +287,6 @@ export function initHero3D() {
     renderer.render(scene, camera);
   }
 
-  resize(); animate();
+  resize();
+  animate();
 }
