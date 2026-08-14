@@ -3,7 +3,7 @@ import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 
 /* =========================================================
-   HERO THREE.JS (Clean Curved Barrel Grid - No Distortion)
+   HERO THREE.JS (Deep Concave Curved Grid Space)
 ========================================================= */
 
 export function initHero3D() {
@@ -62,13 +62,13 @@ export function initHero3D() {
   scene.add(group);
 
   /* =====================================================
-     CLEAN CURVED GRID GENERATOR (직교 곡면 그리드)
+     CONCAVE CURVED GRID GENERATOR (오목한 공간 그리드)
   ===================================================== */
-  function createCurvedGridGeometry(width, height, stepX, stepY, curveAmount = 0.008) {
+  function createConcaveGridGeometry(width, height, stepX, stepY, curveAmount = 0.009) {
     const points = [];
-    const resolution = 30; // 곡선의 부드러움 정도
+    const resolution = 30; // 곡선 해상도
 
-    // 1. 수직 곡선들 생성
+    // 1. 수직 곡선 생성 (중앙은 깊게 -3.0, 외곽은 앞으로 다가옴)
     for (let x = -width / 2; x <= width / 2; x += stepX) {
       for (let i = 0; i < resolution; i++) {
         const t1 = i / resolution;
@@ -77,15 +77,15 @@ export function initHero3D() {
         const y1 = -height / 2 + t1 * height;
         const y2 = -height / 2 + t2 * height;
 
-        // 중앙이 앞으로 튀어나오고 외곽이 뒤로 휘어지는 볼록 곡률 계산
-        const z1 = -(x * x * 0.8 + y1 * y1) * curveAmount;
-        const z2 = -(x * x * 0.8 + y2 * y2) * curveAmount;
+        // ★ [핵심수정] 중앙이 깊게 파이고 외곽이 앞으로 감싸는 오목 형태 (+ 부호)
+        const z1 = (x * x * 0.8 + y1 * y1) * curveAmount - 3.0;
+        const z2 = (x * x * 0.8 + y2 * y2) * curveAmount - 3.0;
 
         points.push(x, y1, z1, x, y2, z2);
       }
     }
 
-    // 2. 수평 곡선들 생성
+    // 2. 수평 곡선 생성
     for (let y = -height / 2; y <= height / 2; y += stepY) {
       for (let i = 0; i < resolution; i++) {
         const t1 = i / resolution;
@@ -94,8 +94,8 @@ export function initHero3D() {
         const x1 = -width / 2 + t1 * width;
         const x2 = -width / 2 + t2 * width;
 
-        const z1 = -(x1 * x1 * 0.8 + y * y) * curveAmount;
-        const z2 = -(x2 * x2 * 0.8 + y * y) * curveAmount;
+        const z1 = (x1 * x1 * 0.8 + y * y) * curveAmount - 3.0;
+        const z2 = (x2 * x2 * 0.8 + y * y) * curveAmount - 3.0;
 
         points.push(x1, y, z1, x2, y, z2);
       }
@@ -110,21 +110,21 @@ export function initHero3D() {
      BACKGROUND SPATIAL GRID
   ===================================================== */
   const gridGroup = new THREE.Group();
-  gridGroup.position.set(0, 0, -4); 
+  gridGroup.position.set(0, 0, -3); 
 
   const gridWidth = 36;
   const gridHeight = 22;
   const stepX = 2.4;
   const stepY = 2.4;
-  const curveFactor = 0.009; // 곡률 강도 (숫자가 클수록 더 볼록해짐)
+  const curveFactor = 0.01; // 공간 오목함의 깊이감 조절
 
-  const curvedGridGeo = createCurvedGridGeometry(gridWidth, gridHeight, stepX, stepY, curveFactor);
+  const curvedGridGeo = createConcaveGridGeometry(gridWidth, gridHeight, stepX, stepY, curveFactor);
 
-  // 하단 페이드아웃 Shader
+  // 하단 페이드아웃 쉐이더 (다음 페이지 흰색 연결)
   const gridMaterial = new THREE.ShaderMaterial({
     uniforms: {
       color: { value: new THREE.Color(0x94a3b8) },
-      baseOpacity: { value: 0.25 },
+      baseOpacity: { value: 0.28 },
     },
     vertexShader: `
       varying vec3 vPosition;
@@ -139,8 +139,8 @@ export function initHero3D() {
       varying vec3 vPosition;
 
       void main() {
-        // Y축 하단(-4 이하)으로 갈수록 부드럽게 연해짐
-        float fade = smoothstep(-11.0, -3.0, vPosition.y);
+        // Y축 하단(-3 이하)으로 갈수록 투명하게 그라데이션
+        float fade = smoothstep(-11.0, -2.0, vPosition.y);
         gl_FragColor = vec4(color, baseOpacity * fade);
       }
     `,
@@ -151,14 +151,15 @@ export function initHero3D() {
   const gridMesh = new THREE.LineSegments(curvedGridGeo, gridMaterial);
   gridGroup.add(gridMesh);
 
-  // 교차점 노드 점들 (Node Dots)
+  // 교차점 포인트 노드 (Node Dots) 배치
   const nodeGeo = new THREE.BoxGeometry(0.1, 0.1, 0.1);
   const nodeMat = new THREE.MeshBasicMaterial({ color: 0x334155, transparent: true, opacity: 0.6 });
 
   for (let x = -gridWidth / 2; x <= gridWidth / 2; x += stepX * 2) {
     for (let y = -gridHeight / 2; y <= gridHeight / 2; y += stepY * 2) {
-      if (y > -8) { // 최하단 노드는 생략
-        const z = -(x * x * 0.8 + y * y) * curveFactor;
+      if (y > -8) { 
+        // 오목한 Z 좌표에 동일하게 맞춤
+        const z = (x * x * 0.8 + y * y) * curveFactor - 3.0;
         const node = new THREE.Mesh(nodeGeo, nodeMat);
         node.position.set(x, y, z);
         gridGroup.add(node);
@@ -299,14 +300,14 @@ export function initHero3D() {
     mouse.x += (target.x - mouse.x) * 0.05;
     mouse.y += (target.y - mouse.y) * 0.05;
 
-    // 마우스 추적 조명
+    // 마우스 하이라이트
     mouseLight.position.set(mouse.x * 12, mouse.y * 8, 6);
 
-    // 미세 패럴랙스
+    // 오목한 공간 패럴랙스
     gridGroup.position.x = -mouse.x * 0.3;
     gridGroup.position.y = -mouse.y * 0.2;
 
-    // 메인 글자 그래픽 부유
+    // 그래픽 오브젝트 부유 모션
     group.children.forEach((obj) => {
       const p = obj.userData;
       obj.position.x = p.baseX + Math.sin(time * 0.55 + p.phase) * 0.08;
