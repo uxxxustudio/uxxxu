@@ -3,7 +3,7 @@ import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 
 /* =========================================================
-   HERO THREE.JS (Angled Perspective Grid & Crisp Object Lines)
+   HERO THREE.JS (Kakao Tech Style - Sharp 2D Layout Grid)
 ========================================================= */
 
 export function initHero3D() {
@@ -19,12 +19,12 @@ export function initHero3D() {
   camera.position.set(0, 0, 15);
 
   /* =====================================================
-     LIGHTS (마우스 추적 하이라이트 + 오로라 3색 광원)
+     LIGHTS (마우스 추적 하이라이트 + 오로라 광원)
   ===================================================== */
   const ambientLight = new THREE.AmbientLight(0xe0f2fe, 1.2);
   scene.add(ambientLight);
 
-  // 마우스 추적 백색 핀 조명 (#ffffff 하이라이트)
+  // 마우스 추적 백색 핀 조명
   const mouseLight = new THREE.PointLight(0xffffff, 18.0, 25);
   scene.add(mouseLight);
 
@@ -38,7 +38,7 @@ export function initHero3D() {
   pinkLight.position.set(-12, -10, 6);
   scene.add(pinkLight);
 
-  // 상단 태양광 (Warm Cream)
+  // 상단 태양광
   const sunLight = new THREE.DirectionalLight(0xfef08a, 4.0);
   sunLight.position.set(0, 15, 5);
   scene.add(sunLight);
@@ -64,35 +64,54 @@ export function initHero3D() {
   scene.add(group);
 
   /* =====================================================
-     BACKGROUND ANGLED GRID (원근 각도가 살아있는 은은한 3D 그리드)
+     KAKAO STYLE 2D LAYOUT GRID (선명한 2D 세로/가로 그리드)
   ===================================================== */
   const gridGroup = new THREE.Group();
-  gridGroup.position.set(0, -0.5, -5);
+  gridGroup.position.set(0, 0, -4); // 카메라 정면 평면에 배치
 
-  // ★ 공간감이 느껴지도록 X, Y축을 경사지게 기울임 (투시 원근감 연출)
-  gridGroup.rotation.x = Math.PI * 0.12;  // 위아래 입체 각도
-  gridGroup.rotation.y = -Math.PI * 0.08; // 좌우 소실점 각도
+  const gridLines = [];
+  const width = 36;   // 전체 화면 커버 폭
+  const height = 24;  // 전체 화면 커버 높이
+  const stepX = 2.4;  // 세로 격자 간격
+  const stepY = 2.4;  // 가로 격자 간격
 
-  // 아주 가볍고 실선처럼 실피하게 지나가는 그리드 라인
-  const gridHelper = new THREE.GridHelper(45, 18, 0x94a3b8, 0xe2e8f0);
-  gridHelper.material.transparent = true;
-  gridHelper.material.opacity = 0.1; // 아주 연하게 '느낌만' 주도록 설정
-  gridGroup.add(gridHelper);
+  // 1. 수직선 생성
+  for (let x = -width / 2; x <= width / 2; x += stepX) {
+    gridLines.push(x, -height / 2, 0, x, height / 2, 0);
+  }
 
-  // 십자(+) 포인트
-  const crossMaterial = new THREE.LineBasicMaterial({
-    color: 0x64748b,
+  // 2. 수평선 생성
+  for (let y = -height / 2; y <= height / 2; y += stepY) {
+    gridLines.push(-width / 2, y, 0, width / 2, y, 0);
+  }
+
+  const gridGeo = new THREE.BufferGeometry();
+  gridGeo.setAttribute('position', new THREE.Float32BufferAttribute(gridLines, 3));
+
+  // 선명하게 보이는 카카오 스타일 슬레이트 라인 매터리얼
+  const gridMat = new THREE.LineBasicMaterial({
+    color: 0x94a3b8,
     transparent: true,
-    opacity: 0.15,
+    opacity: 0.22,      // 안 보이던 문제 해결 (선명도 대폭 보정)
   });
 
-  for (let x = -15; x <= 15; x += 5) {
-    for (let z = -15; z <= 15; z += 5) {
+  const gridMesh = new THREE.LineSegments(gridGeo, gridMat);
+  gridGroup.add(gridMesh);
+
+  // 3. 교차점 (+) 십자 마크 시스템
+  const crossMaterial = new THREE.LineBasicMaterial({
+    color: 0x475569,
+    transparent: true,
+    opacity: 0.45,      // 십자 마크 포인트 강화
+  });
+
+  for (let x = -width / 2; x <= width / 2; x += stepX * 2) {
+    for (let y = -height / 2; y <= height / 2; y += stepY * 2) {
       const crossGeo = new THREE.BufferGeometry();
-      const s = 0.12;
+      const s = 0.16; // 십자 크기
       const vertices = new Float32Array([
-        x - s, 0, z,  x + s, 0, z,
-        x, 0, z - s,  x, 0, z + s
+        x - s, y, 0,  x + s, y, 0,
+        x, y - s, 0,  x, y + s, 0
       ]);
       crossGeo.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
       const cross = new THREE.LineSegments(crossGeo, crossMaterial);
@@ -102,7 +121,7 @@ export function initHero3D() {
   scene.add(gridGroup);
 
   /* =====================================================
-     MATERIALS (투명 오로라 유무 + 또렷한 라인)
+     MATERIALS
   ===================================================== */
   const tubeGlassMaterial = new THREE.MeshPhysicalMaterial({
     color: 0xbae6fd,
@@ -122,11 +141,11 @@ export function initHero3D() {
     side: THREE.DoubleSide,
   });
 
-  // ★ 오브젝트 테두리 & X 형태 와이어프레임 라인 (진하고 선명하게 수정)
+  // 또렷한 오브젝트 도면 라인
   const lineMaterial = new THREE.LineBasicMaterial({
-    color: 0x0f172a,            // 진한 다크 슬레이트 네이비
+    color: 0x0f172a,
     transparent: true,
-    opacity: 0.68,              // 선명도가 살아나도록 0.68로 상향
+    opacity: 0.7,
   });
 
   /* =====================================================
@@ -137,7 +156,7 @@ export function initHero3D() {
   loader.load(
     "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/fonts/helvetiker_bold.typeface.json",
     (font) => {
-      // 1. 메인 U (통통한 튜브 베벨)
+      // 1. 메인 U
       createLetter("U", font, -2.9, -0.65, -0.42, 0.92, 0);
 
       // 2. 메인 X
@@ -196,7 +215,6 @@ export function initHero3D() {
       letterGroup.add(mesh);
     }
 
-    // 진하고 또렷해진 EdgesGeometry 와이어프레임
     const wireGeometry = new THREE.EdgesGeometry(geometry, 25);
     const wire = new THREE.LineSegments(wireGeometry, lineMaterial);
     letterGroup.add(wire);
@@ -271,14 +289,14 @@ export function initHero3D() {
     mouse.x += (target.x - mouse.x) * 0.05;
     mouse.y += (target.y - mouse.y) * 0.05;
 
-    // 마우스 따라 움직이는 백색 하이라이트
+    // 마우스 추적 하이라이트
     mouseLight.position.x = mouse.x * 12;
     mouseLight.position.y = mouse.y * 8;
     mouseLight.position.z = 6;
 
-    // 각도가 들어간 배경 그리드 패럴랙스
-    gridGroup.position.x = -mouse.x * 0.4;
-    gridGroup.position.y = -0.5 - mouse.y * 0.3;
+    // 카카오 2D 레이아웃 그리드 미세 패럴랙스
+    gridGroup.position.x = -mouse.x * 0.3;
+    gridGroup.position.y = -mouse.y * 0.2;
 
     group.children.forEach((object) => {
       const phase = object.userData.phase;
