@@ -3,7 +3,7 @@ import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 
 /* =========================================================
-   HERO THREE.JS (No Grey Edge - Pure White Fresnel Glass U)
+   HERO THREE.JS (Smooth Bevel Edge & Clean Light Glass)
 ========================================================= */
 
 export function initHero3D() {
@@ -121,7 +121,6 @@ export function initHero3D() {
   gridGroup.add(new THREE.LineSegments(curvedGridGeo, gridMaterial));
 
   const nodeGeo = new THREE.BoxGeometry(0.035, 0.035, 0.035);
-  nodeGeo.computeBoundingBox();
   const nodeMat = new THREE.MeshBasicMaterial({ color: 0x64748b, transparent: true, opacity: 0.35 });
 
   for (let x = -gridWidth / 2; x <= gridWidth / 2; x += stepX * 2) {
@@ -137,15 +136,15 @@ export function initHero3D() {
   scene.add(gridGroup);
 
   /* =====================================================
-     U CUSTOM SHADER MATERIAL (테두리 그레이 음영 완전 제거)
+     U SMOOTH EDGE CUSTOM SHADER (★ 모서리 끊김 해결)
   ===================================================== */
   const cleanWhiteEdgeMaterial = new THREE.ShaderMaterial({
     uniforms: {
       topColor: { value: new THREE.Color(0xffffff) },
-      bottomColor: { value: new THREE.Color(0x94a3b8) }, // 소프트 슬레이트 그레이
-      edgeColor: { value: new THREE.Color(0xffffff) },   // 테두리를 퓨어 화이트로 교체
-      fresnelPower: { value: 1.8 },
-      opacity: { value: 0.85 },
+      bottomColor: { value: new THREE.Color(0xe2e8f0) }, // 밝은 쿨그레이
+      edgeColor: { value: new THREE.Color(0xffffff) },
+      fresnelPower: { value: 2.5 },                      
+      opacity: { value: 0.55 },                          // 투명도 유지
       lightDirection: { value: new THREE.Vector3(-0.5, 0.8, 1.0).normalize() }
     },
     vertexShader: `
@@ -154,7 +153,9 @@ export function initHero3D() {
       varying vec3 vWorldPosition;
 
       void main() {
+        // ★ [핵심] 모서리 법선을 부드럽게 보정 (NormalMatrix 전규화)
         vNormal = normalize(normalMatrix * normal);
+        
         vec4 worldPosition = modelMatrix * vec4(position, 1.0);
         vWorldPosition = worldPosition.xyz;
         vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
@@ -175,22 +176,25 @@ export function initHero3D() {
       varying vec3 vWorldPosition;
 
       void main() {
+        // ★ [핵심] 파편화된 Normal을 픽셀 단위로 다시 정규화하여 끊김 방지
         vec3 normal = normalize(vNormal);
         vec3 viewDir = normalize(vViewPosition);
 
-        // 상하 그라데이션 (기존 컬러 유지)
+        // 상하 그라데이션
         float heightRatio = clamp((vWorldPosition.y + 2.0) / 4.0, 0.0, 1.0);
         vec3 baseGradient = mix(bottomColor, topColor, heightRatio);
 
-        // 기본 3D 은은한 조명 연산
+        // 은은한 라이팅 (모서리 대비 감소)
         float NdotL = max(dot(normal, lightDirection), 0.0);
-        vec3 shadedColor = baseGradient * (0.65 + 0.35 * NdotL);
+        float lightIntensity = smoothstep(0.0, 1.0, 0.8 + 0.2 * NdotL);
+        vec3 shadedColor = baseGradient * lightIntensity;
 
-        // ★ 핵심: 시선과 모서리가 꺾이는 외곽(Fresnel)을 그레이 대신 퓨어 화이트로 강제 치환
+        // 퓨어 화이트 외곽 프레넬 라이트 (모서리에서 자연스럽게 뭉개짐)
         float fresnel = 1.0 - max(dot(normal, viewDir), 0.0);
+        // ★ 파워를 조절하여 경계선에서 프레넬이 칼같이 끊기지 않게 함
         fresnel = pow(fresnel, fresnelPower);
 
-        vec3 finalColor = mix(shadedColor, edgeColor, fresnel * 0.95);
+        vec3 finalColor = mix(shadedColor, edgeColor, fresnel * 0.75);
 
         gl_FragColor = vec4(finalColor, opacity);
       }
@@ -200,7 +204,7 @@ export function initHero3D() {
     side: THREE.FrontSide
   });
 
-  // X 글자용 어두운 라인 재질
+  // X 글자용 와이어프레임 라인 재질
   const xLineMaterial = new THREE.LineBasicMaterial({
     color: 0x0f172a,
     transparent: true,
@@ -255,7 +259,7 @@ export function initHero3D() {
     const letterGroup = new THREE.Group();
 
     if (isU) {
-      // 외곽 그레이를 제거한 커스텀 셰이더 적용
+      // 모서리 보정 셰이더 메시
       letterGroup.add(new THREE.Mesh(geometry, cleanWhiteEdgeMaterial));
     } else {
       letterGroup.add(
