@@ -3,7 +3,7 @@ import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 
 /* =========================================================
-   HERO THREE.JS (Kakao Tech Style - Sharp 2D Layout Grid)
+   HERO THREE.JS (Kakao Tech Style - Smooth Grid Fade-out)
 ========================================================= */
 
 export function initHero3D() {
@@ -64,16 +64,16 @@ export function initHero3D() {
   scene.add(group);
 
   /* =====================================================
-     KAKAO STYLE 2D LAYOUT GRID (선명한 2D 세로/가로 그리드)
+     KAKAO STYLE 2D LAYOUT GRID (Smooth Fade-out Applied)
   ===================================================== */
   const gridGroup = new THREE.Group();
-  gridGroup.position.set(0, 0, -4); // 카메라 정면 평면에 배치
+  gridGroup.position.set(0, 0, -4); 
 
   const gridLines = [];
-  const width = 36;   // 전체 화면 커버 폭
-  const height = 24;  // 전체 화면 커버 높이
-  const stepX = 2.4;  // 세로 격자 간격
-  const stepY = 2.4;  // 가로 격자 간격
+  const width = 36;   
+  const height = 24;  // 전체 높이는 유지하되 하단 페이드 적용
+  const stepX = 2.4;  
+  const stepY = 2.4;  
 
   // 1. 수직선 생성
   for (let x = -width / 2; x <= width / 2; x += stepX) {
@@ -88,27 +88,59 @@ export function initHero3D() {
   const gridGeo = new THREE.BufferGeometry();
   gridGeo.setAttribute('position', new THREE.Float32BufferAttribute(gridLines, 3));
 
-  // 선명하게 보이는 카카오 스타일 슬레이트 라인 매터리얼
-  const gridMat = new THREE.LineBasicMaterial({
-    color: 0x94a3b8,
+  // ★ [핵심 수정] 하단 뚝 끊김 방지 - 페이드아웃 ShaderMaterial 적용
+  const gridMat = new THREE.ShaderMaterial({
+    uniforms: {
+      color: { value: new THREE.Color(0x94a3b8) },
+      baseOpacity: { value: 0.22 },
+      fadeYStart: { value: -6.0 }, // 이 Y값부터 페이드 시작 (뷰포트 하단 근처)
+      fadeYEnd: { value: -12.0 }   // 이 Y값에서 완전히 투명해짐
+    },
+    vertexShader: `
+      varying vec3 vPosition;
+      void main() {
+        vPosition = position;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+    fragmentShader: `
+      uniform vec3 color;
+      uniform float baseOpacity;
+      uniform float fadeYStart;
+      uniform float fadeYEnd;
+      varying vec3 vPosition;
+
+      void main() {
+        // Y축 위치에 따른 투명도 계산 (아래로 갈수록 흐려짐)
+        float fade = 1.0 - smoothstep(fadeYStart, fadeYEnd, vPosition.y);
+        gl_FragColor = vec4(color, baseOpacity * fade);
+      }
+    `,
     transparent: true,
-    opacity: 0.22,      // 안 보이던 문제 해결 (선명도 대폭 보정)
+    depthWrite: false, // 다른 오브젝트와 겹칠 때 아티팩트 방지
   });
 
   const gridMesh = new THREE.LineSegments(gridGeo, gridMat);
   gridGroup.add(gridMesh);
 
-  // 3. 교차점 (+) 십자 마크 시스템
-  const crossMaterial = new THREE.LineBasicMaterial({
-    color: 0x475569,
+  // 3. 교차점 (+) 십자 마크 시스템 (십자 마크도 동일하게 페이드 적용 필요)
+  const crossMaterial = new THREE.ShaderMaterial({
+    uniforms: {
+      color: { value: new THREE.Color(0x475569) },
+      baseOpacity: { value: 0.45 },
+      fadeYStart: { value: -6.0 }, 
+      fadeYEnd: { value: -12.0 }   
+    },
+    vertexShader: gridMat.vertexShader,
+    fragmentShader: gridMat.fragmentShader,
     transparent: true,
-    opacity: 0.45,      // 십자 마크 포인트 강화
+    depthWrite: false,
   });
 
   for (let x = -width / 2; x <= width / 2; x += stepX * 2) {
     for (let y = -height / 2; y <= height / 2; y += stepY * 2) {
       const crossGeo = new THREE.BufferGeometry();
-      const s = 0.16; // 십자 크기
+      const s = 0.16; 
       const vertices = new Float32Array([
         x - s, y, 0,  x + s, y, 0,
         x, y - s, 0,  x, y + s, 0
@@ -156,19 +188,10 @@ export function initHero3D() {
   loader.load(
     "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/fonts/helvetiker_bold.typeface.json",
     (font) => {
-      // 1. 메인 U
       createLetter("U", font, -2.9, -0.65, -0.42, 0.92, 0);
-
-      // 2. 메인 X
       createLetter("X", font, 2.25, 0.55, 0.42, 0.88, 1.7);
-
-      // 3. 미니 X들
       createLetter("X", font, -2.3, 3.8, 0.35, 0.52, 0.8);
       createLetter("X", font, 5.3, -3.2, 0.45, 0.55, 2.3);
-    },
-    undefined,
-    (error) => {
-      console.error("Hero font load failed:", error);
     }
   );
 
@@ -177,60 +200,27 @@ export function initHero3D() {
   ===================================================== */
   function createLetter(character, font, x, y, rotationY, scale, phase) {
     const isU = character === "U";
-
-    const geometryOptions = isU
-      ? {
-          font: font,
-          size: 4.1,
-          depth: 0.4,
-          curveSegments: 32,
-          bevelEnabled: true,
-          bevelThickness: 0.38,
-          bevelSize: 0.28,
-          bevelOffset: 0,
-          bevelSegments: 16,
-        }
-      : {
-          font: font,
-          size: 4.1,
-          depth: 0.72,
-          curveSegments: 1,
-          bevelEnabled: false,
-        };
+    const geometryOptions = isU ? {
+      font: font, size: 4.1, depth: 0.4, curveSegments: 32, bevelEnabled: true,
+      bevelThickness: 0.38, bevelSize: 0.28, bevelOffset: 0, bevelSegments: 16,
+    } : {
+      font: font, size: 4.1, depth: 0.72, curveSegments: 1, bevelEnabled: false,
+    };
 
     const geometry = new TextGeometry(character, geometryOptions);
-
     geometry.computeBoundingBox();
-
     const box = geometry.boundingBox;
-    const centerX = (box.max.x + box.min.x) / 2;
-    const centerY = (box.max.y + box.min.y) / 2;
-
-    geometry.translate(-centerX, -centerY, 0);
+    geometry.translate(-(box.max.x + box.min.x) / 2, -(box.max.y + box.min.y) / 2, 0);
 
     const letterGroup = new THREE.Group();
-
-    if (isU) {
-      const mesh = new THREE.Mesh(geometry, tubeGlassMaterial);
-      letterGroup.add(mesh);
-    }
-
-    const wireGeometry = new THREE.EdgesGeometry(geometry, 25);
-    const wire = new THREE.LineSegments(wireGeometry, lineMaterial);
-    letterGroup.add(wire);
+    if (isU) letterGroup.add(new THREE.Mesh(geometry, tubeGlassMaterial));
+    letterGroup.add(new THREE.LineSegments(new THREE.EdgesGeometry(geometry, 25), lineMaterial));
 
     letterGroup.position.set(x, y, 0);
     letterGroup.scale.setScalar(scale);
     letterGroup.rotation.y = rotationY;
     letterGroup.rotation.x = -0.08;
-
-    letterGroup.userData = {
-      baseX: x,
-      baseY: y,
-      baseRotationY: rotationY,
-      phase: phase,
-    };
-
+    letterGroup.userData = { baseX: x, baseY: y, baseRotationY: rotationY, phase: phase };
     group.add(letterGroup);
   }
 
@@ -240,79 +230,47 @@ export function initHero3D() {
   const target = { x: 0, y: 0 };
   const mouse = { x: 0, y: 0 };
 
-  window.addEventListener(
-    "mousemove",
-    (event) => {
-      target.x = (event.clientX / window.innerWidth) * 2 - 1;
-      target.y = -(event.clientY / window.innerHeight) * 2 + 1;
-    },
-    { passive: true }
-  );
+  window.addEventListener("mousemove", (e) => {
+    target.x = (e.clientX / window.innerWidth) * 2 - 1;
+    target.y = -(e.clientY / window.innerHeight) * 2 + 1;
+  }, { passive: true });
 
   /* =====================================================
-     RESIZE & RESPONSIVE SCALE
+     RESIZE & RESPONSIVE
   ===================================================== */
-  function updateResponsiveScale() {
-    const width = container.clientWidth;
-    const height = container.clientHeight;
-
+  function resize() {
+    const width = container.clientWidth, height = container.clientHeight;
     if (!width || !height) return;
-
     const isMobile = window.innerWidth < 768;
-
     camera.aspect = width / height;
     camera.position.z = isMobile ? 18.5 : 15;
     camera.updateProjectionMatrix();
-
-    const targetScale = isMobile ? 0.68 : 1.0;
-    group.scale.setScalar(targetScale);
-
+    group.scale.setScalar(isMobile ? 0.68 : 1.0);
     renderer.setSize(width, height, false);
   }
-
-  function resize() {
-    updateResponsiveScale();
-  }
-
   window.addEventListener("resize", resize);
 
   /* =====================================================
      ANIMATION LOOP
   ===================================================== */
   const clock = new THREE.Clock();
-
   function animate() {
     requestAnimationFrame(animate);
-
     const time = clock.getElapsedTime();
-
     mouse.x += (target.x - mouse.x) * 0.05;
     mouse.y += (target.y - mouse.y) * 0.05;
+    mouseLight.position.set(mouse.x * 12, mouse.y * 8, 6);
+    gridGroup.position.set(-mouse.x * 0.3, -mouse.y * 0.2, -4);
 
-    // 마우스 추적 하이라이트
-    mouseLight.position.x = mouse.x * 12;
-    mouseLight.position.y = mouse.y * 8;
-    mouseLight.position.z = 6;
-
-    // 카카오 2D 레이아웃 그리드 미세 패럴랙스
-    gridGroup.position.x = -mouse.x * 0.3;
-    gridGroup.position.y = -mouse.y * 0.2;
-
-    group.children.forEach((object) => {
-      const phase = object.userData.phase;
-
-      object.position.x =
-        object.userData.baseX + Math.sin(time * 0.55 + phase) * 0.08;
-      object.position.y =
-        object.userData.baseY + Math.cos(time * 0.7 + phase) * 0.1;
-
-      object.rotation.y = object.userData.baseRotationY + mouse.x * 0.2;
-      object.rotation.x = -0.08 - mouse.y * 0.1;
+    group.children.forEach((obj) => {
+      const p = obj.userData;
+      obj.position.x = p.baseX + Math.sin(time * 0.55 + p.phase) * 0.08;
+      obj.position.y = p.baseY + Math.cos(time * 0.7 + p.phase) * 0.1;
+      obj.rotation.y = p.baseRotationY + mouse.x * 0.2;
+      obj.rotation.x = -0.08 - mouse.y * 0.1;
     });
-
     renderer.render(scene, camera);
   }
 
-  resize();
-  animate();
+  resize(); animate();
 }
