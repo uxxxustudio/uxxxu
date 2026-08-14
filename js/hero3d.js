@@ -3,7 +3,7 @@ import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 
 /* =========================================================
-   HERO THREE.JS (Kakao ESG Style - Curved Dome Spatial Grid)
+   HERO THREE.JS (Clean Curved Barrel Grid - No Distortion)
 ========================================================= */
 
 export function initHero3D() {
@@ -24,11 +24,11 @@ export function initHero3D() {
   const ambientLight = new THREE.AmbientLight(0xe0f2fe, 1.2);
   scene.add(ambientLight);
 
-  // 마우스 추적 백색 핀 조명 (#fff 스펙큘러)
+  // 마우스 추적 백색 핀 조명
   const mouseLight = new THREE.PointLight(0xffffff, 18.0, 25);
   scene.add(mouseLight);
 
-  // 멀티 컬러 오로라 광원들
+  // 멀티 컬러 오로라 광원
   const skyLight = new THREE.DirectionalLight(0x0284c7, 6.0);
   skyLight.position.set(12, 10, 8);
   scene.add(skyLight);
@@ -62,31 +62,69 @@ export function initHero3D() {
   scene.add(group);
 
   /* =====================================================
-     CURVED DOME GRID (공간을 감싸는 레퍼런스 스타일 곡면 그리드)
+     CLEAN CURVED GRID GENERATOR (직교 곡면 그리드)
+  ===================================================== */
+  function createCurvedGridGeometry(width, height, stepX, stepY, curveAmount = 0.008) {
+    const points = [];
+    const resolution = 30; // 곡선의 부드러움 정도
+
+    // 1. 수직 곡선들 생성
+    for (let x = -width / 2; x <= width / 2; x += stepX) {
+      for (let i = 0; i < resolution; i++) {
+        const t1 = i / resolution;
+        const t2 = (i + 1) / resolution;
+
+        const y1 = -height / 2 + t1 * height;
+        const y2 = -height / 2 + t2 * height;
+
+        // 중앙이 앞으로 튀어나오고 외곽이 뒤로 휘어지는 볼록 곡률 계산
+        const z1 = -(x * x * 0.8 + y1 * y1) * curveAmount;
+        const z2 = -(x * x * 0.8 + y2 * y2) * curveAmount;
+
+        points.push(x, y1, z1, x, y2, z2);
+      }
+    }
+
+    // 2. 수평 곡선들 생성
+    for (let y = -height / 2; y <= height / 2; y += stepY) {
+      for (let i = 0; i < resolution; i++) {
+        const t1 = i / resolution;
+        const t2 = (i + 1) / resolution;
+
+        const x1 = -width / 2 + t1 * width;
+        const x2 = -width / 2 + t2 * width;
+
+        const z1 = -(x1 * x1 * 0.8 + y * y) * curveAmount;
+        const z2 = -(x2 * x2 * 0.8 + y * y) * curveAmount;
+
+        points.push(x1, y, z1, x2, y, z2);
+      }
+    }
+
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute("position", new THREE.Float32BufferAttribute(points, 3));
+    return geometry;
+  }
+
+  /* =====================================================
+     BACKGROUND SPATIAL GRID
   ===================================================== */
   const gridGroup = new THREE.Group();
-  gridGroup.position.set(0, 0, -8); // 깊숙한 배경 공간에 배치
+  gridGroup.position.set(0, 0, -4); 
 
-  // 볼록한 돔(Dome) 형태의 지오메트리 생성
-  const domeRadius = 22;
-  const domeGeo = new THREE.SphereGeometry(
-    domeRadius,
-    32, // 세로 격자 수
-    20, // 가로 격자 수
-    0,
-    Math.PI * 2,
-    0,
-    Math.PI * 0.48 // 화면을 감싸는 호 형태
-  );
+  const gridWidth = 36;
+  const gridHeight = 22;
+  const stepX = 2.4;
+  const stepY = 2.4;
+  const curveFactor = 0.009; // 곡률 강도 (숫자가 클수록 더 볼록해짐)
 
-  // 와이어프레임 라인으로 추출
-  const wireGeo = new THREE.WireframeGeometry(domeGeo);
+  const curvedGridGeo = createCurvedGridGeometry(gridWidth, gridHeight, stepX, stepY, curveFactor);
 
-  // 1. 휘어지는 그리드 라인 재질 (하단 부드러운 페이드 처리)
-  const curvedGridMaterial = new THREE.ShaderMaterial({
+  // 하단 페이드아웃 Shader
+  const gridMaterial = new THREE.ShaderMaterial({
     uniforms: {
-      color: { value: new THREE.Color(0x64748b) },
-      baseOpacity: { value: 0.28 },
+      color: { value: new THREE.Color(0x94a3b8) },
+      baseOpacity: { value: 0.25 },
     },
     vertexShader: `
       varying vec3 vPosition;
@@ -101,8 +139,8 @@ export function initHero3D() {
       varying vec3 vPosition;
 
       void main() {
-        // Y축 아래쪽으로 갈수록 자연스럽게 녹아들며 연해지는 그라데이션
-        float fade = smoothstep(-10.0, 5.0, vPosition.y);
+        // Y축 하단(-4 이하)으로 갈수록 부드럽게 연해짐
+        float fade = smoothstep(-11.0, -3.0, vPosition.y);
         gl_FragColor = vec4(color, baseOpacity * fade);
       }
     `,
@@ -110,35 +148,28 @@ export function initHero3D() {
     depthWrite: false,
   });
 
-  const curvedGrid = new THREE.LineSegments(wireGeo, curvedGridMaterial);
-  // 카메라를 향해 돔의 안쪽 곡면이 보이도록 회전 및 위치 조정
-  curvedGrid.rotation.x = Math.PI * 0.55;
-  gridGroup.add(curvedGrid);
+  const gridMesh = new THREE.LineSegments(curvedGridGeo, gridMaterial);
+  gridGroup.add(gridMesh);
 
-  // 2. 레퍼런스 특유의 포인트 포인트(Node Dots) 추가
-  const nodeGeo = new THREE.BoxGeometry(0.12, 0.12, 0.12);
-  const nodeMat = new THREE.MeshBasicMaterial({ color: 0x0f172a });
+  // 교차점 노드 점들 (Node Dots)
+  const nodeGeo = new THREE.BoxGeometry(0.1, 0.1, 0.1);
+  const nodeMat = new THREE.MeshBasicMaterial({ color: 0x334155, transparent: true, opacity: 0.6 });
 
-  // 돔 곡면의 일정 간격 노드에 사각형 점 배치
-  const posAttribute = domeGeo.attributes.position;
-  for (let i = 0; i < posAttribute.count; i += 18) {
-    const x = posAttribute.getX(i);
-    const y = posAttribute.getY(i);
-    const z = posAttribute.getZ(i);
-
-    // 하단 너무 깊은 곳은 생략
-    if (y > -8) {
-      const node = new THREE.Mesh(nodeGeo, nodeMat);
-      node.position.set(x, y, z);
-      node.rotation.x = Math.PI * 0.55;
-      gridGroup.add(node);
+  for (let x = -gridWidth / 2; x <= gridWidth / 2; x += stepX * 2) {
+    for (let y = -gridHeight / 2; y <= gridHeight / 2; y += stepY * 2) {
+      if (y > -8) { // 최하단 노드는 생략
+        const z = -(x * x * 0.8 + y * y) * curveFactor;
+        const node = new THREE.Mesh(nodeGeo, nodeMat);
+        node.position.set(x, y, z);
+        gridGroup.add(node);
+      }
     }
   }
 
   scene.add(gridGroup);
 
   /* =====================================================
-     MATERIALS (오로라 틴트 글래스 + 또렷한 오브젝트 테두리)
+     MATERIALS
   ===================================================== */
   const tubeGlassMaterial = new THREE.MeshPhysicalMaterial({
     color: 0xbae6fd,
@@ -268,14 +299,14 @@ export function initHero3D() {
     mouse.x += (target.x - mouse.x) * 0.05;
     mouse.y += (target.y - mouse.y) * 0.05;
 
-    // 마우스 하이라이트 핀 조명
+    // 마우스 추적 조명
     mouseLight.position.set(mouse.x * 12, mouse.y * 8, 6);
 
-    // ★ 곡면 3D 돔 그리드의 다이내믹 시점 반응 (마우스 반응에 따라 공간이 회전)
-    gridGroup.rotation.y = mouse.x * 0.08;
-    gridGroup.rotation.x = -mouse.y * 0.05;
+    // 미세 패럴랙스
+    gridGroup.position.x = -mouse.x * 0.3;
+    gridGroup.position.y = -mouse.y * 0.2;
 
-    // 메인 그래픽 개체 부유 모션
+    // 메인 글자 그래픽 부유
     group.children.forEach((obj) => {
       const p = obj.userData;
       obj.position.x = p.baseX + Math.sin(time * 0.55 + p.phase) * 0.08;
