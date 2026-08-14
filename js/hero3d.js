@@ -3,7 +3,7 @@ import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 
 /* =========================================================
-   HERO THREE.JS (Deep Concave Curved Grid Space)
+   HERO THREE.JS (Glossy Gradient U + Crisp Rim Highlight)
 ========================================================= */
 
 export function initHero3D() {
@@ -19,27 +19,28 @@ export function initHero3D() {
   camera.position.set(0, 0, 15);
 
   /* =====================================================
-     LIGHTS
+     LIGHTS (모서리 강한 #FFFFFF 하이라이트 전용 조명 구성)
   ===================================================== */
-  const ambientLight = new THREE.AmbientLight(0xe0f2fe, 1.2);
+  const ambientLight = new THREE.AmbientLight(0xf0f9ff, 1.4);
   scene.add(ambientLight);
 
-  // 마우스 추적 백색 핀 조명
-  const mouseLight = new THREE.PointLight(0xffffff, 18.0, 25);
+  // ★ [핵심] U 모서리에 강렬한 백색(#FFFFFF) 하이라이트를 맺히게 하는 전면 핀 조명
+  const uHighlightLight = new THREE.DirectionalLight(0xffffff, 12.0);
+  uHighlightLight.position.set(-2, 6, 10);
+  scene.add(uHighlightLight);
+
+  // 마우스 추적 조명
+  const mouseLight = new THREE.PointLight(0xffffff, 12.0, 25);
   scene.add(mouseLight);
 
-  // 멀티 컬러 오로라 광원
-  const skyLight = new THREE.DirectionalLight(0x0284c7, 6.0);
+  // 주변부 오로라 컬러 림 조명
+  const skyLight = new THREE.DirectionalLight(0x0284c7, 5.0);
   skyLight.position.set(12, 10, 8);
   scene.add(skyLight);
 
-  const pinkLight = new THREE.DirectionalLight(0xf43f5e, 5.0);
+  const pinkLight = new THREE.DirectionalLight(0xf43f5e, 4.0);
   pinkLight.position.set(-12, -10, 6);
   scene.add(pinkLight);
-
-  const sunLight = new THREE.DirectionalLight(0xfef08a, 4.0);
-  sunLight.position.set(0, 15, 5);
-  scene.add(sunLight);
 
   /* =====================================================
      RENDERER
@@ -62,41 +63,28 @@ export function initHero3D() {
   scene.add(group);
 
   /* =====================================================
-     CONCAVE CURVED GRID GENERATOR (오목한 공간 그리드)
+     CONCAVE CURVED GRID GENERATOR
   ===================================================== */
-  function createConcaveGridGeometry(width, height, stepX, stepY, curveAmount = 0.009) {
+  function createConcaveGridGeometry(width, height, stepX, stepY, curveAmount = 0.01) {
     const points = [];
-    const resolution = 30; // 곡선 해상도
+    const resolution = 30;
 
-    // 1. 수직 곡선 생성 (중앙은 깊게 -3.0, 외곽은 앞으로 다가옴)
     for (let x = -width / 2; x <= width / 2; x += stepX) {
       for (let i = 0; i < resolution; i++) {
-        const t1 = i / resolution;
-        const t2 = (i + 1) / resolution;
-
-        const y1 = -height / 2 + t1 * height;
-        const y2 = -height / 2 + t2 * height;
-
-        // ★ [핵심수정] 중앙이 깊게 파이고 외곽이 앞으로 감싸는 오목 형태 (+ 부호)
+        const t1 = i / resolution, t2 = (i + 1) / resolution;
+        const y1 = -height / 2 + t1 * height, y2 = -height / 2 + t2 * height;
         const z1 = (x * x * 0.8 + y1 * y1) * curveAmount - 3.0;
         const z2 = (x * x * 0.8 + y2 * y2) * curveAmount - 3.0;
-
         points.push(x, y1, z1, x, y2, z2);
       }
     }
 
-    // 2. 수평 곡선 생성
     for (let y = -height / 2; y <= height / 2; y += stepY) {
       for (let i = 0; i < resolution; i++) {
-        const t1 = i / resolution;
-        const t2 = (i + 1) / resolution;
-
-        const x1 = -width / 2 + t1 * width;
-        const x2 = -width / 2 + t2 * width;
-
+        const t1 = i / resolution, t2 = (i + 1) / resolution;
+        const x1 = -width / 2 + t1 * width, x2 = -width / 2 + t2 * width;
         const z1 = (x1 * x1 * 0.8 + y * y) * curveAmount - 3.0;
         const z2 = (x2 * x2 * 0.8 + y * y) * curveAmount - 3.0;
-
         points.push(x1, y, z1, x2, y, z2);
       }
     }
@@ -110,17 +98,11 @@ export function initHero3D() {
      BACKGROUND SPATIAL GRID
   ===================================================== */
   const gridGroup = new THREE.Group();
-  gridGroup.position.set(0, 0, -3); 
+  gridGroup.position.set(0, 0, -3);
 
-  const gridWidth = 36;
-  const gridHeight = 22;
-  const stepX = 2.4;
-  const stepY = 2.4;
-  const curveFactor = 0.01; // 공간 오목함의 깊이감 조절
-
+  const gridWidth = 36, gridHeight = 22, stepX = 2.4, stepY = 2.4, curveFactor = 0.01;
   const curvedGridGeo = createConcaveGridGeometry(gridWidth, gridHeight, stepX, stepY, curveFactor);
 
-  // 하단 페이드아웃 쉐이더 (다음 페이지 흰색 연결)
   const gridMaterial = new THREE.ShaderMaterial({
     uniforms: {
       color: { value: new THREE.Color(0x94a3b8) },
@@ -139,7 +121,6 @@ export function initHero3D() {
       varying vec3 vPosition;
 
       void main() {
-        // Y축 하단(-3 이하)으로 갈수록 투명하게 그라데이션
         float fade = smoothstep(-11.0, -2.0, vPosition.y);
         gl_FragColor = vec4(color, baseOpacity * fade);
       }
@@ -148,17 +129,15 @@ export function initHero3D() {
     depthWrite: false,
   });
 
-  const gridMesh = new THREE.LineSegments(curvedGridGeo, gridMaterial);
-  gridGroup.add(gridMesh);
+  gridGroup.add(new THREE.LineSegments(curvedGridGeo, gridMaterial));
 
-  // 교차점 포인트 노드 (Node Dots) 배치
+  // 교차점 노드
   const nodeGeo = new THREE.BoxGeometry(0.1, 0.1, 0.1);
   const nodeMat = new THREE.MeshBasicMaterial({ color: 0x334155, transparent: true, opacity: 0.6 });
 
   for (let x = -gridWidth / 2; x <= gridWidth / 2; x += stepX * 2) {
     for (let y = -gridHeight / 2; y <= gridHeight / 2; y += stepY * 2) {
-      if (y > -8) { 
-        // 오목한 Z 좌표에 동일하게 맞춤
+      if (y > -8) {
         const z = (x * x * 0.8 + y * y) * curveFactor - 3.0;
         const node = new THREE.Mesh(nodeGeo, nodeMat);
         node.position.set(x, y, z);
@@ -166,26 +145,25 @@ export function initHero3D() {
       }
     }
   }
-
   scene.add(gridGroup);
 
   /* =====================================================
-     MATERIALS
+     U MATERIAL (유리/풍선 그라데이션 + 극대화된 백색 하이라이트)
   ===================================================== */
   const tubeGlassMaterial = new THREE.MeshPhysicalMaterial({
-    color: 0xbae6fd,
+    vertexColors: true,         // ★ Vertex 컬러 그라데이션 활성화
     roughness: 0.02,
     metalness: 0.05,
-    transmission: 0.88,
-    ior: 1.48,
-    thickness: 2.0,
-    attenuationColor: 0x38bdf8,
-    attenuationDistance: 2.0,
-    transparent: true,
-    opacity: 0.45,
-    clearcoat: 1.0,
-    clearcoatRoughness: 0.0,
+    transmission: 0.75,         // 적절한 투명도로 그라데이션 선명도 유지
+    ior: 1.52,
+    thickness: 2.2,
+    clearcoat: 1.0,             // ★ 모서리 쨍한 표면 코팅 반사
+    clearcoatRoughness: 0.0,    // 완벽한 백색 하이라이트 링
     reflectivity: 1.0,
+    specularIntensity: 2.5,     // ★ 백색 빛 반사 세기 극대화
+    specularColor: new THREE.Color(0xffffff),
+    transparent: true,
+    opacity: 0.88,
     depthWrite: true,
     side: THREE.DoubleSide,
   });
@@ -193,7 +171,7 @@ export function initHero3D() {
   const lineMaterial = new THREE.LineBasicMaterial({
     color: 0x0f172a,
     transparent: true,
-    opacity: 0.72,
+    opacity: 0.65,
   });
 
   /* =====================================================
@@ -220,11 +198,11 @@ export function initHero3D() {
       ? {
           font: font,
           size: 4.1,
-          depth: 0.4,
+          depth: 0.45,
           curveSegments: 32,
           bevelEnabled: true,
-          bevelThickness: 0.38,
-          bevelSize: 0.28,
+          bevelThickness: 0.42,
+          bevelSize: 0.3,
           bevelOffset: 0,
           bevelSegments: 16,
         }
@@ -241,9 +219,43 @@ export function initHero3D() {
     const box = geometry.boundingBox;
     geometry.translate(-(box.max.x + box.min.x) / 2, -(box.max.y + box.min.y) / 2, 0);
 
+    // ★ [핵심] U 글자 전용 VERTEX COLOR 그라데이션 부여
+    if (isU) {
+      const posAttr = geometry.attributes.position;
+      const count = posAttr.count;
+      const colors = new Float32Array(count * 3);
+
+      const minY = box.min.y;
+      const maxY = box.max.y;
+      const height = maxY - minY;
+
+      const bottomColor = new THREE.Color(0x7dd3fc); // 하단: 밝고 투명한 세룰리안 블루
+      const topColor = new THREE.Color(0x1d4ed8);    // 상단: 딥 코발트 블루
+
+      for (let i = 0; i < count; i++) {
+        const posY = posAttr.getY(i);
+        const ratio = Math.min(Math.max((posY - minY) / height, 0), 1);
+
+        const mixedColor = bottomColor.clone().lerp(topColor, ratio);
+        colors[i * 3] = mixedColor.r;
+        colors[i * 3 + 1] = mixedColor.g;
+        colors[i * 3 + 2] = mixedColor.b;
+      }
+
+      geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+    }
+
     const letterGroup = new THREE.Group();
-    if (isU) letterGroup.add(new THREE.Mesh(geometry, tubeGlassMaterial));
-    letterGroup.add(new THREE.LineSegments(new THREE.EdgesGeometry(geometry, 25), lineMaterial));
+
+    if (isU) {
+      letterGroup.add(new THREE.Mesh(geometry, tubeGlassMaterial));
+    }
+
+    // ★ [핵심 수정] EdgesGeometry thresholdAngle을 55도로 높여 상단 찌그러진 와이어프레임 제거
+    const edgeAngleThreshold = isU ? 55 : 25;
+    letterGroup.add(
+      new THREE.LineSegments(new THREE.EdgesGeometry(geometry, edgeAngleThreshold), lineMaterial)
+    );
 
     letterGroup.position.set(x, y, 0);
     letterGroup.scale.setScalar(scale);
@@ -300,14 +312,11 @@ export function initHero3D() {
     mouse.x += (target.x - mouse.x) * 0.05;
     mouse.y += (target.y - mouse.y) * 0.05;
 
-    // 마우스 하이라이트
     mouseLight.position.set(mouse.x * 12, mouse.y * 8, 6);
 
-    // 오목한 공간 패럴랙스
     gridGroup.position.x = -mouse.x * 0.3;
     gridGroup.position.y = -mouse.y * 0.2;
 
-    // 그래픽 오브젝트 부유 모션
     group.children.forEach((obj) => {
       const p = obj.userData;
       obj.position.x = p.baseX + Math.sin(time * 0.55 + p.phase) * 0.08;
