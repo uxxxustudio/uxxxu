@@ -3,7 +3,7 @@ import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 
 /* =========================================================
-   HERO THREE.JS (Glossy Gradient U + Crisp Rim Highlight)
+   HERO THREE.JS (Translucent Glass/Jelly U-Shape)
 ========================================================= */
 
 export function initHero3D() {
@@ -19,21 +19,21 @@ export function initHero3D() {
   camera.position.set(0, 0, 15);
 
   /* =====================================================
-     LIGHTS (모서리 강한 #FFFFFF 하이라이트 전용 조명 구성)
+     LIGHTS
   ===================================================== */
-  const ambientLight = new THREE.AmbientLight(0xf0f9ff, 1.4);
+  const ambientLight = new THREE.AmbientLight(0xf0f9ff, 1.5);
   scene.add(ambientLight);
 
-  // ★ [핵심] U 모서리에 강렬한 백색(#FFFFFF) 하이라이트를 맺히게 하는 전면 핀 조명
-  const uHighlightLight = new THREE.DirectionalLight(0xffffff, 12.0);
+  // U 모서리 백색(#FFFFFF) 하이라이트 전용 핀 조명
+  const uHighlightLight = new THREE.DirectionalLight(0xffffff, 14.0);
   uHighlightLight.position.set(-2, 6, 10);
   scene.add(uHighlightLight);
 
   // 마우스 추적 조명
-  const mouseLight = new THREE.PointLight(0xffffff, 12.0, 25);
+  const mouseLight = new THREE.PointLight(0xffffff, 10.0, 25);
   scene.add(mouseLight);
 
-  // 주변부 오로라 컬러 림 조명
+  // 오로라 컬러 림 조명
   const skyLight = new THREE.DirectionalLight(0x0284c7, 5.0);
   skyLight.position.set(12, 10, 8);
   scene.add(skyLight);
@@ -148,23 +148,24 @@ export function initHero3D() {
   scene.add(gridGroup);
 
   /* =====================================================
-     U MATERIAL (유리/풍선 그라데이션 + 극대화된 백색 하이라이트)
+     U MATERIAL (반투명 유리/젤리 질감 적용)
   ===================================================== */
   const tubeGlassMaterial = new THREE.MeshPhysicalMaterial({
-    vertexColors: true,         // ★ Vertex 컬러 그라데이션 활성화
-    roughness: 0.02,
-    metalness: 0.05,
-    transmission: 0.75,         // 적절한 투명도로 그라데이션 선명도 유지
-    ior: 1.52,
-    thickness: 2.2,
-    clearcoat: 1.0,             // ★ 모서리 쨍한 표면 코팅 반사
-    clearcoatRoughness: 0.0,    // 완벽한 백색 하이라이트 링
-    reflectivity: 1.0,
-    specularIntensity: 2.5,     // ★ 백색 빛 반사 세기 극대화
+    vertexColors: true,            // 그라데이션 컬러 유지
+    roughness: 0.06,               // 표면 반사 매끄러움
+    metalness: 0.0,
+    transmission: 0.92,            // ★ 높인 투과율 (배경 글자/선 비침)
+    ior: 1.45,                     // 굴절률 (유리/액체 느낌)
+    thickness: 1.8,                // 모서리 굴절 두께감
+    attenuationColor: new THREE.Color(0x2563eb), // 내부 오션 블루 틴트
+    attenuationDistance: 1.5,
+    clearcoat: 1.0,                // 겉면 코팅 광택
+    clearcoatRoughness: 0.0,
+    specularIntensity: 2.5,        // 백색 하이라이트 림
     specularColor: new THREE.Color(0xffffff),
     transparent: true,
-    opacity: 0.88,
-    depthWrite: true,
+    opacity: 0.55,                 // ★ 불투명도를 낮춰 반투명감 연출
+    depthWrite: false,             // ★ 뒤쪽 텍스트 및 그리드 레이어 투과 렌더링
     side: THREE.DoubleSide,
   });
 
@@ -219,7 +220,7 @@ export function initHero3D() {
     const box = geometry.boundingBox;
     geometry.translate(-(box.max.x + box.min.x) / 2, -(box.max.y + box.min.y) / 2, 0);
 
-    // ★ [핵심] U 글자 전용 VERTEX COLOR 그라데이션 부여
+    // U 글자 전용 VERTEX COLOR 그라데이션
     if (isU) {
       const posAttr = geometry.attributes.position;
       const count = posAttr.count;
@@ -229,8 +230,8 @@ export function initHero3D() {
       const maxY = box.max.y;
       const height = maxY - minY;
 
-      const bottomColor = new THREE.Color(0x7dd3fc); // 하단: 밝고 투명한 세룰리안 블루
-      const topColor = new THREE.Color(0x1d4ed8);    // 상단: 딥 코발트 블루
+      const bottomColor = new THREE.Color(0x38bdf8); // 하단: 투명 스카이 블루
+      const topColor = new THREE.Color(0x1d4ed8);    // 상단: 딥 딥블루
 
       for (let i = 0; i < count; i++) {
         const posY = posAttr.getY(i);
@@ -251,7 +252,6 @@ export function initHero3D() {
       letterGroup.add(new THREE.Mesh(geometry, tubeGlassMaterial));
     }
 
-    // ★ [핵심 수정] EdgesGeometry thresholdAngle을 55도로 높여 상단 찌그러진 와이어프레임 제거
     const edgeAngleThreshold = isU ? 55 : 25;
     letterGroup.add(
       new THREE.LineSegments(new THREE.EdgesGeometry(geometry, edgeAngleThreshold), lineMaterial)
