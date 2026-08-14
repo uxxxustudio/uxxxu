@@ -3,7 +3,7 @@ import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 
 /* =========================================================
-   HERO THREE.JS (Haoqi Design Style - Aurora Glass Tube)
+   HERO THREE.JS (Haoqi Design Exact Color Scheme)
 ========================================================= */
 
 export function initHero3D() {
@@ -19,31 +19,26 @@ export function initHero3D() {
   camera.position.set(0, 0, 15);
 
   /* =====================================================
-     LIGHTS (오로라/유리 림라이트 4점 조명)
+     LIGHTS (레퍼런스 특유의 스카이블루 + 따스한 태양광 조합)
   ===================================================== */
-  // 기본 은은한 환경광
-  const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
+  // 1. 시원한 스카이 틴트 환경광
+  const ambientLight = new THREE.AmbientLight(0xe0f2fe, 1.8);
   scene.add(ambientLight);
 
-  // 1. 우측 상단 쨍한 스카이블루 림라이트 (메인 반사)
-  const keyLight = new THREE.DirectionalLight(0x38bdf8, 6.0);
-  keyLight.position.set(12, 15, 10);
-  scene.add(keyLight);
+  // 2. 좌측 상단: 레퍼런스의 따스한 햇살 하이라이트 (Warm Amber/Yellow)
+  const sunLight = new THREE.DirectionalLight(0xfef08a, 4.8);
+  sunLight.position.set(-10, 14, 10);
+  scene.add(sunLight);
 
-  // 2. 좌측 상단 은은한 핑크/바이올렛 림라이트
-  const violetLight = new THREE.DirectionalLight(0xc084fc, 5.0);
-  violetLight.position.set(-12, 10, -2);
-  scene.add(violetLight);
+  // 3. 우측 상단: 쨍한 사이언/스카이블루 림라이트
+  const cyanLight = new THREE.DirectionalLight(0x38bdf8, 5.5);
+  cyanLight.position.set(12, 10, 8);
+  scene.add(cyanLight);
 
-  // 3. 하단 레몬/화이트 하이라이트 (튜브 곡면 부각)
-  const bottomLight = new THREE.DirectionalLight(0xfef08a, 3.0);
-  bottomLight.position.set(0, -12, 8);
-  scene.add(bottomLight);
-
-  // 4. 중앙 쨍한 화이트 핀 조명 (글래스 반짝임 생성)
-  const pointLight = new THREE.PointLight(0xffffff, 4.0, 20);
-  pointLight.position.set(0, 2, 8);
-  scene.add(pointLight);
+  // 4. 중앙 모서리: 쨍한 화이트 스펙큘러 (Sparkle/Glint)
+  const rimLight = new THREE.DirectionalLight(0xffffff, 6.0);
+  rimLight.position.set(0, 15, 2);
+  scene.add(rimLight);
 
   /* =====================================================
      RENDERER
@@ -66,22 +61,22 @@ export function initHero3D() {
   scene.add(group);
 
   /* =====================================================
-     AURORA TUBE GLASS MATERIAL (레퍼런스 특유의 오로라 유리)
+     MATERIALS (Haoqi Design Icy Sky-Blue Glass)
   ===================================================== */
   const tubeGlassMaterial = new THREE.MeshPhysicalMaterial({
-    color: 0xc7d2fe,             // 소프트 퍼리윙클 블루 베이스
-    roughness: 0.08,             // 맑고 표면 광택이 강한 매끈함
-    metalness: 0.1,
-    transmission: 0.85,          // 뒤쪽 배경 및 텍스트 맑게 투과
-    ior: 1.42,                   // 튜브 유리 특유의 소프트한 굴절
-    thickness: 2.2,              // 오로라 빛이 내부에 차오르는 두께감
-    attenuationColor: 0x6366f1,  // 내부 산란 인디고/블루 틴트
-    attenuationDistance: 1.8,
+    color: 0xbae6fd,            // 아이시 스카이 블루 베이스
+    roughness: 0.04,            // 매끈하고 맑은 유리 광택
+    metalness: 0.05,
+    transmission: 0.92,         // 높은 투과율 (답답함 제거)
+    ior: 1.45,                  // 부드러운 유리 굴절
+    thickness: 1.8,             // 빛 스며듦 깊이
+    attenuationColor: 0x0284c7, // 스카이블루 딥 산란 틴트
+    attenuationDistance: 2.4,   // 맑게 스며드는 거리
     transparent: true,
-    opacity: 0.5,
-    clearcoat: 1.0,              // 쨍한 코팅 반사 layer
-    clearcoatRoughness: 0.03,    // 모서리 반사를 아주 쨍하게
-    reflectivity: 0.95,
+    opacity: 0.4,               // 청량한 틴트 투명도
+    clearcoat: 1.0,             // 표면 쨍한 코팅층
+    clearcoatRoughness: 0.02,
+    reflectivity: 0.98,
     depthWrite: true,
     side: THREE.DoubleSide,
   });
@@ -89,7 +84,7 @@ export function initHero3D() {
   const lineMaterial = new THREE.LineBasicMaterial({
     color: 0x334155,
     transparent: true,
-    opacity: 0.25,
+    opacity: 0.2,
   });
 
   /* =====================================================
@@ -97,11 +92,10 @@ export function initHero3D() {
   ===================================================== */
   const loader = new FontLoader();
 
-  // 곡선이 부드러운 폰트로 가져옵니다
   loader.load(
     "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/fonts/helvetiker_bold.typeface.json",
     (font) => {
-      // 1. 메인 U (통통하고 곡면 베벨이 진하게 들어간 튜브 폰트)
+      // 1. 메인 U (둥근 튜브 베벨)
       createLetter("U", font, -2.9, -0.65, -0.42, 0.92, 0);
 
       // 2. 메인 X
@@ -118,23 +112,22 @@ export function initHero3D() {
   );
 
   /* =====================================================
-     CREATE 3D LETTER (둥글둥글한 튜브 라운딩 베벨)
+     CREATE 3D LETTER (Tube Geometry Settings)
   ===================================================== */
   function createLetter(character, font, x, y, rotationY, scale, phase) {
     const isU = character === "U";
 
-    // 튜브 느낌을 내기 위해 Bevel Thickness와 Size를 크게 주어 둥글게 깎음
     const geometryOptions = isU
       ? {
           font: font,
           size: 4.1,
-          depth: 0.4,                // 두께는 살짝 줄이고
+          depth: 0.4,
           curveSegments: 32,
           bevelEnabled: true,
-          bevelThickness: 0.35,      // ★ 극적으로 모서리를 둥글게 만들어 튜브 형태화
-          bevelSize: 0.25,           // ★ 볼륨감 있는 곡면
+          bevelThickness: 0.35,      // 통통한 튜브 곡면 유지
+          bevelSize: 0.25,
           bevelOffset: 0,
-          bevelSegments: 16,         // 완벽히 부드러운 곡면
+          bevelSegments: 16,
         }
       : {
           font: font,
@@ -236,10 +229,6 @@ export function initHero3D() {
 
     mouse.x += (target.x - mouse.x) * 0.035;
     mouse.y += (target.y - mouse.y) * 0.035;
-
-    // 조명 약간 둥둥 뜨는 모션으로 오로라 반사 연출
-    pointLight.position.x = Math.sin(time * 0.8) * 4;
-    pointLight.position.y = Math.cos(time * 0.6) * 3 + 2;
 
     group.children.forEach((object) => {
       const phase = object.userData.phase;
