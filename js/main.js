@@ -47,14 +47,28 @@ window.addEventListener("DOMContentLoaded", async () => {
     );
 
     /* Hero가 DOM에 들어온 뒤 3D 실행 */
-    const { initHero3D } = await import("./hero3d.js");
+
+    const { initHero3D } =
+        await import("./hero3d.js");
 
     initHero3D();
+
 
     await loadComponent(
         "service",
         new URL("service.html", componentPath)
     );
+
+
+    /* Service가 DOM에 들어온 뒤 3D 실행 */
+
+    const { initSectionObject } =
+        await import("./hero3d.js");
+
+    initSectionObject(
+        "service-object"
+    );
+
 
     await loadComponent(
         "portfolio",
