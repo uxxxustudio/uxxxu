@@ -498,7 +498,7 @@ export function initPortfolio3D(containerId) {
 
 
 /* =========================================================
-   SERVICE SECTION 3D FULL-PAGE BACKGROUND LINES
+   SERVICE SECTION 3D FULL-PAGE BACKGROUND LINES (모바일 최적화 반영)
 ========================================================= */
 export function initServiceLines3D(containerId) {
   const container = document.getElementById(containerId);
@@ -508,10 +508,11 @@ export function initServiceLines3D(containerId) {
 
   const width = container.clientWidth || window.innerWidth;
   const height = container.clientHeight || 800;
+  const isMobile = window.innerWidth < 768;
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
-  camera.position.set(0, 0, 35);
+  camera.position.set(0, 0, isMobile ? 42 : 35); // 모바일에서 전체가 보이도록 카메라 거리 조절
 
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setSize(width, height);
@@ -528,13 +529,19 @@ export function initServiceLines3D(containerId) {
   const masterGroup = new THREE.Group();
   scene.add(masterGroup);
 
-  // 길이와 회전(각도)을 다채롭게 조절하여 일부는 길고, 일부는 짧고 가로/대각선 방향으로 배치
-  const lineConfigs = [
-    { pos: [-11.0, 6.0, -3.0], rot: [0.2, 0.4, -0.3], scale: [0.5, 22.0, 0.5], speed: 0.5, offset: 0.0 }, // 길고 시원한 수직/대각선 선
-    { pos: [8.0, 2.0, -1.0], rot: [-1.3, 0.6, 0.8], scale: [0.4, 8.5, 0.4], speed: 0.7, offset: 1.5 },  // 가로 방향으로 누운 짧은 선
-    { pos: [-6.0, -3.0, 2.0], rot: [0.1, -0.9, 0.6], scale: [0.6, 11.0, 0.6], speed: 0.6, offset: 2.8 }, // 중간 길이의 대각선 선
-    { pos: [10.0, -4.0, -2.0], rot: [1.4, -0.3, 0.4], scale: [0.5, 7.0, 0.5], speed: 0.8, offset: 4.2 }, // 가깝고 누워있는 아주 짧은 선
-    { pos: [-1.0, 8.0, -6.0], rot: [-0.6, 0.3, -1.1], scale: [0.5, 16.0, 0.5], speed: 0.5, offset: 3.1 } // 배경의 균형을 잡아주는 긴 선
+  // 모바일과 PC 환경에 맞추어 선들의 좌표와 배치 영역 최적화
+  const lineConfigs = isMobile ? [
+    { pos: [-4.0,  5.0, -2.0], rot: [0.2, 0.4, -0.3], scale: [0.5, 16.0, 0.5], speed: 0.5, offset: 0.0 },
+    { pos: [ 4.5,  1.0, -1.0], rot: [-1.3, 0.6, 0.8], scale: [0.4,  7.0, 0.4], speed: 0.7, offset: 1.5 },
+    { pos: [-3.0, -3.0,  1.0], rot: [0.1, -0.9, 0.6], scale: [0.6,  9.0, 0.6], speed: 0.6, offset: 2.8 },
+    { pos: [ 3.5, -6.0, -1.0], rot: [1.4, -0.3, 0.4], scale: [0.5,  6.0, 0.5], speed: 0.8, offset: 4.2 },
+    { pos: [ 0.0,  8.0, -4.0], rot: [-0.6, 0.3, -1.1], scale: [0.5, 12.0, 0.5], speed: 0.5, offset: 3.1 }
+  ] : [
+    { pos: [-11.0, 6.0, -3.0], rot: [0.2, 0.4, -0.3], scale: [0.5, 22.0, 0.5], speed: 0.5, offset: 0.0 },
+    { pos: [8.0, 2.0, -1.0], rot: [-1.3, 0.6, 0.8], scale: [0.4, 8.5, 0.4], speed: 0.7, offset: 1.5 },
+    { pos: [-6.0, -3.0, 2.0], rot: [0.1, -0.9, 0.6], scale: [0.6, 11.0, 0.6], speed: 0.6, offset: 2.8 },
+    { pos: [10.0, -4.0, -2.0], rot: [1.4, -0.3, 0.4], scale: [0.5, 7.0, 0.5], speed: 0.8, offset: 4.2 },
+    { pos: [-1.0, 8.0, -6.0], rot: [-0.6, 0.3, -1.1], scale: [0.5, 16.0, 0.5], speed: 0.5, offset: 3.1 }
   ];
 
   function createLineMesh(config) {
@@ -630,7 +637,7 @@ export function initServiceLines3D(containerId) {
     lineGroups.forEach((lg, i) => {
       const p = lg.userData;
       
-      lg.position.x = p.initialPos[0] + Math.sin(time * p.speed * 0.4 + i * 1.5) * 2.5;
+      lg.position.x = p.initialPos[0] + Math.sin(time * p.speed * 0.4 + i * 1.5) * (isMobile ? 1.0 : 2.5);
       lg.position.y = p.initialPos[1] + Math.cos(time * p.speed * 0.3 + i * 2.0) * 2.0;
       lg.position.z = p.initialPos[2] + Math.sin(time * p.speed * 0.25 + i * 1.0) * 1.5;
 
