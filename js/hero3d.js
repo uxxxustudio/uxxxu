@@ -146,32 +146,27 @@ export function initHero3D() {
       fragmentShader: `
         uniform float uTime;
         uniform float uOffset;
+        uniform float uIsU;
         varying vec3 vPosition;
         varying vec3 vNormal;
 
         void main() {
-          // 1. 모서리(Edge) 흐름 및 네온 컬러 계산 (더 짙고 강하게 수정)
-          float flow = mod((vPosition.y * 0.1) + (uTime * 0.25) + uOffset, 1.0);
-          float beam = smoothstep(0.18, 0.0, abs(flow - 0.5)); // 엣지 라인을 더 얇고 선명하게
-
-          vec3 darkGray = vec3(0.2, 0.2, 0.2); // [수정] 엣지 컬러를 더 짙은 그레이로 (U자형과 비슷하게)
-          vec3 neonGreen = vec3(0.12, 0.95, 0.45); // 포인트 그린
-          vec3 edgeColor = mix(darkGray, neonGreen, beam * 1.2); // [수정] 네온 효과를 더 강하게
-          
-          // 2. 면(Fill) 컬러: 면과 엣지의 차이를 명확히 하기 위해 더 연하게 수정
-          // 카메라를 향할수록 불투명해지는 반투명 흰색이지만, 베이스 값을 더 낮춤.
-          float fillAlpha = pow(abs(vNormal.z), 0.3) * 0.20; // [수정] 면의 밀도를 낮춰 더 투명하게 만듦
-          vec3 fillColor = vec3(0.96, 0.96, 0.96); // [수정] 면 컬러를 거의 흰색에 가깝게 설정
-
-          // 3. 면과 엣지의 시각적 결합
-          vec3 finalColor = mix(fillColor, edgeColor, beam * 1.5); // [수정] 엣지 라인이 면 위에 더 강하게 올라오도록 믹싱
-          float finalAlpha = max(fillAlpha, beam * 0.95); // 엣지 부분은 확실하게 불투명 처리
-
-          // 4. 상단 영역 페이드아웃 (유지)
-          float normalizeY = (vPosition.y + 11.0) / 22.0;
-          float fadeOut = smoothstep(0.05, 0.9, normalizeY);
-          
-          gl_FragColor = vec4(finalColor, finalAlpha * fadeOut);
+          if (abs(vNormal.z) > 0.1) { discard; }
+          float beam = 0.0;
+          if (uIsU > 0.5) {
+            float sideDir = (vPosition.x < 0.0) ? 1.0 : -1.0;
+            float flow = mod((vPosition.y * 0.2) + (uTime * 0.3 * sideDir) + (uOffset * 0.2), 1.0);
+            beam = smoothstep(0.12, 0.0, abs(flow - 0.5));
+          } else {
+            float angle = atan(vPosition.y, vPosition.x);
+            float sweep = mod((angle / 6.28318) - (uTime * 0.15) + (uOffset * 0.1), 1.0);
+            beam = smoothstep(0.12, 0.0, abs(sweep - 0.5));
+          }
+          vec3 baseColor = vec3(0.04, 0.04, 0.04);
+          vec3 neonGreen = vec3(0.12, 0.95, 0.45);
+          vec3 finalColor = mix(baseColor, neonGreen, beam);
+          float alpha = 0.08 + beam * 0.92;
+          gl_FragColor = vec4(finalColor, alpha);
         }
       `,
       transparent: true,
