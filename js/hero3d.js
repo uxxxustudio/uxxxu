@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 
+
 /* =========================================================
    HERO THREE.JS
    Studio Style U / X
@@ -798,8 +799,6 @@ export function initHero3D() {
             ) * 0.08;
 
 
-        /* Grid movement */
-
         gridGroup.position.x =
             -mouse.x * 0.2;
 
@@ -810,8 +809,6 @@ export function initHero3D() {
                 scrollY * 0.001
             );
 
-
-        /* U / X movement */
 
         group.children.forEach(
             (obj, index) => {
@@ -885,14 +882,11 @@ export function initHero3D() {
 
 
 /* =========================================================
-   SERVICE / EXPERIENCE THREE.JS
+   SERVICE
    Floating Volume Lines
 ========================================================= */
 
-export function initSectionObject(
-    targetId,
-    type
-) {
+export function initSectionObject(targetId) {
 
     const container =
         document.getElementById(targetId);
@@ -965,25 +959,18 @@ export function initSectionObject(
     const group =
         new THREE.Group();
 
-
-    scene.add(
-        group
-    );
+    scene.add(group);
 
 
     /* =====================================================
        LIGHT
     ===================================================== */
 
-    const ambientLight =
+    scene.add(
         new THREE.AmbientLight(
             0xffffff,
             1.2
-        );
-
-
-    scene.add(
-        ambientLight
+        )
     );
 
 
@@ -1026,15 +1013,10 @@ export function initSectionObject(
         });
 
 
-    /* =====================================================
-       GREEN HIGHLIGHT
-       Hero U/X와 같은 계열
-    ===================================================== */
-
     const greenMaterial =
         new THREE.MeshBasicMaterial({
 
-            color: 0x1feF72,
+            color: 0x12f274,
 
             transparent: true,
 
@@ -1047,7 +1029,7 @@ export function initSectionObject(
 
 
     /* =====================================================
-       LINE CREATOR
+       CREATE LINE
     ===================================================== */
 
     function createLine(
@@ -1099,9 +1081,9 @@ export function initSectionObject(
         );
 
 
-        /* =================================================
-           GREEN LIGHT
-        ================================================= */
+        /* ---------------------------------------------
+           Initial Green Highlight
+        --------------------------------------------- */
 
         const highlightPoints = [];
 
@@ -1142,7 +1124,7 @@ export function initSectionObject(
             new THREE.TubeGeometry(
                 highlightCurve,
                 24,
-                radius * 1.35,
+                radius * 1.4,
                 8,
                 false
             );
@@ -1190,11 +1172,7 @@ export function initSectionObject(
 
             radius,
 
-            highlight,
-
-            highlightStart,
-
-            highlightEnd
+            highlight
 
         };
 
@@ -1212,7 +1190,7 @@ export function initSectionObject(
 
 
     /* =====================================================
-       01
+       LINE 01
     ===================================================== */
 
     createLine(
@@ -1265,7 +1243,7 @@ export function initSectionObject(
 
 
     /* =====================================================
-       02
+       LINE 02
     ===================================================== */
 
     createLine(
@@ -1318,7 +1296,7 @@ export function initSectionObject(
 
 
     /* =====================================================
-       03
+       LINE 03
     ===================================================== */
 
     createLine(
@@ -1371,7 +1349,7 @@ export function initSectionObject(
 
 
     /* =====================================================
-       04
+       LINE 04
     ===================================================== */
 
     createLine(
@@ -1554,33 +1532,21 @@ export function initSectionObject(
             0.06;
 
 
-        /* ---------------------------------------------
-           Group floating
-        --------------------------------------------- */
-
         group.position.x =
-            mouse.x *
-            0.08;
+            mouse.x * 0.08;
 
 
         group.position.y =
-            mouse.y *
-            0.05;
+            mouse.y * 0.05;
 
 
         group.rotation.y =
-            mouse.x *
-            0.035;
+            mouse.x * 0.035;
 
 
         group.rotation.x =
-            -mouse.y *
-            0.025;
+            -mouse.y * 0.025;
 
-
-        /* ---------------------------------------------
-           Individual lines
-        --------------------------------------------- */
 
         lines.forEach(
             (line) => {
@@ -1649,103 +1615,6 @@ export function initSectionObject(
                         data.phase
                     ) *
                     0.018;
-
-
-                /* -------------------------------------
-                   Green highlight movement
-                ------------------------------------- */
-
-                const center =
-                    (
-                        time *
-                        0.035 +
-                        data.phase *
-                        0.025
-                    ) % 1;
-
-
-                const length =
-                    0.14;
-
-
-                const start =
-                    Math.max(
-                        0,
-                        center -
-                        length / 2
-                    );
-
-
-                const end =
-                    Math.min(
-                        1,
-                        center +
-                        length / 2
-                    );
-
-
-                const points = [];
-
-                const highlightSteps =
-                    18;
-
-
-                for (
-                    let i = 0;
-                    i <= highlightSteps;
-                    i++
-                ) {
-
-                    const t =
-                        start +
-                        (
-                            end -
-                            start
-                        ) *
-                        (
-                            i /
-                            highlightSteps
-                        );
-
-
-                    points.push(
-                        data.curve.getPointAt(
-                            t
-                        )
-                    );
-
-                }
-
-
-                if (
-                    points.length > 1
-                ) {
-
-                    const newCurve =
-                        new THREE.CatmullRomCurve3(
-                            points,
-                            false,
-                            "centripetal"
-                        );
-
-
-                    const newGeometry =
-                        new THREE.TubeGeometry(
-                            newCurve,
-                            18,
-                            data.radius *
-                            1.35,
-                            8,
-                            false
-                        );
-
-
-                    data.highlight.geometry.dispose();
-
-                    data.highlight.geometry =
-                        newGeometry;
-
-                }
 
             }
         );
