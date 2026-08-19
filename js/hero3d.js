@@ -882,8 +882,8 @@ export function initHero3D() {
 
 
 /* =========================================================
-   SERVICE
-   Floating Volume Lines
+   SERVICE 3D
+   Thin Floating Volume Lines
 ========================================================= */
 
 export function initSectionObject(targetId) {
@@ -906,7 +906,7 @@ export function initSectionObject(targetId) {
 
     const camera =
         new THREE.PerspectiveCamera(
-            35,
+            32,
             1,
             0.1,
             100
@@ -916,7 +916,7 @@ export function initSectionObject(targetId) {
     camera.position.set(
         0,
         0,
-        12
+        15
     );
 
 
@@ -926,10 +926,14 @@ export function initSectionObject(targetId) {
 
     const renderer =
         new THREE.WebGLRenderer({
+
             antialias: true,
+
             alpha: true,
+
             powerPreference:
                 "high-performance"
+
         });
 
 
@@ -945,6 +949,10 @@ export function initSectionObject(targetId) {
         0x000000,
         0
     );
+
+
+    renderer.outputColorSpace =
+        THREE.SRGBColorSpace;
 
 
     container.appendChild(
@@ -969,94 +977,300 @@ export function initSectionObject(targetId) {
     scene.add(
         new THREE.AmbientLight(
             0xffffff,
-            1.2
+            2.0
         )
     );
 
 
-    const directionalLight =
+    const keyLight =
         new THREE.DirectionalLight(
             0xffffff,
-            1.4
+            2.0
         );
 
 
-    directionalLight.position.set(
-        3,
+    keyLight.position.set(
+        -4,
         5,
         8
     );
 
 
     scene.add(
-        directionalLight
+        keyLight
+    );
+
+
+    const rimLight =
+        new THREE.DirectionalLight(
+            0xe9fff4,
+            1.0
+        );
+
+
+    rimLight.position.set(
+        5,
+        -2,
+        6
+    );
+
+
+    scene.add(
+        rimLight
     );
 
 
     /* =====================================================
-       MATERIAL
+       BASE MATERIAL
+       메인 U/X와 어울리는 밝은 회백색
     ===================================================== */
 
     const lineMaterial =
-        new THREE.MeshStandardMaterial({
+        new THREE.MeshPhysicalMaterial({
 
-            color: 0xd8d8d8,
+            color: 0xe7eae9,
 
-            roughness: 0.28,
+            roughness: 0.24,
 
-            metalness: 0.12,
-
-            transparent: true,
-
-            opacity: 0.72
-
-        });
-
-
-    const greenMaterial =
-        new THREE.MeshBasicMaterial({
-
-            color: 0x12f274,
+            metalness: 0.04,
 
             transparent: true,
 
-            opacity: 0.9
+            opacity: 0.78,
+
+            clearcoat: 0.65,
+
+            clearcoatRoughness: 0.2
 
         });
-
-
-    const lines = [];
 
 
     /* =====================================================
-       CREATE LINE
+       EDGE MATERIAL
     ===================================================== */
 
-    function createLine(
-        points,
-        rotation,
-        position,
-        radius,
-        highlightStart,
-        highlightEnd,
-        phase
-    ) {
+    const edgeMaterial =
+        new THREE.LineBasicMaterial({
 
-        const curve =
-            new THREE.CatmullRomCurve3(
-                points,
-                false,
-                "centripetal"
+            color: 0xb8bfbd,
+
+            transparent: true,
+
+            opacity: 0.7
+
+        });
+
+
+    /* =====================================================
+       GREEN SIDE LIGHT SHADER
+       
+       앞/뒤 넓은 면은 제외하고
+       3D 두께의 측면만 그린빛이 지나감
+    ===================================================== */
+
+    const greenSideMaterial =
+        new THREE.ShaderMaterial({
+
+            uniforms: {
+
+                uProgress: {
+                    value: 0
+                },
+
+                uWidth: {
+                    value: 0.085
+                }
+
+            },
+
+
+            vertexShader: `
+
+                varying vec3 vPosition;
+                varying vec3 vNormal;
+
+                void main() {
+
+                    vPosition = position;
+
+                    vNormal = normal;
+
+                    gl_Position =
+                        projectionMatrix *
+                        modelViewMatrix *
+                        vec4(
+                            position,
+                            1.0
+                        );
+
+                }
+
+            `,
+
+
+            fragmentShader: `
+
+                uniform float uProgress;
+                uniform float uWidth;
+
+                varying vec3 vPosition;
+                varying vec3 vNormal;
+
+
+                void main() {
+
+                    /*
+                     * BoxGeometry의 앞/뒤 면
+                     * normal.z = +/-1
+                     *
+                     * 이것을 제외하면
+                     * 실제 3D 두께의 옆면만 남음
+                     */
+
+                    float sideMask =
+                        1.0 -
+                        smoothstep(
+                            0.35,
+                            0.72,
+                            abs(vNormal.z)
+                        );
+
+
+                    /*
+                     * 선의 길이 방향 스캔
+                     */
+
+                    float scanPosition =
+                        vPosition.x;
+
+
+                    float distanceToBeam =
+                        abs(
+                            scanPosition -
+                            (
+                                uProgress -
+                                0.5
+                            ) * 10.0
+                        );
+
+
+                    float beam =
+                        1.0 -
+                        smoothstep(
+                            0.0,
+                            uWidth,
+                            distanceToBeam
+                        );
+
+
+                    /*
+                     * 아주 약한 glow
+                     */
+
+                    float glow =
+                        1.0 -
+                        smoothstep(
+                            0.0,
+                            uWidth * 3.0,
+                            distanceToBeam
+                        );
+
+
+                    float alpha =
+                        sideMask *
+                        (
+                            beam * 0.92 +
+                            glow * 0.08
+                        );
+
+
+                    vec3 green =
+                        vec3(
+                            0.10,
+                            0.95,
+                            0.42
+                        );
+
+
+                    gl_FragColor =
+                        vec4(
+                            green,
+                            alpha
+                        );
+
+                }
+
+            `,
+
+            transparent: true,
+
+            depthWrite: false,
+
+            blending:
+                THREE.AdditiveBlending
+
+        });
+
+
+    const bars = [];
+
+
+    /* =====================================================
+       CREATE 3D LINE
+    ===================================================== */
+
+    function createBar({
+
+        length,
+        thickness,
+        depth,
+
+        x,
+        y,
+        z,
+
+        rotationZ,
+        rotationY,
+
+        phase,
+
+        speed
+
+    }) {
+
+
+        const barGroup =
+            new THREE.Group();
+
+
+        barGroup.position.set(
+            x,
+            y,
+            z
+        );
+
+
+        barGroup.rotation.z =
+            THREE.MathUtils.degToRad(
+                rotationZ
             );
 
 
+        barGroup.rotation.y =
+            THREE.MathUtils.degToRad(
+                rotationY
+            );
+
+
+        /* ---------------------------------------------
+           3D BODY
+        --------------------------------------------- */
+
         const geometry =
-            new THREE.TubeGeometry(
-                curve,
-                64,
-                radius,
-                8,
-                false
+            new THREE.BoxGeometry(
+                length,
+                thickness,
+                depth
             );
 
 
@@ -1067,123 +1281,142 @@ export function initSectionObject(targetId) {
             );
 
 
-        mesh.position.set(
-            position.x,
-            position.y,
-            position.z
-        );
-
-
-        mesh.rotation.set(
-            rotation.x,
-            rotation.y,
-            rotation.z
+        barGroup.add(
+            mesh
         );
 
 
         /* ---------------------------------------------
-           Initial Green Highlight
+           OUTLINE
         --------------------------------------------- */
 
-        const highlightPoints = [];
-
-        const steps = 24;
-
-
-        for (
-            let i = 0;
-            i <= steps;
-            i++
-        ) {
-
-            const t =
-                highlightStart +
-                (
-                    highlightEnd -
-                    highlightStart
-                ) *
-                (i / steps);
-
-
-            highlightPoints.push(
-                curve.getPointAt(t)
-            );
-
-        }
-
-
-        const highlightCurve =
-            new THREE.CatmullRomCurve3(
-                highlightPoints,
-                false,
-                "centripetal"
+        const edges =
+            new THREE.EdgesGeometry(
+                geometry
             );
 
 
-        const highlightGeometry =
-            new THREE.TubeGeometry(
-                highlightCurve,
-                24,
-                radius * 1.4,
-                8,
-                false
-            );
-
-
-        const highlight =
-            new THREE.Mesh(
-                highlightGeometry,
-                greenMaterial
+        const outline =
+            new THREE.LineSegments(
+                edges,
+                edgeMaterial
             );
 
 
         mesh.add(
-            highlight
+            outline
         );
 
 
-        mesh.userData = {
+        /* ---------------------------------------------
+           GREEN SIDE LIGHT
+           
+           같은 BoxGeometry를 사용하기 때문에
+           선의 실제 두께 면을 따라감
+        --------------------------------------------- */
 
-            baseX:
-                position.x,
+        const greenMesh =
+            new THREE.Mesh(
+                geometry,
+                greenSideMaterial.clone()
+            );
 
-            baseY:
-                position.y,
 
-            baseZ:
-                position.z,
+        greenMesh.scale.set(
+            1.002,
+            1.002,
+            1.002
+        );
 
-            baseRotationX:
-                rotation.x,
 
-            baseRotationY:
-                rotation.y,
+        mesh.add(
+            greenMesh
+        );
+
+
+        /* ---------------------------------------------
+           SOFT LIGHT
+        --------------------------------------------- */
+
+        const glowMaterial =
+            new THREE.MeshBasicMaterial({
+
+                color: 0x20f47a,
+
+                transparent: true,
+
+                opacity: 0.045,
+
+                blending:
+                    THREE.AdditiveBlending,
+
+                depthWrite: false
+
+            });
+
+
+        const glow =
+            new THREE.Mesh(
+                geometry,
+                glowMaterial
+            );
+
+
+        glow.scale.set(
+            1.012,
+            1.012,
+            1.012
+        );
+
+
+        mesh.add(
+            glow
+        );
+
+
+        /* ---------------------------------------------
+           DATA
+        --------------------------------------------- */
+
+        barGroup.userData = {
+
+            baseX: x,
+
+            baseY: y,
+
+            baseZ: z,
 
             baseRotationZ:
-                rotation.z,
+                THREE.MathUtils.degToRad(
+                    rotationZ
+                ),
+
+            baseRotationY:
+                THREE.MathUtils.degToRad(
+                    rotationY
+                ),
 
             phase,
 
-            speed:
-                0.18 +
-                Math.random() * 0.08,
+            speed,
 
-            curve,
+            length,
 
-            radius,
+            greenMaterial:
+                greenMesh.material,
 
-            highlight
+            greenMesh
 
         };
 
 
         group.add(
-            mesh
+            barGroup
         );
 
 
-        lines.push(
-            mesh
+        bars.push(
+            barGroup
         );
 
     }
@@ -1191,208 +1424,122 @@ export function initSectionObject(targetId) {
 
     /* =====================================================
        LINE 01
+       가장 긴 선
     ===================================================== */
 
-    createLine(
+    createBar({
 
-        [
-            new THREE.Vector3(
-                -3.2,
-                0.7,
-                0
-            ),
+        length: 5.8,
 
-            new THREE.Vector3(
-                -1.0,
-                0.25,
-                0
-            ),
+        thickness: 0.065,
 
-            new THREE.Vector3(
-                1.1,
-                -0.15,
-                0
-            ),
+        depth: 0.085,
 
-            new THREE.Vector3(
-                3.3,
-                -0.75,
-                0
-            )
-        ],
+        x: 1.2,
 
-        {
-            x: 0.18,
-            y: -0.42,
-            z: -0.12
-        },
+        y: 2.0,
 
-        {
-            x: 0.2,
-            y: 1.3,
-            z: 0.2
-        },
+        z: -0.2,
 
-        0.055,
+        rotationZ: 27,
 
-        0.42,
-        0.55,
+        rotationY: -9,
 
-        0
-    );
+        phase: 0,
+
+        speed: 0.22
+
+    });
 
 
     /* =====================================================
        LINE 02
+       세로에 가까운 선
     ===================================================== */
 
-    createLine(
+    createBar({
 
-        [
-            new THREE.Vector3(
-                -2.8,
-                -0.7,
-                0
-            ),
+        length: 4.9,
 
-            new THREE.Vector3(
-                -0.9,
-                -0.15,
-                0
-            ),
+        thickness: 0.052,
 
-            new THREE.Vector3(
-                0.7,
-                -0.75,
-                0
-            ),
+        depth: 0.072,
 
-            new THREE.Vector3(
-                2.8,
-                0.05,
-                0
-            )
-        ],
+        x: -2.35,
 
-        {
-            x: -0.25,
-            y: 0.28,
-            z: 0.3
-        },
+        y: 0.05,
 
-        {
-            x: -0.7,
-            y: -0.8,
-            z: 0.7
-        },
+        z: 0.15,
 
-        0.048,
+        rotationZ: 78,
 
-        0.62,
-        0.75,
+        rotationY: 8,
 
-        1.8
-    );
+        phase: 1.8,
+
+        speed: 0.19
+
+    });
 
 
     /* =====================================================
        LINE 03
+       짧고 얇은 선
     ===================================================== */
 
-    createLine(
+    createBar({
 
-        [
-            new THREE.Vector3(
-                -2.4,
-                0,
-                0
-            ),
+        length: 4.25,
 
-            new THREE.Vector3(
-                -1.1,
-                0.75,
-                0
-            ),
+        thickness: 0.045,
 
-            new THREE.Vector3(
-                0.5,
-                1.0,
-                0
-            ),
+        depth: 0.065,
 
-            new THREE.Vector3(
-                2.5,
-                0.35,
-                0
-            )
-        ],
+        x: 0.35,
 
-        {
-            x: 0.3,
-            y: -0.18,
-            z: 0.18
-        },
+        y: -0.45,
 
-        {
-            x: 0.9,
-            y: 2.1,
-            z: -0.5
-        },
+        z: 0.55,
 
-        0.042,
+        rotationZ: -16,
 
-        0.18,
-        0.30,
+        rotationY: -6,
 
-        3.4
-    );
+        phase: 3.5,
+
+        speed: 0.25
+
+    });
 
 
     /* =====================================================
        LINE 04
+       아래쪽 선
     ===================================================== */
 
-    createLine(
+    createBar({
 
-        [
-            new THREE.Vector3(
-                -1.6,
-                0,
-                0
-            ),
+        length: 5.1,
 
-            new THREE.Vector3(
-                -0.35,
-                0.45,
-                0
-            ),
+        thickness: 0.072,
 
-            new THREE.Vector3(
-                1.5,
-                0.15,
-                0
-            )
-        ],
+        depth: 0.088,
 
-        {
-            x: -0.2,
-            y: 0.4,
-            z: -0.3
-        },
+        x: 1.75,
 
-        {
-            x: -1.2,
-            y: -2.4,
-            z: -0.8
-        },
+        y: -2.15,
 
-        0.038,
+        z: -0.25,
 
-        0.50,
-        0.65,
+        rotationZ: 14,
 
-        5.2
-    );
+        rotationY: 10,
+
+        phase: 5.0,
+
+        speed: 0.20
+
+    });
 
 
     /* =====================================================
@@ -1412,7 +1559,9 @@ export function initSectionObject(targetId) {
 
 
     window.addEventListener(
+
         "mousemove",
+
         (e) => {
 
             target.x =
@@ -1433,9 +1582,11 @@ export function initSectionObject(targetId) {
                 1;
 
         },
+
         {
             passive: true
         }
+
     );
 
 
@@ -1468,17 +1619,19 @@ export function initSectionObject(targetId) {
 
         camera.position.z =
             isMobile
-                ? 14
-                : 12;
+                ? 17
+                : 15;
 
 
         camera.updateProjectionMatrix();
 
 
         group.scale.setScalar(
+
             isMobile
-                ? 0.62
+                ? 0.68
                 : 1.0
+
         );
 
 
@@ -1516,28 +1669,34 @@ export function initSectionObject(targetId) {
             clock.getElapsedTime();
 
 
+        /* ---------------------------------------------
+           Mouse smoothing
+        --------------------------------------------- */
+
         mouse.x +=
             (
                 target.x -
                 mouse.x
-            ) *
-            0.06;
+            ) * 0.06;
 
 
         mouse.y +=
             (
                 target.y -
                 mouse.y
-            ) *
-            0.06;
+            ) * 0.06;
 
+
+        /* ---------------------------------------------
+           전체 패럴랙스
+        --------------------------------------------- */
 
         group.position.x =
-            mouse.x * 0.08;
+            mouse.x * 0.10;
 
 
         group.position.y =
-            mouse.y * 0.05;
+            mouse.y * 0.06;
 
 
         group.rotation.y =
@@ -1548,73 +1707,79 @@ export function initSectionObject(targetId) {
             -mouse.y * 0.025;
 
 
-        lines.forEach(
-            (line) => {
+        /* ---------------------------------------------
+           각 선 독립적인 부유
+        --------------------------------------------- */
+
+        bars.forEach(
+            (bar) => {
 
                 const data =
-                    line.userData;
+                    bar.userData;
 
 
-                line.position.x =
+                bar.position.x =
                     data.baseX +
                     Math.sin(
-                        time *
-                        data.speed +
+                        time * 0.25 +
                         data.phase
-                    ) *
-                    0.10;
+                    ) * 0.055;
 
 
-                line.position.y =
+                bar.position.y =
                     data.baseY +
                     Math.cos(
-                        time *
-                        data.speed *
-                        0.8 +
+                        time * 0.30 +
                         data.phase
-                    ) *
-                    0.14;
+                    ) * 0.075;
 
 
-                line.position.z =
+                bar.position.z =
                     data.baseZ +
                     Math.sin(
-                        time *
-                        data.speed *
-                        0.5 +
+                        time * 0.18 +
                         data.phase
-                    ) *
-                    0.08;
+                    ) * 0.045;
 
 
-                line.rotation.x =
-                    data.baseRotationX +
-                    Math.sin(
-                        time *
-                        0.22 +
-                        data.phase
-                    ) *
-                    0.018;
-
-
-                line.rotation.y =
-                    data.baseRotationY +
-                    Math.cos(
-                        time *
-                        0.18 +
-                        data.phase
-                    ) *
-                    0.025;
-
-
-                line.rotation.z =
+                bar.rotation.z =
                     data.baseRotationZ +
                     Math.sin(
-                        time *
-                        0.16 +
+                        time * 0.16 +
                         data.phase
-                    ) *
-                    0.018;
+                    ) * 0.012;
+
+
+                bar.rotation.y =
+                    data.baseRotationY +
+                    Math.cos(
+                        time * 0.14 +
+                        data.phase
+                    ) * 0.018;
+
+
+                /* -------------------------------------
+                   GREEN LIGHT SCAN
+                   
+                   각 선을 따라
+                   천천히 한 번씩 지나감
+                ------------------------------------- */
+
+                const progress =
+                    (
+                        time *
+                        data.speed *
+                        0.13
+                        +
+                        data.phase * 0.07
+                    ) % 1;
+
+
+                data.greenMaterial
+                    .uniforms
+                    .uProgress
+                    .value =
+                    progress;
 
             }
         );
