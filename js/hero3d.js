@@ -33,7 +33,7 @@ export function initHero3D() {
   scene.add(group);
 
   /* =====================================================
-      1. 배경 공간 그리드 (실선)
+      1. 배경 공간 그리드 (실선 + 하단 페이드아웃 셰이더 적용)
   ==================================================== */
   function createSolidGridGeometry(width, height, stepX, stepY, curveAmount = 0.01) {
     const points = [];
@@ -71,10 +71,27 @@ export function initHero3D() {
   const stepX = 1.2, stepY = 1.2, curveFactor = 0.01;
   const solidGridGeo = createSolidGridGeometry(gridWidth, gridHeight, stepX, stepY, curveFactor);
 
-  const gridMaterial = new THREE.LineBasicMaterial({
-    color: 0x999999,
+  // LineBasicMaterial 대신 ShaderMaterial을 사용하여 아래로 갈수록 투명해지도록 처리
+  const gridMaterial = new THREE.ShaderMaterial({
+    vertexShader: `
+      varying vec3 vPosition;
+      void main() {
+        vPosition = position;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+    fragmentShader: `
+      varying vec3 vPosition;
+      void main() {
+        float normalizeY = (vPosition.y + 11.0) / 22.0;
+        float alpha = smoothstep(0.0, 0.6, normalizeY) * 0.85;
+
+        vec3 gridColor = vec3(0.6, 0.6, 0.6);
+        gl_FragColor = vec4(gridColor, alpha);
+      }
+    `,
     transparent: true,
-    opacity: 0.85,
+    depthWrite: false,
   });
 
   const gridLines = new THREE.LineSegments(solidGridGeo, gridMaterial);
@@ -512,7 +529,7 @@ export function initServiceLines3D(containerId) {
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
-  camera.position.set(0, 0, isMobile ? 42 : 35); // 모바일에서 전체가 보이도록 카메라 거리 조절
+  camera.position.set(0, 0, isMobile ? 42 : 35); 
 
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setSize(width, height);
@@ -529,7 +546,6 @@ export function initServiceLines3D(containerId) {
   const masterGroup = new THREE.Group();
   scene.add(masterGroup);
 
-  // 모바일과 PC 환경에 맞추어 선들의 좌표와 배치 영역 최적화
   const lineConfigs = isMobile ? [
     { pos: [-4.0,  5.0, -2.0], rot: [0.2, 0.4, -0.3], scale: [0.5, 16.0, 0.5], speed: 0.5, offset: 0.0 },
     { pos: [ 4.5,  1.0, -1.0], rot: [-1.3, 0.6, 0.8], scale: [0.4,  7.0, 0.4], speed: 0.7, offset: 1.5 },
