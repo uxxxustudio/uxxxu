@@ -5,12 +5,13 @@ import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 
 /* =========================================================
    HERO THREE.JS
-   Studio Style U / X
+   U / X
 ========================================================= */
 
 export function initHero3D() {
 
-    const container = document.getElementById("hero-3d");
+    const container =
+        document.getElementById("hero-3d");
 
     if (!container) return;
 
@@ -18,20 +19,30 @@ export function initHero3D() {
 
 
     /* =====================================================
-       SCENE & CAMERA
+       SCENE
     ===================================================== */
 
-    const scene = new THREE.Scene();
+    const scene =
+        new THREE.Scene();
+
+
+    /* =====================================================
+       CAMERA
+    ===================================================== */
 
     const camera =
         new THREE.PerspectiveCamera(
-            35,
+            30,
             1,
             0.1,
             100
         );
 
-    camera.position.set(0, 0, 15);
+    camera.position.set(
+        0,
+        0,
+        16
+    );
 
 
     /* =====================================================
@@ -40,16 +51,27 @@ export function initHero3D() {
 
     const renderer =
         new THREE.WebGLRenderer({
+
             antialias: true,
-            alpha: true,
-            powerPreference: "high-performance"
+
+            alpha: true
+
         });
 
+
     renderer.setPixelRatio(
-        Math.min(window.devicePixelRatio, 2)
+        Math.min(
+            window.devicePixelRatio,
+            2
+        )
     );
 
-    renderer.setClearColor(0x000000, 0);
+
+    renderer.setClearColor(
+        0x000000,
+        0
+    );
+
 
     container.appendChild(
         renderer.domElement
@@ -60,198 +82,40 @@ export function initHero3D() {
        GRAPHIC GROUP
     ===================================================== */
 
-    const group = new THREE.Group();
+    const group =
+        new THREE.Group();
 
     scene.add(group);
 
 
     /* =====================================================
-       BACKGROUND GRID
+       MATERIAL
     ===================================================== */
 
-    function createSolidGridGeometry(
-        width,
-        height,
-        stepX,
-        stepY,
-        curveAmount = 0.01
-    ) {
+    const faceMaterial =
+        new THREE.MeshBasicMaterial({
 
-        const points = [];
-
-        const resolution = 30;
-
-
-        /* Vertical */
-
-        for (
-            let x = -width / 2;
-            x <= width / 2;
-            x += stepX
-        ) {
-
-            for (
-                let i = 0;
-                i < resolution;
-                i++
-            ) {
-
-                const t1 = i / resolution;
-                const t2 = (i + 1) / resolution;
-
-                const y1 =
-                    -height / 2 +
-                    t1 * height;
-
-                const y2 =
-                    -height / 2 +
-                    t2 * height;
-
-                const z1 =
-                    (x * x * 0.8 + y1 * y1) *
-                    curveAmount -
-                    3.0;
-
-                const z2 =
-                    (x * x * 0.8 + y2 * y2) *
-                    curveAmount -
-                    3.0;
-
-                points.push(
-                    x, y1, z1,
-                    x, y2, z2
-                );
-            }
-        }
-
-
-        /* Horizontal */
-
-        for (
-            let y = -height / 2;
-            y <= height / 2;
-            y += stepY
-        ) {
-
-            for (
-                let i = 0;
-                i < resolution;
-                i++
-            ) {
-
-                const t1 = i / resolution;
-                const t2 = (i + 1) / resolution;
-
-                const x1 =
-                    -width / 2 +
-                    t1 * width;
-
-                const x2 =
-                    -width / 2 +
-                    t2 * width;
-
-                const z1 =
-                    (x1 * x1 * 0.8 + y * y) *
-                    curveAmount -
-                    3.0;
-
-                const z2 =
-                    (x2 * x2 * 0.8 + y * y) *
-                    curveAmount -
-                    3.0;
-
-                points.push(
-                    x1, y, z1,
-                    x2, y, z2
-                );
-            }
-        }
-
-
-        const geometry =
-            new THREE.BufferGeometry();
-
-        geometry.setAttribute(
-            "position",
-            new THREE.Float32BufferAttribute(
-                points,
-                3
-            )
-        );
-
-        return geometry;
-    }
-
-
-    const gridGroup =
-        new THREE.Group();
-
-    gridGroup.position.set(
-        0,
-        0,
-        -3
-    );
-
-
-    const gridWidth = 36;
-    const gridHeight = 22;
-
-    const stepX = 1.2;
-    const stepY = 1.2;
-
-    const curveFactor = 0.01;
-
-
-    const gridGeometry =
-        createSolidGridGeometry(
-            gridWidth,
-            gridHeight,
-            stepX,
-            stepY,
-            curveFactor
-        );
-
-
-    const gridMaterial =
-        new THREE.LineBasicMaterial({
-
-            color: 0xB8B8B8,
+            color: 0xffffff,
 
             transparent: true,
 
-            opacity: 0.5
+            opacity: .075,
+
+            side: THREE.DoubleSide,
+
+            depthWrite: false
 
         });
 
 
-    const gridLines =
-        new THREE.LineSegments(
-            gridGeometry,
-            gridMaterial
-        );
-
-
-    gridGroup.add(
-        gridLines
-    );
-
-    scene.add(
-        gridGroup
-    );
-
-
-    /* =====================================================
-       LETTER MATERIAL
-    ===================================================== */
-
-    const lineMaterial =
+    const edgeMaterial =
         new THREE.LineBasicMaterial({
 
             color: 0x111111,
 
-            transparent: false,
+            transparent: true,
 
-            opacity: 1.0
+            opacity: .52
 
         });
 
@@ -270,115 +134,82 @@ export function initHero3D() {
 
         (font) => {
 
-            createLetterMesh(
+            createLetter(
                 "U",
                 font,
-                -2.9,
-                -0.65,
-                -0.42,
-                0.92,
-                0.0,
-                true,
-                0.002
+                -2.55,
+                -0.70,
+                -0.30,
+                .88,
+                0
             );
 
 
-            createLetterMesh(
+            createLetter(
                 "X",
                 font,
-                2.25,
-                0.55,
-                0.42,
-                0.88,
-                1.8,
-                false,
-                0.003
+                2.10,
+                0.65,
+                -0.26,
+                .82,
+                1.8
             );
 
+        },
 
-            createLetterMesh(
-                "X",
-                font,
-                -2.3,
-                3.8,
-                0.35,
-                0.52,
-                3.6,
-                false,
-                0.001
-            );
+        undefined,
 
+        (error) => {
 
-            createLetterMesh(
-                "X",
-                font,
-                5.3,
-                -3.2,
-                0.45,
-                0.55,
-                5.4,
-                false,
-                0.004
-            );
-
-
-            createLetterMesh(
-                "U",
-                font,
-                6.2,
-                1.8,
-                -0.75,
-                0.48,
-                7.2,
-                true,
-                0.0035
+            console.error(
+                "Hero font load failed:",
+                error
             );
 
         }
+
     );
 
 
     /* =====================================================
-       CREATE LETTER
+       CREATE 3D LETTER
     ===================================================== */
 
-    function createLetterMesh(
+    function createLetter(
         character,
         font,
         x,
         y,
         rotationY,
         scale,
-        timeOffset,
-        isU,
-        scrollSpeed
+        phase
     ) {
-
-        const geometryOptions = {
-
-            font: font,
-
-            size: 4.1,
-
-            depth: 0.38,
-
-            curveSegments:
-                isU ? 24 : 6,
-
-            bevelEnabled: false
-
-        };
-
 
         const geometry =
             new TextGeometry(
                 character,
-                geometryOptions
+                {
+
+                    font: font,
+
+                    size: 4.2,
+
+                    depth: .62,
+
+                    curveSegments: 12,
+
+                    bevelEnabled: false
+
+                }
             );
 
 
         geometry.computeBoundingBox();
 
+
+        /* =================================================
+           CENTER
+        ================================================= */
 
         const box =
             geometry.boundingBox;
@@ -386,274 +217,106 @@ export function initHero3D() {
 
         geometry.translate(
 
-            -(box.max.x + box.min.x) / 2,
+            -(
+                box.max.x +
+                box.min.x
+            ) / 2,
 
-            -(box.max.y + box.min.y) / 2,
+            -(
+                box.max.y +
+                box.min.y
+            ) / 2,
 
             0
 
         );
 
 
-        const letterGroup =
-            new THREE.Group();
-
-
         /* =================================================
-           STUDIO STYLE SHADER
+           FACE
         ================================================= */
 
-        const material =
-            new THREE.ShaderMaterial({
-
-                uniforms: {
-
-                    uTime: {
-                        value: 0
-                    },
-
-                    uOffset: {
-                        value: timeOffset
-                    },
-
-                    uIsU: {
-                        value: isU ? 1.0 : 0.0
-                    }
-
-                },
-
-
-                vertexShader: `
-
-                    varying vec3 vPosition;
-                    varying vec3 vNormal;
-
-                    void main() {
-
-                        vPosition = position;
-
-                        vNormal = normal;
-
-                        gl_Position =
-                            projectionMatrix *
-                            modelViewMatrix *
-                            vec4(
-                                position,
-                                1.0
-                            );
-
-                    }
-
-                `,
-
-
-                fragmentShader: `
-
-                    uniform float uTime;
-                    uniform float uOffset;
-                    uniform float uIsU;
-
-                    varying vec3 vPosition;
-                    varying vec3 vNormal;
-
-
-                    void main() {
-
-                        if (
-                            abs(vNormal.z) > 0.1
-                        ) discard;
-
-
-                        float beam = 0.0;
-
-
-                        if (uIsU > 0.5) {
-
-                            float sideDir =
-                                (vPosition.x < 0.0)
-                                ? 1.0
-                                : -1.0;
-
-
-                            float flow =
-                                mod(
-                                    (vPosition.y * 0.2) +
-                                    (
-                                        uTime *
-                                        0.3 *
-                                        sideDir
-                                    ) +
-                                    (uOffset * 0.2),
-                                    1.0
-                                );
-
-
-                            beam =
-                                smoothstep(
-                                    0.12,
-                                    0.0,
-                                    abs(
-                                        flow - 0.5
-                                    )
-                                );
-
-                        } else {
-
-                            float angle =
-                                atan(
-                                    vPosition.y,
-                                    vPosition.x
-                                );
-
-
-                            float sweep =
-                                mod(
-                                    (angle / 6.28318) -
-                                    (uTime * 0.15) +
-                                    (uOffset * 0.1),
-                                    1.0
-                                );
-
-
-                            beam =
-                                smoothstep(
-                                    0.12,
-                                    0.0,
-                                    abs(
-                                        sweep - 0.5
-                                    )
-                                );
-
-                        }
-
-
-                        vec3 baseColor =
-                            vec3(
-                                0.04,
-                                0.04,
-                                0.04
-                            );
-
-
-                        vec3 neonGreen =
-                            vec3(
-                                0.12,
-                                0.95,
-                                0.45
-                            );
-
-
-                        vec3 finalColor =
-                            mix(
-                                baseColor,
-                                neonGreen,
-                                beam
-                            );
-
-
-                        float alpha =
-                            0.08 +
-                            beam * 0.92;
-
-
-                        gl_FragColor =
-                            vec4(
-                                finalColor,
-                                alpha
-                            );
-
-                    }
-
-                `,
-
-                transparent: true,
-
-                side: THREE.DoubleSide,
-
-                depthWrite: false
-
-            });
-
-
-        const fillMesh =
+        const face =
             new THREE.Mesh(
                 geometry,
-                material
+                faceMaterial
             );
 
 
-        letterGroup.add(
-            fillMesh
-        );
-
-
         /* =================================================
-           CRISP BLACK OUTLINE
+           OUTLINE
         ================================================= */
 
         const edges =
             new THREE.EdgesGeometry(
                 geometry,
-                isU ? 25 : 15
+                35
             );
 
 
-        const lineSegments =
+        const outline =
             new THREE.LineSegments(
                 edges,
-                lineMaterial
+                edgeMaterial
             );
-
-
-        letterGroup.add(
-            lineSegments
-        );
 
 
         /* =================================================
-           POSITION
+           LETTER GROUP
         ================================================= */
 
-        letterGroup.position.set(
+        const letter =
+            new THREE.Group();
+
+
+        letter.add(
+            face
+        );
+
+
+        letter.add(
+            outline
+        );
+
+
+        letter.position.set(
             x,
             y,
             0
         );
 
 
-        letterGroup.scale.setScalar(
+        letter.rotation.y =
+            rotationY;
+
+
+        letter.rotation.x =
+            -0.055;
+
+
+        letter.scale.setScalar(
             scale
         );
 
 
-        letterGroup.rotation.y =
+        letter.userData.baseX =
+            x;
+
+
+        letter.userData.baseY =
+            y;
+
+
+        letter.userData.baseRotationY =
             rotationY;
 
 
-        letterGroup.rotation.x =
-            -0.08;
-
-
-        letterGroup.userData = {
-
-            baseX: x,
-
-            baseY: y,
-
-            baseRotationY:
-                rotationY,
-
-            material:
-                material,
-
-            scrollSpeed:
-                scrollSpeed
-
-        };
+        letter.userData.phase =
+            phase;
 
 
         group.add(
-            letterGroup
+            letter
         );
 
     }
@@ -663,15 +326,21 @@ export function initHero3D() {
        MOUSE
     ===================================================== */
 
-    const target = {
+    const mouse = {
+
         x: 0,
+
         y: 0
+
     };
 
 
-    const mouse = {
+    const targetMouse = {
+
         x: 0,
+
         y: 0
+
     };
 
 
@@ -679,20 +348,20 @@ export function initHero3D() {
 
         "mousemove",
 
-        (e) => {
+        (event) => {
 
-            target.x =
-                (e.clientX /
-                    window.innerWidth) *
-                2 -
-                1;
+            targetMouse.x =
+                (
+                    event.clientX /
+                    window.innerWidth
+                ) * 2 - 1;
 
 
-            target.y =
-                -(e.clientY /
-                    window.innerHeight) *
-                2 +
-                1;
+            targetMouse.y =
+                (
+                    event.clientY /
+                    window.innerHeight
+                ) * 2 - 1;
 
         },
 
@@ -712,12 +381,15 @@ export function initHero3D() {
         const width =
             container.clientWidth;
 
+
         const height =
             container.clientHeight;
 
 
-        if (!width || !height)
-            return;
+        if (
+            !width ||
+            !height
+        ) return;
 
 
         const isMobile =
@@ -780,87 +452,51 @@ export function initHero3D() {
             clock.getElapsedTime();
 
 
-        const scrollY =
-            window.scrollY ||
-            window.pageYOffset;
-
-
         mouse.x +=
             (
-                target.x -
+                targetMouse.x -
                 mouse.x
-            ) * 0.08;
+            ) * 0.035;
 
 
         mouse.y +=
             (
-                target.y -
+                targetMouse.y -
                 mouse.y
-            ) * 0.08;
-
-
-        gridGroup.position.x =
-            -mouse.x * 0.2;
-
-
-        gridGroup.position.y =
-            -mouse.y * 0.15 +
-            (
-                scrollY * 0.001
-            );
+            ) * 0.035;
 
 
         group.children.forEach(
-            (obj, index) => {
+            (letter) => {
 
-                const p =
-                    obj.userData;
-
-
-                const scrollOffset =
-                    scrollY *
-                    p.scrollSpeed;
+                const phase =
+                    letter.userData.phase;
 
 
-                obj.position.x =
-                    p.baseX +
+                letter.position.x =
+                    letter.userData.baseX +
                     Math.sin(
-                        time * 0.4 +
-                        index
-                    ) * 0.06;
+                        time * 0.65 +
+                        phase
+                    ) * 0.13;
 
 
-                obj.position.y =
-                    (
-                        p.baseY -
-                        scrollOffset
-                    ) +
+                letter.position.y =
+                    letter.userData.baseY +
                     Math.cos(
-                        time * 0.5 +
-                        index
-                    ) * 0.08;
+                        time * 0.75 +
+                        phase
+                    ) * 0.13;
 
 
-                obj.rotation.y =
-                    p.baseRotationY +
-                    mouse.x * 0.2;
+                letter.rotation.y =
+                    letter.userData.baseRotationY +
+                    mouse.x * 0.12;
 
 
-                obj.rotation.x =
-                    -0.08 -
-                    mouse.y * 0.1;
-
-
-                if (
-                    p.material &&
-                    p.material.uniforms &&
-                    p.material.uniforms.uTime
-                ) {
-
-                    p.material.uniforms.uTime.value =
-                        time;
-
-                }
+                letter.rotation.x =
+                    -0.055 +
+                    mouse.y * 0.045;
 
             }
         );
@@ -886,12 +522,18 @@ export function initHero3D() {
    Thin Floating Volume Lines
 ========================================================= */
 
-export function initSectionObject(targetId) {
+export function initSectionObject(
+    targetId
+) {
 
     const container =
-        document.getElementById(targetId);
+        document.getElementById(
+            targetId
+        );
+
 
     if (!container) return;
+
 
     container.innerHTML = "";
 
@@ -903,6 +545,10 @@ export function initSectionObject(targetId) {
     const scene =
         new THREE.Scene();
 
+
+    /* =====================================================
+       CAMERA
+    ===================================================== */
 
     const camera =
         new THREE.PerspectiveCamera(
@@ -916,7 +562,7 @@ export function initSectionObject(targetId) {
     camera.position.set(
         0,
         0,
-        15
+        11
     );
 
 
@@ -967,7 +613,10 @@ export function initSectionObject(targetId) {
     const group =
         new THREE.Group();
 
-    scene.add(group);
+
+    scene.add(
+        group
+    );
 
 
     /* =====================================================
@@ -975,10 +624,12 @@ export function initSectionObject(targetId) {
     ===================================================== */
 
     scene.add(
+
         new THREE.AmbientLight(
             0xffffff,
             2.0
         )
+
     );
 
 
@@ -1022,7 +673,7 @@ export function initSectionObject(targetId) {
 
     /* =====================================================
        BASE MATERIAL
-       메인 U/X와 어울리는 밝은 회백색
+       Hero U/X와 어울리는 밝은 회백색
     ===================================================== */
 
     const lineMaterial =
@@ -1046,7 +697,7 @@ export function initSectionObject(targetId) {
 
 
     /* =====================================================
-       EDGE MATERIAL
+       EDGE
     ===================================================== */
 
     const edgeMaterial =
@@ -1062,10 +713,7 @@ export function initSectionObject(targetId) {
 
 
     /* =====================================================
-       GREEN SIDE LIGHT SHADER
-       
-       앞/뒤 넓은 면은 제외하고
-       3D 두께의 측면만 그린빛이 지나감
+       GREEN SIDE SCAN
     ===================================================== */
 
     const greenSideMaterial =
@@ -1078,7 +726,7 @@ export function initSectionObject(targetId) {
                 },
 
                 uWidth: {
-                    value: 0.085
+                    value: 0.10
                 }
 
             },
@@ -1111,34 +759,35 @@ export function initSectionObject(targetId) {
             fragmentShader: `
 
                 uniform float uProgress;
+
                 uniform float uWidth;
 
                 varying vec3 vPosition;
+
                 varying vec3 vNormal;
 
 
                 void main() {
 
                     /*
-                     * BoxGeometry의 앞/뒤 면
-                     * normal.z = +/-1
-                     *
-                     * 이것을 제외하면
-                     * 실제 3D 두께의 옆면만 남음
-                     */
+                       앞/뒤 넓은 면 제외
+                       실제 두께 측면만 표시
+                    */
 
                     float sideMask =
                         1.0 -
                         smoothstep(
                             0.35,
                             0.72,
-                            abs(vNormal.z)
+                            abs(
+                                vNormal.z
+                            )
                         );
 
 
                     /*
-                     * 선의 길이 방향 스캔
-                     */
+                       선 길이 방향
+                    */
 
                     float scanPosition =
                         vPosition.x;
@@ -1146,40 +795,47 @@ export function initSectionObject(targetId) {
 
                     float distanceToBeam =
                         abs(
+
                             scanPosition -
+
                             (
                                 uProgress -
                                 0.5
-                            ) * 10.0
+                            ) * 12.0
+
                         );
 
 
                     float beam =
                         1.0 -
                         smoothstep(
+
                             0.0,
+
                             uWidth,
+
                             distanceToBeam
+
                         );
 
-
-                    /*
-                     * 아주 약한 glow
-                     */
 
                     float glow =
                         1.0 -
                         smoothstep(
+
                             0.0,
+
                             uWidth * 3.0,
+
                             distanceToBeam
+
                         );
 
 
                     float alpha =
                         sideMask *
                         (
-                            beam * 0.92 +
+                            beam * 0.95 +
                             glow * 0.08
                         );
 
@@ -1216,20 +872,25 @@ export function initSectionObject(targetId) {
 
 
     /* =====================================================
-       CREATE 3D LINE
+       CREATE BAR
     ===================================================== */
 
     function createBar({
 
         length,
+
         thickness,
+
         depth,
 
         x,
+
         y,
+
         z,
 
         rotationZ,
+
         rotationY,
 
         phase,
@@ -1262,15 +923,19 @@ export function initSectionObject(targetId) {
             );
 
 
-        /* ---------------------------------------------
+        /* =================================================
            3D BODY
-        --------------------------------------------- */
+        ================================================= */
 
         const geometry =
             new THREE.BoxGeometry(
+
                 length,
+
                 thickness,
+
                 depth
+
             );
 
 
@@ -1286,9 +951,9 @@ export function initSectionObject(targetId) {
         );
 
 
-        /* ---------------------------------------------
+        /* =================================================
            OUTLINE
-        --------------------------------------------- */
+        ================================================= */
 
         const edges =
             new THREE.EdgesGeometry(
@@ -1308,24 +973,24 @@ export function initSectionObject(targetId) {
         );
 
 
-        /* ---------------------------------------------
-           GREEN SIDE LIGHT
-           
-           같은 BoxGeometry를 사용하기 때문에
-           선의 실제 두께 면을 따라감
-        --------------------------------------------- */
+        /* =================================================
+           GREEN SIDE SCAN
+        ================================================= */
 
         const greenMesh =
             new THREE.Mesh(
+
                 geometry,
+
                 greenSideMaterial.clone()
+
             );
 
 
         greenMesh.scale.set(
-            1.002,
-            1.002,
-            1.002
+            1.003,
+            1.003,
+            1.003
         );
 
 
@@ -1334,9 +999,9 @@ export function initSectionObject(targetId) {
         );
 
 
-        /* ---------------------------------------------
-           SOFT LIGHT
-        --------------------------------------------- */
+        /* =================================================
+           SOFT GREEN GLOW
+        ================================================= */
 
         const glowMaterial =
             new THREE.MeshBasicMaterial({
@@ -1345,7 +1010,7 @@ export function initSectionObject(targetId) {
 
                 transparent: true,
 
-                opacity: 0.045,
+                opacity: 0.035,
 
                 blending:
                     THREE.AdditiveBlending,
@@ -1374,9 +1039,9 @@ export function initSectionObject(targetId) {
         );
 
 
-        /* ---------------------------------------------
+        /* =================================================
            DATA
-        --------------------------------------------- */
+        ================================================= */
 
         barGroup.userData = {
 
@@ -1400,12 +1065,8 @@ export function initSectionObject(targetId) {
 
             speed,
 
-            length,
-
             greenMaterial:
-                greenMesh.material,
-
-            greenMesh
+                greenMesh.material
 
         };
 
@@ -1424,24 +1085,24 @@ export function initSectionObject(targetId) {
 
     /* =====================================================
        LINE 01
-       가장 긴 선
+       가장 긴 / 얇은 대각선
     ===================================================== */
 
     createBar({
 
-        length: 5.8,
+        length: 7.2,
 
         thickness: 0.065,
 
         depth: 0.085,
 
-        x: 1.2,
+        x: 1.8,
 
-        y: 2.0,
+        y: 2.4,
 
         z: -0.2,
 
-        rotationZ: 27,
+        rotationZ: 28,
 
         rotationY: -9,
 
@@ -1459,15 +1120,15 @@ export function initSectionObject(targetId) {
 
     createBar({
 
-        length: 4.9,
+        length: 6.2,
 
         thickness: 0.052,
 
         depth: 0.072,
 
-        x: -2.35,
+        x: -2.8,
 
-        y: 0.05,
+        y: 0.1,
 
         z: 0.15,
 
@@ -1489,15 +1150,15 @@ export function initSectionObject(targetId) {
 
     createBar({
 
-        length: 4.25,
+        length: 5.5,
 
         thickness: 0.045,
 
         depth: 0.065,
 
-        x: 0.35,
+        x: 0.5,
 
-        y: -0.45,
+        y: -0.6,
 
         z: 0.55,
 
@@ -1519,15 +1180,15 @@ export function initSectionObject(targetId) {
 
     createBar({
 
-        length: 5.1,
+        length: 6.4,
 
         thickness: 0.072,
 
         depth: 0.088,
 
-        x: 1.75,
+        x: 2.4,
 
-        y: -2.15,
+        y: -2.5,
 
         z: -0.25,
 
@@ -1546,15 +1207,21 @@ export function initSectionObject(targetId) {
        MOUSE
     ===================================================== */
 
-    const target = {
+    const mouse = {
+
         x: 0,
+
         y: 0
+
     };
 
 
-    const mouse = {
+    const targetMouse = {
+
         x: 0,
+
         y: 0
+
     };
 
 
@@ -1562,24 +1229,20 @@ export function initSectionObject(targetId) {
 
         "mousemove",
 
-        (e) => {
+        (event) => {
 
-            target.x =
+            targetMouse.x =
                 (
-                    e.clientX /
+                    event.clientX /
                     window.innerWidth
-                ) *
-                2 -
-                1;
+                ) * 2 - 1;
 
 
-            target.y =
+            targetMouse.y =
                 -(
-                    e.clientY /
+                    event.clientY /
                     window.innerHeight
-                ) *
-                2 +
-                1;
+                ) * 2 + 1;
 
         },
 
@@ -1599,6 +1262,7 @@ export function initSectionObject(targetId) {
         const width =
             container.clientWidth;
 
+
         const height =
             container.clientHeight;
 
@@ -1617,20 +1281,29 @@ export function initSectionObject(targetId) {
             width / height;
 
 
+        /*
+           PC는 가까이
+           모바일은 조금 멀리
+        */
+
         camera.position.z =
             isMobile
                 ? 17
-                : 15;
+                : 11;
 
 
         camera.updateProjectionMatrix();
 
 
+        /*
+           전체 크기
+        */
+
         group.scale.setScalar(
 
             isMobile
-                ? 0.68
-                : 1.0
+                ? 0.82
+                : 1.35
 
         );
 
@@ -1669,27 +1342,28 @@ export function initSectionObject(targetId) {
             clock.getElapsedTime();
 
 
-        /* ---------------------------------------------
-           Mouse smoothing
-        --------------------------------------------- */
+        /* =================================================
+           SMOOTH MOUSE
+        ================================================= */
 
         mouse.x +=
             (
-                target.x -
+                targetMouse.x -
                 mouse.x
             ) * 0.06;
 
 
         mouse.y +=
             (
-                target.y -
+                targetMouse.y -
                 mouse.y
             ) * 0.06;
 
 
-        /* ---------------------------------------------
-           전체 패럴랙스
-        --------------------------------------------- */
+        /* =================================================
+           WHOLE GROUP MOTION
+           Hero와 같은 아주 미세한 움직임
+        ================================================= */
 
         group.position.x =
             mouse.x * 0.10;
@@ -1707,11 +1381,12 @@ export function initSectionObject(targetId) {
             -mouse.y * 0.025;
 
 
-        /* ---------------------------------------------
-           각 선 독립적인 부유
-        --------------------------------------------- */
+        /* =================================================
+           EACH LINE FLOAT
+        ================================================= */
 
         bars.forEach(
+
             (bar) => {
 
                 const data =
@@ -1758,12 +1433,9 @@ export function initSectionObject(targetId) {
                     ) * 0.018;
 
 
-                /* -------------------------------------
+                /* =================================================
                    GREEN LIGHT SCAN
-                   
-                   각 선을 따라
-                   천천히 한 번씩 지나감
-                ------------------------------------- */
+                ================================================= */
 
                 const progress =
                     (
@@ -1782,6 +1454,7 @@ export function initSectionObject(targetId) {
                     progress;
 
             }
+
         );
 
 
