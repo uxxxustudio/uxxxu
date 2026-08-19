@@ -498,7 +498,7 @@ export function initPortfolio3D(containerId) {
 
 
 /* =========================================================
-   SERVICE SECTION 3D FLOATING LINES (initServiceLines3D) - 수정본
+   SERVICE SECTION 3D FULL-PAGE BACKGROUND LINES
 ========================================================= */
 export function initServiceLines3D(containerId) {
   const container = document.getElementById(containerId);
@@ -506,12 +506,12 @@ export function initServiceLines3D(containerId) {
 
   container.innerHTML = "";
 
-  const width = container.clientWidth || 400;
-  const height = container.clientHeight || 400;
+  const width = container.clientWidth || window.innerWidth;
+  const height = container.clientHeight || 800;
 
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(35, width / height, 0.1, 100);
-  camera.position.set(0, 0, 30); // 카메라 거리를 넓혀서 공간감 확보
+  const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
+  camera.position.set(0, 0, 35); // 화각을 넓게 잡아 전체 공간이 보이도록 조정
 
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setSize(width, height);
@@ -519,28 +519,27 @@ export function initServiceLines3D(containerId) {
   renderer.setClearColor(0x000000, 0);
   container.appendChild(renderer.domElement);
 
-  // 완전한 검정이 아닌 은은한 다크 그레이 선 재질
   const lineMat = new THREE.LineBasicMaterial({
     color: 0x555555,
     transparent: true,
-    opacity: 0.45,
+    opacity: 0.35,
   });
 
   const masterGroup = new THREE.Group();
   scene.add(masterGroup);
 
-  // 길쭉하고 시원하게 뻗은 바 형태의 배치 설정 (좌우 및 공간 넓게 분산)
+  // 서비스 페이지 전체 공간에 선들이 넓게 퍼지도록 좌표와 스케일 대폭 확장
   const lineConfigs = [
-    { pos: [-6.5, 4.0, -1.0], rot: [0.2, 0.4, -0.3], scale: [0.6, 14.0, 0.6], speed: 0.6, offset: 0.0 },
-    { pos: [-2.0, -3.5, 1.5], rot: [-0.4, 0.3, 0.8], scale: [0.5, 16.0, 0.5], speed: 0.8, offset: 1.2 },
-    { pos: [3.5, 2.5, -0.5], rot: [0.3, -0.5, 0.4], scale: [0.6, 15.0, 0.6], speed: 0.7, offset: 2.5 },
-    { pos: [6.0, -2.0, 1.0], rot: [-0.2, 0.5, -0.6], scale: [0.5, 13.5, 0.5], speed: 0.9, offset: 3.8 }
+    { pos: [-10.0, 5.0, -2.0], rot: [0.3, 0.5, -0.4], scale: [0.6, 18.0, 0.6], speed: 0.5, offset: 0.0 },
+    { pos: [9.0, 4.0, -4.0], rot: [-0.4, 0.2, 0.7], scale: [0.5, 20.0, 0.5], speed: 0.7, offset: 1.5 },
+    { pos: [-8.0, -4.0, 1.0], rot: [0.2, -0.6, 0.3], scale: [0.6, 16.0, 0.6], speed: 0.6, offset: 2.8 },
+    { pos: [8.5, -5.0, 0.0], rot: [-0.3, 0.4, -0.5], scale: [0.5, 19.0, 0.5], speed: 0.8, offset: 4.2 },
+    { pos: [0.0, 7.0, -5.0], rot: [0.5, 0.1, 0.2], scale: [0.5, 15.0, 0.5], speed: 0.5, offset: 3.1 }
   ];
 
   function createLineMesh(config) {
     const geometry = new THREE.BoxGeometry(config.scale[0], config.scale[1], config.scale[2]);
     
-    // 은은하고 부드러운 톤의 셰이더 적용 (검정 배경 느낌 제거)
     const material = new THREE.ShaderMaterial({
       uniforms: {
         uTime: { value: 0 },
@@ -563,17 +562,17 @@ export function initServiceLines3D(containerId) {
 
         void main() {
           if (abs(vNormal.z) > 0.1) { 
-            gl_FragColor = vec4(0.85, 0.85, 0.85, 0.08); // 투명하고 은은한 면 처리
+            gl_FragColor = vec4(0.85, 0.85, 0.85, 0.05); 
             return;
           }
           
-          float flow = mod((vPosition.y * 0.15) + (uTime * 0.3) + uOffset, 1.0);
+          float flow = mod((vPosition.y * 0.1) + (uTime * 0.25) + uOffset, 1.0);
           float beam = smoothstep(0.2, 0.0, abs(flow - 0.5));
 
           vec3 baseColor = vec3(0.5, 0.5, 0.5);
           vec3 neonGreen = vec3(0.12, 0.95, 0.45);
           vec3 finalColor = mix(baseColor, neonGreen, beam);
-          float alpha = 0.15 + beam * 0.85;
+          float alpha = 0.1 + beam * 0.9;
           gl_FragColor = vec4(finalColor, alpha);
         }
       `,
@@ -621,16 +620,16 @@ export function initServiceLines3D(containerId) {
     requestAnimationFrame(animate);
     const time = clock.getElapsedTime();
     const scrollY = window.scrollY || window.pageYOffset;
-    const scrollOffset = scrollY * 0.0008;
+    const scrollOffset = scrollY * 0.0005;
 
-    masterGroup.rotation.y = mouseX * 0.15;
-    masterGroup.rotation.x = mouseY * 0.15;
+    masterGroup.rotation.y = mouseX * 0.1;
+    masterGroup.rotation.x = mouseY * 0.1;
     masterGroup.position.y = scrollOffset;
 
     lineGroups.forEach((lg, i) => {
       const p = lg.userData;
-      lg.rotation.x = p.initialRot[0] + Math.sin(time * p.speed * 0.3 + i) * 0.1;
-      lg.rotation.y = p.initialRot[1] + Math.cos(time * p.speed * 0.25 + i) * 0.1;
+      lg.rotation.x = p.initialRot[0] + Math.sin(time * p.speed * 0.3 + i) * 0.08;
+      lg.rotation.y = p.initialRot[1] + Math.cos(time * p.speed * 0.25 + i) * 0.08;
       
       if (p.material && p.material.uniforms) {
         p.material.uniforms.uTime.value = time * p.speed;
@@ -642,8 +641,8 @@ export function initServiceLines3D(containerId) {
   animate();
 
   window.addEventListener("resize", () => {
-    const newWidth = container.clientWidth || 400;
-    const newHeight = container.clientHeight || 400;
+    const newWidth = container.clientWidth || window.innerWidth;
+    const newHeight = container.clientHeight || 800;
     camera.aspect = newWidth / newHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(newWidth, newHeight);
