@@ -539,9 +539,9 @@ export function initServiceLines3D(containerId) {
   container.appendChild(renderer.domElement);
 
   const lineMat = new THREE.LineBasicMaterial({
-    color: 0x555555,
-    transparent: true,
-    opacity: 0.35,
+   color: 0x111111,        // 진한 색상으로 변경
+   transparent: false,     // 투명도 끄기
+   opacity: 1.0,           // 불투명하게 설정
   });
 
   const masterGroup = new THREE.Group();
