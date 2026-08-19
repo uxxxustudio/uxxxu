@@ -600,6 +600,9 @@ section{
 #service .container {
     position: relative;
     z-index: 2;
+    max-width: 100% !important;
+    padding-left: 64px;       /* 다른 섹션들과 동일한 좌우 여백 맞춤 */
+    padding-right: 64px;
 }
 
 .section-title{
