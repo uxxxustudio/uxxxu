@@ -33,7 +33,7 @@ export function initHero3D() {
   scene.add(group);
 
   /* =====================================================
-      1. 배경 공간 그리드 (하단 페이드아웃 범위 확장)
+     1. 배경 공간 그리드 (하단 페이드아웃 범위 확장)
   ==================================================== */
   function createSolidGridGeometry(width, height, stepX, stepY, curveAmount = 0.01) {
     const points = [];
@@ -71,7 +71,6 @@ export function initHero3D() {
   const stepX = 1.2, stepY = 1.2, curveFactor = 0.01;
   const solidGridGeo = createSolidGridGeometry(gridWidth, gridHeight, stepX, stepY, curveFactor);
 
-  // 페이드아웃 구간을 넓히고(0.1 ~ 0.85) 아래쪽 라인이 더 은은하게 보이도록 조정
   const gridMaterial = new THREE.ShaderMaterial({
     vertexShader: `
       varying vec3 vPosition;
@@ -150,24 +149,19 @@ export function initHero3D() {
         varying vec3 vNormal;
 
         void main() {
-          // 1. 모서리(Edge) 흐름 및 네온 컬러 계산 (더 짙고 강하게 수정)
           float flow = mod((vPosition.y * 0.1) + (uTime * 0.25) + uOffset, 1.0);
-          float beam = smoothstep(0.18, 0.0, abs(flow - 0.5)); // 엣지 라인을 더 얇고 선명하게
+          float beam = smoothstep(0.18, 0.0, abs(flow - 0.5));
 
-          vec3 darkGray = vec3(0.2, 0.2, 0.2); // [수정] 엣지 컬러를 더 짙은 그레이로 (U자형과 비슷하게)
-          vec3 neonGreen = vec3(0.12, 0.95, 0.45); // 포인트 그린
-          vec3 edgeColor = mix(darkGray, neonGreen, beam * 1.2); // [수정] 네온 효과를 더 강하게
+          vec3 darkGray = vec3(0.2, 0.2, 0.2);
+          vec3 neonGreen = vec3(0.12, 0.95, 0.45);
+          vec3 edgeColor = mix(darkGray, neonGreen, beam * 1.2);
           
-          // 2. 면(Fill) 컬러: 면과 엣지의 차이를 명확히 하기 위해 더 연하게 수정
-          // 카메라를 향할수록 불투명해지는 반투명 흰색이지만, 베이스 값을 더 낮춤.
-          float fillAlpha = pow(abs(vNormal.z), 0.3) * 0.20; // [수정] 면의 밀도를 낮춰 더 투명하게 만듦
-          vec3 fillColor = vec3(0.96, 0.96, 0.96); // [수정] 면 컬러를 거의 흰색에 가깝게 설정
+          float fillAlpha = pow(abs(vNormal.z), 0.3) * 0.20;
+          vec3 fillColor = vec3(0.96, 0.96, 0.96);
 
-          // 3. 면과 엣지의 시각적 결합
-          vec3 finalColor = mix(fillColor, edgeColor, beam * 1.5); // [수정] 엣지 라인이 면 위에 더 강하게 올라오도록 믹싱
-          float finalAlpha = max(fillAlpha, beam * 0.95); // 엣지 부분은 확실하게 불투명 처리
+          vec3 finalColor = mix(fillColor, edgeColor, beam * 1.5);
+          float finalAlpha = max(fillAlpha, beam * 0.95);
 
-          // 4. 상단 영역 페이드아웃 (유지)
           float normalizeY = (vPosition.y + 11.0) / 22.0;
           float fadeOut = smoothstep(0.05, 0.9, normalizeY);
           
@@ -521,7 +515,7 @@ export function initPortfolio3D(containerId) {
 
 
 /* =========================================================
-   SERVICE SECTION 3D FULL-PAGE BACKGROUND LINES (모바일 가로 full 영역 수정)
+   SERVICE SECTION 3D FULL-PAGE BACKGROUND LINES (테두리 및 면 대조 수정 완료)
 ========================================================= */
 export function initServiceLines3D(containerId) {
   const container = document.getElementById(containerId);
@@ -552,7 +546,6 @@ export function initServiceLines3D(containerId) {
   const masterGroup = new THREE.Group();
   scene.add(masterGroup);
 
-  // 첫 번째 선만 오른쪽 아래로 이동 (모바일에서도 가로 full 영역에 맞춰 X 좌표 조정)
   const lineConfigs = isMobile ? [
     { pos: [ 6.5, -1.0, -2.0], rot: [0.2, 0.4, -0.3], scale: [0.5, 16.0, 0.5], speed: 0.5, offset: 0.0 },
     { pos: [ 4.5,  1.0, -1.0], rot: [-1.3, 0.6, 0.8], scale: [0.4,  7.0, 0.4], speed: 0.7, offset: 1.5 },
@@ -570,7 +563,6 @@ export function initServiceLines3D(containerId) {
   function createLineMesh(config) {
     const geometry = new THREE.BoxGeometry(config.scale[0], config.scale[1], config.scale[2]);
     
-    // 수정된 ShaderMaterial: 면(fill)과 모서리(edge)를 모두 처리
     const material = new THREE.ShaderMaterial({
       uniforms: {
         uTime: { value: 0 },
@@ -582,7 +574,6 @@ export function initServiceLines3D(containerId) {
         void main() {
           vPosition = position;
           vNormal = normal;
-          // 표준 vertex 셰이더
           gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
         }
       `,
@@ -593,69 +584,48 @@ export function initServiceLines3D(containerId) {
         varying vec3 vNormal;
 
         void main() {
-          // 1. 모서리(Edge) 라인 계산 (기존과 동일한 네온 효과)
-          // 현재 픽셀이 면의 가장자리(윤곽선)에 가까울수록 beam 값이 커짐
+          // 1. 모서리(Edge) 흐름 및 네온 컬러 계산 (어두운 테두리로 명확하게)
           float flow = mod((vPosition.y * 0.1) + (uTime * 0.25) + uOffset, 1.0);
-          float beam = smoothstep(0.2, 0.0, abs(flow - 0.5));
+          float beam = smoothstep(0.18, 0.0, abs(flow - 0.5));
 
-          vec3 baseColor = vec3(0.5, 0.5, 0.5); // 짐 그레이 (모서리 색)
+          vec3 darkGray = vec3(0.2, 0.2, 0.2); // 짙은 그레이 테두리
           vec3 neonGreen = vec3(0.12, 0.95, 0.45); // 포인트 그린
-          vec3 edgeColor = mix(baseColor, neonGreen, beam);
+          vec3 edgeColor = mix(darkGray, neonGreen, beam * 1.2);
           
-          // 2. 면(Fill) 컬러 계산 (핵심 수정 부분)
-          // 큐브의 면이 카메라를 향할수록 normal.z 값이 1에 가까워짐. 
-          // 이 값을 이용해 면의 투명도를 조절. z값이 클수록 면이 더 불투명해짐.
-          float fillAlpha = pow(abs(vNormal.z), 0.5); // 면의 불투명도 (0.0 ~ 1.0)
-          
-          // 3. 최종 결합 (핵심 수정 부분)
-          // 기본적으로 반투명한 흰색(0.9, 0.9, 0.9, fillAlpha)을 베이스로 깔고,
-          // 그 위에 강렬한 네온 엣지 컬러(beam)를 더함(add).
-          // 이렇게 하면 면 뒤로 엣지 라인이 비치면서도 면 자체가 존재감을 가짐.
-          vec3 finalColor = vec3(0.9, 0.9, 0.9) + (edgeColor * beam * 3.0); // 흰색 면 + 네온 엣지
-          
-          // 최종 알파값: 엣지가 지나가는 부분은 불투명도 1.0으로 강조, 면 영역은 fillAlpha 적용
-          float finalAlpha = max(fillAlpha, beam);
+          // 2. 면(Fill) 컬러: 면과 엣지의 컬러 대비를 확실히 주기 위해 연하게 조정
+          float fillAlpha = pow(abs(vNormal.z), 0.3) * 0.20;
+          vec3 fillColor = vec3(0.96, 0.96, 0.96);
 
-          // 4. 하단 그라데이션 페이드아웃 적용 (이미지 상단 메뉴바 영역에서 선이 자연스럽게 사라지도록)
-          // 이 부분은 기존 코드의 
-          // if (abs(vNormal.z) > 0.1) { ... } else { ... }
-          // 로직을 대체합니다. 전체적으로 Y축에 따라 알파값을 곱해줌.
-          float normalizeY = (vPosition.y + (isMobile ? 8.0 : 11.0)) / (isMobile ? 16.0 : 22.0); // 대략적인 Y 범위 정규화
-          float fadeOut = smoothstep(0.1, 1.0, normalizeY); // 아래쪽으로 갈수록 점점 투명해짐
+          // 3. 면과 엣지의 시각적 결합
+          vec3 finalColor = mix(fillColor, edgeColor, beam * 1.5);
+          float finalAlpha = max(fillAlpha, beam * 0.95);
+
+          // 4. 하단 그라데이션 페이드아웃 적용
+          float normalizeY = (vPosition.y + (isMobile ? 8.0 : 11.0)) / (isMobile ? 16.0 : 22.0);
+          float fadeOut = smoothstep(0.05, 0.9, normalizeY);
           
-          // 최종 렌더링
           gl_FragColor = vec4(finalColor, finalAlpha * fadeOut);
-          
-          // 약간의 뎁스 버퍼 조정 (투명 오브젝트끼리 겹칠 때 깜빡임 방지)
-          // 필요시 주석 해제
-          // gl_FragDepthEXT = gl_FragCoord.z; 
         }
       `,
       transparent: true,
-      // side: THREE.DoubleSide, // 면과 모서리가 모두 보이게 하려면 필요
+      side: THREE.DoubleSide,
       depthWrite: false,
-      // 필요시 확장자 활성화: #extension GL_EXT_frag_depth : enable
     });
 
     const group = new THREE.Group();
     
-    // 1. 기존 BoxGeometry로 면(Fill) 메시 생성
     const fillMesh = new THREE.Mesh(geometry, material);
     group.add(fillMesh);
 
-    // 2. 기존 EdgesGeometry로 모서리(Line) 생성
     const edges = new THREE.EdgesGeometry(geometry);
-    const lineSegments = new THREE.LineSegments(edges, lineMat); // 기존 lineMat 사용
+    const lineSegments = new THREE.LineSegments(edges, lineMat);
     group.add(lineSegments);
-
-    // [주의] lineMat은 기존에 정의된 전역 변수를 사용하거나, 
-    // 여기서 새로 정의해야 합니다 (예: new THREE.LineBasicMaterial({ color: 0x555555, transparent: true, opacity: 0.35 }))
 
     group.position.set(config.pos[0], config.pos[1], config.pos[2]);
     group.rotation.set(config.rot[0], config.rot[1], config.rot[2]);
 
     group.userData = {
-      material: material, // 셰이더는 fillMesh와 lineSegments가 공유할 수 있음
+      material: material,
       speed: config.speed,
       initialPos: [...config.pos],
       initialRot: [...config.rot]
@@ -664,7 +634,7 @@ export function initServiceLines3D(containerId) {
     return group;
   }
 
-    const lineGroups = lineConfigs.map(config => {
+  const lineGroups = lineConfigs.map(config => {
     const lg = createLineMesh(config);
     masterGroup.add(lg);
     return lg;
