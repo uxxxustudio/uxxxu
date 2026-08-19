@@ -33,7 +33,7 @@ export function initHero3D() {
   scene.add(group);
 
   /* =====================================================
-      1. 배경 공간 그리드 (실선 + 하단 페이드아웃 셰이더 적용)
+      1. 배경 공간 그리드 (하단 페이드아웃 범위 확장)
   ==================================================== */
   function createSolidGridGeometry(width, height, stepX, stepY, curveAmount = 0.01) {
     const points = [];
@@ -71,7 +71,7 @@ export function initHero3D() {
   const stepX = 1.2, stepY = 1.2, curveFactor = 0.01;
   const solidGridGeo = createSolidGridGeometry(gridWidth, gridHeight, stepX, stepY, curveFactor);
 
-  // LineBasicMaterial 대신 ShaderMaterial을 사용하여 아래로 갈수록 투명해지도록 처리
+  // 페이드아웃 구간을 넓히고(0.1 ~ 0.85) 아래쪽 라인이 더 은은하게 보이도록 조정
   const gridMaterial = new THREE.ShaderMaterial({
     vertexShader: `
       varying vec3 vPosition;
@@ -84,7 +84,7 @@ export function initHero3D() {
       varying vec3 vPosition;
       void main() {
         float normalizeY = (vPosition.y + 11.0) / 22.0;
-        float alpha = smoothstep(0.0, 0.6, normalizeY) * 0.85;
+        float alpha = smoothstep(0.1, 0.85, normalizeY) * 0.85;
 
         vec3 gridColor = vec3(0.6, 0.6, 0.6);
         gl_FragColor = vec4(gridColor, alpha);
