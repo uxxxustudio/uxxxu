@@ -514,8 +514,9 @@ export function initPortfolio3D(containerId) {
 }
 
 
+
 /* =========================================================
-   SERVICE SECTION 3D FULL-PAGE BACKGROUND LINES (모바일 최적화 반영)
+   SERVICE SECTION 3D FULL-PAGE BACKGROUND LINES (오른쪽 & 아래쪽 배치 수정)
 ========================================================= */
 export function initServiceLines3D(containerId) {
   const container = document.getElementById(containerId);
@@ -546,18 +547,19 @@ export function initServiceLines3D(containerId) {
   const masterGroup = new THREE.Group();
   scene.add(masterGroup);
 
+  // X축 좌표를 양수(+) 영역(오른쪽)으로 옮기고, Y축 위치를 전반적으로 아래쪽(-)으로 조정했습니다.
   const lineConfigs = isMobile ? [
-    { pos: [-4.0,  5.0, -2.0], rot: [0.2, 0.4, -0.3], scale: [0.5, 16.0, 0.5], speed: 0.5, offset: 0.0 },
-    { pos: [ 4.5,  1.0, -1.0], rot: [-1.3, 0.6, 0.8], scale: [0.4,  7.0, 0.4], speed: 0.7, offset: 1.5 },
-    { pos: [-3.0, -3.0,  1.0], rot: [0.1, -0.9, 0.6], scale: [0.6,  9.0, 0.6], speed: 0.6, offset: 2.8 },
-    { pos: [ 3.5, -6.0, -1.0], rot: [1.4, -0.3, 0.4], scale: [0.5,  6.0, 0.5], speed: 0.8, offset: 4.2 },
-    { pos: [ 0.0,  8.0, -4.0], rot: [-0.6, 0.3, -1.1], scale: [0.5, 12.0, 0.5], speed: 0.5, offset: 3.1 }
+    { pos: [ 3.0, -1.0, -2.0], rot: [0.2, 0.4, -0.3], scale: [0.5, 16.0, 0.5], speed: 0.5, offset: 0.0 },
+    { pos: [ 4.5, -4.0, -1.0], rot: [-1.3, 0.6, 0.8], scale: [0.4,  7.0, 0.4], speed: 0.7, offset: 1.5 },
+    { pos: [ 2.0, -7.0,  1.0], rot: [0.1, -0.9, 0.6], scale: [0.6,  9.0, 0.6], speed: 0.6, offset: 2.8 },
+    { pos: [ 3.5, -9.0, -1.0], rot: [1.4, -0.3, 0.4], scale: [0.5,  6.0, 0.5], speed: 0.8, offset: 4.2 },
+    { pos: [ 1.0, -2.0, -4.0], rot: [-0.6, 0.3, -1.1], scale: [0.5, 12.0, 0.5], speed: 0.5, offset: 3.1 }
   ] : [
-    { pos: [-11.0, 6.0, -3.0], rot: [0.2, 0.4, -0.3], scale: [0.5, 22.0, 0.5], speed: 0.5, offset: 0.0 },
-    { pos: [8.0, 2.0, -1.0], rot: [-1.3, 0.6, 0.8], scale: [0.4, 8.5, 0.4], speed: 0.7, offset: 1.5 },
-    { pos: [-6.0, -3.0, 2.0], rot: [0.1, -0.9, 0.6], scale: [0.6, 11.0, 0.6], speed: 0.6, offset: 2.8 },
-    { pos: [10.0, -4.0, -2.0], rot: [1.4, -0.3, 0.4], scale: [0.5, 7.0, 0.5], speed: 0.8, offset: 4.2 },
-    { pos: [-1.0, 8.0, -6.0], rot: [-0.6, 0.3, -1.1], scale: [0.5, 16.0, 0.5], speed: 0.5, offset: 3.1 }
+    { pos: [ 8.5, -2.0, -3.0], rot: [0.2, 0.4, -0.3], scale: [0.5, 22.0, 0.5], speed: 0.5, offset: 0.0 },
+    { pos: [11.0, -5.0, -1.0], rot: [-1.3, 0.6, 0.8], scale: [0.4, 8.5, 0.4], speed: 0.7, offset: 1.5 },
+    { pos: [ 6.5, -7.0,  2.0], rot: [0.1, -0.9, 0.6], scale: [0.6, 11.0, 0.6], speed: 0.6, offset: 2.8 },
+    { pos: [10.0, -9.0, -2.0], rot: [1.4, -0.3, 0.4], scale: [0.5, 7.0, 0.5], speed: 0.8, offset: 4.2 },
+    { pos: [ 5.0, -3.0, -6.0], rot: [-0.6, 0.3, -1.1], scale: [0.5, 16.0, 0.5], speed: 0.5, offset: 3.1 }
   ];
 
   function createLineMesh(config) {
