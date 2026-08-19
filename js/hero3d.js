@@ -565,6 +565,7 @@ export function initServiceLines3D(containerId) {
   function createLineMesh(config) {
     const geometry = new THREE.BoxGeometry(config.scale[0], config.scale[1], config.scale[2]);
     
+    // 수정된 ShaderMaterial: 면(fill)과 모서리(edge)를 모두 처리
     const material = new THREE.ShaderMaterial({
       uniforms: {
         uTime: { value: 0 },
@@ -576,6 +577,7 @@ export function initServiceLines3D(containerId) {
         void main() {
           vPosition = position;
           vNormal = normal;
+          // 표준 vertex 셰이더
           gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
         }
       `,
@@ -586,39 +588,69 @@ export function initServiceLines3D(containerId) {
         varying vec3 vNormal;
 
         void main() {
-          if (abs(vNormal.z) > 0.1) { 
-            gl_FragColor = vec4(0.85, 0.85, 0.85, 0.05); 
-            return;
-          }
-          
+          // 1. 모서리(Edge) 라인 계산 (기존과 동일한 네온 효과)
+          // 현재 픽셀이 면의 가장자리(윤곽선)에 가까울수록 beam 값이 커짐
           float flow = mod((vPosition.y * 0.1) + (uTime * 0.25) + uOffset, 1.0);
           float beam = smoothstep(0.2, 0.0, abs(flow - 0.5));
 
-          vec3 baseColor = vec3(0.5, 0.5, 0.5);
-          vec3 neonGreen = vec3(0.12, 0.95, 0.45);
-          vec3 finalColor = mix(baseColor, neonGreen, beam);
-          float alpha = 0.1 + beam * 0.9;
-          gl_FragColor = vec4(finalColor, alpha);
+          vec3 baseColor = vec3(0.5, 0.5, 0.5); // 짐 그레이 (모서리 색)
+          vec3 neonGreen = vec3(0.12, 0.95, 0.45); // 포인트 그린
+          vec3 edgeColor = mix(baseColor, neonGreen, beam);
+          
+          // 2. 면(Fill) 컬러 계산 (핵심 수정 부분)
+          // 큐브의 면이 카메라를 향할수록 normal.z 값이 1에 가까워짐. 
+          // 이 값을 이용해 면의 투명도를 조절. z값이 클수록 면이 더 불투명해짐.
+          float fillAlpha = pow(abs(vNormal.z), 0.5); // 면의 불투명도 (0.0 ~ 1.0)
+          
+          // 3. 최종 결합 (핵심 수정 부분)
+          // 기본적으로 반투명한 흰색(0.9, 0.9, 0.9, fillAlpha)을 베이스로 깔고,
+          // 그 위에 강렬한 네온 엣지 컬러(beam)를 더함(add).
+          // 이렇게 하면 면 뒤로 엣지 라인이 비치면서도 면 자체가 존재감을 가짐.
+          vec3 finalColor = vec3(0.9, 0.9, 0.9) + (edgeColor * beam * 3.0); // 흰색 면 + 네온 엣지
+          
+          // 최종 알파값: 엣지가 지나가는 부분은 불투명도 1.0으로 강조, 면 영역은 fillAlpha 적용
+          float finalAlpha = max(fillAlpha, beam);
+
+          // 4. 하단 그라데이션 페이드아웃 적용 (이미지 상단 메뉴바 영역에서 선이 자연스럽게 사라지도록)
+          // 이 부분은 기존 코드의 
+          // if (abs(vNormal.z) > 0.1) { ... } else { ... }
+          // 로직을 대체합니다. 전체적으로 Y축에 따라 알파값을 곱해줌.
+          float normalizeY = (vPosition.y + (isMobile ? 8.0 : 11.0)) / (isMobile ? 16.0 : 22.0); // 대략적인 Y 범위 정규화
+          float fadeOut = smoothstep(0.1, 1.0, normalizeY); // 아래쪽으로 갈수록 점점 투명해짐
+          
+          // 최종 렌더링
+          gl_FragColor = vec4(finalColor, finalAlpha * fadeOut);
+          
+          // 약간의 뎁스 버퍼 조정 (투명 오브젝트끼리 겹칠 때 깜빡임 방지)
+          // 필요시 주석 해제
+          // gl_FragDepthEXT = gl_FragCoord.z; 
         }
       `,
       transparent: true,
-      side: THREE.DoubleSide,
+      // side: THREE.DoubleSide, // 면과 모서리가 모두 보이게 하려면 필요
       depthWrite: false,
+      // 필요시 확장자 활성화: #extension GL_EXT_frag_depth : enable
     });
 
     const group = new THREE.Group();
-    const mesh = new THREE.Mesh(geometry, material);
-    group.add(mesh);
+    
+    // 1. 기존 BoxGeometry로 면(Fill) 메시 생성
+    const fillMesh = new THREE.Mesh(geometry, material);
+    group.add(fillMesh);
 
+    // 2. 기존 EdgesGeometry로 모서리(Line) 생성
     const edges = new THREE.EdgesGeometry(geometry);
-    const lineSegments = new THREE.LineSegments(edges, lineMat);
+    const lineSegments = new THREE.LineSegments(edges, lineMat); // 기존 lineMat 사용
     group.add(lineSegments);
+
+    // [주의] lineMat은 기존에 정의된 전역 변수를 사용하거나, 
+    // 여기서 새로 정의해야 합니다 (예: new THREE.LineBasicMaterial({ color: 0x555555, transparent: true, opacity: 0.35 }))
 
     group.position.set(config.pos[0], config.pos[1], config.pos[2]);
     group.rotation.set(config.rot[0], config.rot[1], config.rot[2]);
 
     group.userData = {
-      material: material,
+      material: material, // 셰이더는 fillMesh와 lineSegments가 공유할 수 있음
       speed: config.speed,
       initialPos: [...config.pos],
       initialRot: [...config.rot]
