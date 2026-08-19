@@ -536,6 +536,8 @@ section{
     width:100%;
 
     margin:auto;
+
+    position: relative; /* 3D 오브젝트 위치 지정을 위해 추가된 부분 */
 }
 
 
@@ -568,7 +570,7 @@ section{
 
 
 /* =========================================================
-   SERVICE
+   SERVICE (3D 오브젝트 연동 레이아웃 포함)
 ========================================================= */
 
 .section-title{
@@ -586,6 +588,22 @@ section{
     font-weight:600;
 }
 
+/* 서비스 페이지 우측 3D 오브젝트 컨테이너 */
+.service-object{
+    position: absolute;
+    top: 120px;
+    right: 0px;
+    width: 450px;
+    height: 450px;
+    pointer-events: none;
+    z-index: 2;
+}
+
+#service-object {
+    width: 100%;
+    height: 100%;
+}
+
 .service-list{
 
     display:flex;
@@ -593,6 +611,8 @@ section{
     flex-direction:column;
 
     gap:70px;
+
+    max-width: 720px; /* 텍스트 영역이 3D 오브젝트와 겹치지 않게 조절 */
 }
 
 .service-item{
@@ -1112,6 +1132,18 @@ footer{
 
 
     /* ---------------- Service ---------------- */
+    .service-object{
+        position: relative;
+        top: 0;
+        right: 0;
+        width: 100%;
+        height: 320px;
+        margin-bottom: 50px;
+    }
+
+    .service-list {
+        max-width: 100%;
+    }
 
     .service-item{
 
