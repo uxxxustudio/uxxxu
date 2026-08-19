@@ -528,12 +528,13 @@ export function initServiceLines3D(containerId) {
   const masterGroup = new THREE.Group();
   scene.add(masterGroup);
 
+  // 길이와 회전(각도)을 다채롭게 조절하여 일부는 길고, 일부는 짧고 가로/대각선 방향으로 배치
   const lineConfigs = [
-    { pos: [-10.0, 5.0, -2.0], rot: [0.3, 0.5, -0.4], scale: [0.6, 18.0, 0.6], speed: 0.5, offset: 0.0 },
-    { pos: [9.0, 4.0, -4.0], rot: [-0.4, 0.2, 0.7], scale: [0.5, 20.0, 0.5], speed: 0.7, offset: 1.5 },
-    { pos: [-8.0, -4.0, 1.0], rot: [0.2, -0.6, 0.3], scale: [0.6, 16.0, 0.6], speed: 0.6, offset: 2.8 },
-    { pos: [8.5, -5.0, 0.0], rot: [-0.3, 0.4, -0.5], scale: [0.5, 19.0, 0.5], speed: 0.8, offset: 4.2 },
-    { pos: [0.0, 7.0, -5.0], rot: [0.5, 0.1, 0.2], scale: [0.5, 15.0, 0.5], speed: 0.5, offset: 3.1 }
+    { pos: [-11.0, 6.0, -3.0], rot: [0.2, 0.4, -0.3], scale: [0.5, 22.0, 0.5], speed: 0.5, offset: 0.0 }, // 길고 시원한 수직/대각선 선
+    { pos: [8.0, 2.0, -1.0], rot: [-1.3, 0.6, 0.8], scale: [0.4, 8.5, 0.4], speed: 0.7, offset: 1.5 },  // 가로 방향으로 누운 짧은 선
+    { pos: [-6.0, -3.0, 2.0], rot: [0.1, -0.9, 0.6], scale: [0.6, 11.0, 0.6], speed: 0.6, offset: 2.8 }, // 중간 길이의 대각선 선
+    { pos: [10.0, -4.0, -2.0], rot: [1.4, -0.3, 0.4], scale: [0.5, 7.0, 0.5], speed: 0.8, offset: 4.2 }, // 가깝고 누워있는 아주 짧은 선
+    { pos: [-1.0, 8.0, -6.0], rot: [-0.6, 0.3, -1.1], scale: [0.5, 16.0, 0.5], speed: 0.5, offset: 3.1 } // 배경의 균형을 잡아주는 긴 선
   ];
 
   function createLineMesh(config) {
@@ -594,7 +595,7 @@ export function initServiceLines3D(containerId) {
     group.userData = {
       material: material,
       speed: config.speed,
-      initialPos: [...config.pos], // 초기 위치 저장 (공간 이동용)
+      initialPos: [...config.pos],
       initialRot: [...config.rot]
     };
 
@@ -626,16 +627,13 @@ export function initServiceLines3D(containerId) {
     masterGroup.rotation.x = mouseY * 0.1;
     masterGroup.position.y = scrollOffset;
 
-    // 각 선들이 제자리를 돌 뿐만 아니라 공간을 유기적으로 유영하며 돌아다니도록 위치 좌표(X, Y, Z) 변화 로직 추가
     lineGroups.forEach((lg, i) => {
       const p = lg.userData;
       
-      // 삼각함수를 활용해 각기 다른 주기로 공간 속에서 부유하듯 이동
       lg.position.x = p.initialPos[0] + Math.sin(time * p.speed * 0.4 + i * 1.5) * 2.5;
       lg.position.y = p.initialPos[1] + Math.cos(time * p.speed * 0.3 + i * 2.0) * 2.0;
       lg.position.z = p.initialPos[2] + Math.sin(time * p.speed * 0.25 + i * 1.0) * 1.5;
 
-      // 회전도 유기적으로 함께 부여
       lg.rotation.x = p.initialRot[0] + Math.sin(time * p.speed * 0.3 + i) * 0.15;
       lg.rotation.y = p.initialRot[1] + Math.cos(time * p.speed * 0.25 + i) * 0.15;
       
