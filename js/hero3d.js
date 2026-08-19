@@ -33,7 +33,7 @@ export function initHero3D() {
   scene.add(group);
 
   /* =====================================================
-      1. 배경 공간 그리드 (실선 - 맥북 가시성 개선 버전)
+      1. 배경 공간 그리드 (실선)
   ==================================================== */
   function createSolidGridGeometry(width, height, stepX, stepY, curveAmount = 0.01) {
     const points = [];
@@ -72,9 +72,9 @@ export function initHero3D() {
   const solidGridGeo = createSolidGridGeometry(gridWidth, gridHeight, stepX, stepY, curveFactor);
 
   const gridMaterial = new THREE.LineBasicMaterial({
-    color: 0x999999, // 맥북에서도 잘 보이도록 진한 회색으로 변경
+    color: 0x999999,
     transparent: true,
-    opacity: 0.85,   // 불투명도 상향 조정
+    opacity: 0.85,
   });
 
   const gridLines = new THREE.LineSegments(solidGridGeo, gridMaterial);
@@ -272,197 +272,99 @@ export function initSectionObject(containerId, assetInput = "U") {
     opacity: 1.0,
   });
 
-  if (assetInput.length <= 2 && !assetInput.includes(".")) {
-    const loader = new FontLoader();
-    loader.load(
-      "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/fonts/helvetiker_bold.typeface.json",
-      (font) => {
-        // 크기 키우기 원하실 경우 size 값을 조절하세요 (예: 8.5)
-        const geomOpts = { font: font, size: 7.2, depth: 1.2, curveSegments: 24, bevelEnabled: false };
-        const geometry = new TextGeometry(assetInput, geomOpts);
-        geometry.computeBoundingBox();
-        const box = geometry.boundingBox;
-        geometry.translate(-(box.max.x + box.min.x) / 2, -(box.max.y + box.min.y) / 2, 0);
+  const loader = new FontLoader();
+  loader.load(
+    "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/fonts/helvetiker_bold.typeface.json",
+    (font) => {
+      const geomOpts = { font: font, size: 7.2, depth: 1.2, curveSegments: 24, bevelEnabled: false };
+      const geometry = new TextGeometry(assetInput, geomOpts);
+      geometry.computeBoundingBox();
+      const box = geometry.boundingBox;
+      geometry.translate(-(box.max.x + box.min.x) / 2, -(box.max.y + box.min.y) / 2, 0);
 
-        const characterGroup = new THREE.Group();
+      const characterGroup = new THREE.Group();
 
-        const material = new THREE.ShaderMaterial({
-          uniforms: {
-            uTime: { value: 0 },
-            uOffset: { value: 1.0 },
-            uIsU: { value: 1.0 },
-          },
-          vertexShader: `
-            varying vec3 vPosition;
-            varying vec3 vNormal;
-            void main() {
-              vPosition = position;
-              vNormal = normal;
-              gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-            }
-          `,
-          fragmentShader: `
-            uniform float uTime;
-            uniform float uOffset;
-            uniform float uIsU;
-            varying vec3 vPosition;
-            varying vec3 vNormal;
+      const material = new THREE.ShaderMaterial({
+        uniforms: {
+          uTime: { value: 0 },
+          uOffset: { value: 1.0 },
+          uIsU: { value: 1.0 },
+        },
+        vertexShader: `
+          varying vec3 vPosition;
+          varying vec3 vNormal;
+          void main() {
+            vPosition = position;
+            vNormal = normal;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+          }
+        `,
+        fragmentShader: `
+          uniform float uTime;
+          uniform float uOffset;
+          uniform float uIsU;
+          varying vec3 vPosition;
+          varying vec3 vNormal;
 
-            void main() {
-              if (abs(vNormal.z) > 0.1) { discard; }
-              float sideDir = (vPosition.x < 0.0) ? 1.0 : -1.0;
-              float flow = mod((vPosition.y * 0.2) + (uTime * 0.3 * sideDir) + (uOffset * 0.2), 1.0);
-              float beam = smoothstep(0.12, 0.0, abs(flow - 0.5));
+          void main() {
+            if (abs(vNormal.z) > 0.1) { discard; }
+            float sideDir = (vPosition.x < 0.0) ? 1.0 : -1.0;
+            float flow = mod((vPosition.y * 0.2) + (uTime * 0.3 * sideDir) + (uOffset * 0.2), 1.0);
+            float beam = smoothstep(0.12, 0.0, abs(flow - 0.5));
 
-              vec3 baseColor = vec3(0.04, 0.04, 0.04);
-              vec3 neonGreen = vec3(0.12, 0.95, 0.45);
-              vec3 finalColor = mix(baseColor, neonGreen, beam);
-              float alpha = 0.08 + beam * 0.92;
-              gl_FragColor = vec4(finalColor, alpha);
-            }
-          `,
-          transparent: true,
-          side: THREE.DoubleSide,
-          depthWrite: false,
+            vec3 baseColor = vec3(0.04, 0.04, 0.04);
+            vec3 neonGreen = vec3(0.12, 0.95, 0.45);
+            vec3 finalColor = mix(baseColor, neonGreen, beam);
+            float alpha = 0.08 + beam * 0.92;
+            gl_FragColor = vec4(finalColor, alpha);
+          }
+        `,
+        transparent: true,
+        side: THREE.DoubleSide,
+        depthWrite: false,
+      });
+
+      const fillMesh = new THREE.Mesh(geometry, material);
+      characterGroup.add(fillMesh);
+
+      const edges = new THREE.EdgesGeometry(geometry, 25);
+      const lineSegments = new THREE.LineSegments(edges, lineMat);
+      characterGroup.add(lineSegments);
+
+      const wrapperGroup = new THREE.Group();
+      wrapperGroup.add(characterGroup);
+      scene.add(wrapperGroup);
+
+      const clock = new THREE.Clock();
+
+      function animate() {
+        requestAnimationFrame(animate);
+        const time = clock.getElapsedTime();
+        const scrollY = window.scrollY || window.pageYOffset;
+
+        const basePosY = -1.0; 
+        const scrollOffset = scrollY * 0.0015;
+
+        wrapperGroup.position.x = 0;
+        wrapperGroup.position.y = basePosY + scrollOffset + Math.sin(time * 0.4) * 0.12;
+        wrapperGroup.rotation.y += 0.005;
+
+        wrapperGroup.traverse((child) => {
+          if (child.material && child.material.uniforms && child.material.uniforms.uTime) {
+            child.material.uniforms.uTime.value = time;
+          }
         });
 
-        const fillMesh = new THREE.Mesh(geometry, material);
-        characterGroup.add(fillMesh);
-
-        const edges = new THREE.EdgesGeometry(geometry, 25);
-        const lineSegments = new THREE.LineSegments(edges, lineMat);
-        characterGroup.add(lineSegments);
-
-        const wrapperGroup = new THREE.Group();
-        wrapperGroup.add(characterGroup);
-        scene.add(wrapperGroup);
-
-        const clock = new THREE.Clock();
-
-        function animate() {
-          requestAnimationFrame(animate);
-          const time = clock.getElapsedTime();
-          const scrollY = window.scrollY || window.pageYOffset;
-
-          const basePosY = -1.0; 
-          const scrollOffset = scrollY * 0.0015;
-
-          wrapperGroup.position.x = 0;
-          wrapperGroup.position.y = basePosY + scrollOffset + Math.sin(time * 0.4) * 0.12;
-          wrapperGroup.rotation.y += 0.005;
-
-          wrapperGroup.traverse((child) => {
-            if (child.material && child.material.uniforms && child.material.uniforms.uTime) {
-              child.material.uniforms.uTime.value = time;
-            }
-          });
-
-          renderer.render(scene, camera);
-        }
-        animate();
+        renderer.render(scene, camera);
       }
-    );
-  } else {
-    const svgLoader = new SVGLoader();
-    svgLoader.load(
-      assetInput,
-      (data) => {
-        const paths = data.paths;
-        const characterGroup = new THREE.Group();
-
-        paths.forEach((path) => {
-          const shapes = SVGLoader.createShapes(path);
-          shapes.forEach((shape) => {
-            const extrudeSettings = { depth: 1.2, bevelEnabled: false };
-            const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
-
-            const material = new THREE.ShaderMaterial({
-              uniforms: {
-                uTime: { value: 0 },
-                uOffset: { value: 1.0 },
-                uIsU: { value: 1.0 },
-              },
-              vertexShader: `
-                varying vec3 vPosition;
-                varying vec3 vNormal;
-                void main() {
-                  vPosition = position;
-                  vNormal = normal;
-                  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-                }
-              `,
-              fragmentShader: `
-                uniform float uTime;
-                uniform float uOffset;
-                uniform float uIsU;
-                varying vec3 vPosition;
-                varying vec3 vNormal;
-
-                void main() {
-                  if (abs(vNormal.z) > 0.1) { discard; }
-                  float sideDir = (vPosition.x < 0.0) ? 1.0 : -1.0;
-                  float flow = mod((vPosition.y * 0.2) + (uTime * 0.3 * sideDir) + (uOffset * 0.2), 1.0);
-                  float beam = smoothstep(0.12, 0.0, abs(flow - 0.5));
-
-                  vec3 baseColor = vec3(0.04, 0.04, 0.04);
-                  vec3 neonGreen = vec3(0.12, 0.95, 0.45);
-                  vec3 finalColor = mix(baseColor, neonGreen, beam);
-                  float alpha = 0.08 + beam * 0.92;
-                  gl_FragColor = vec4(finalColor, alpha);
-                }
-              `,
-              transparent: true,
-              side: THREE.DoubleSide,
-              depthWrite: false,
-            });
-
-            const fillMesh = new THREE.Mesh(geometry, material);
-            characterGroup.add(fillMesh);
-
-            const edges = new THREE.EdgesGeometry(geometry, 20);
-            const lineSegments = new THREE.LineSegments(edges, lineMat);
-            characterGroup.add(lineSegments);
-          });
-        });
-
-        characterGroup.scale.y = -1;
-        const box = new THREE.Box3().setFromObject(characterGroup);
-        const center = box.getCenter(new THREE.Vector3());
-        characterGroup.position.x = -center.x;
-        characterGroup.position.y = -center.y;
-
-        const wrapperGroup = new THREE.Group();
-        wrapperGroup.add(characterGroup);
-        wrapperGroup.scale.setScalar(0.08);
-        scene.add(wrapperGroup);
-
-        const clock = new THREE.Clock();
-
-        function animate() {
-          requestAnimationFrame(animate);
-          const time = clock.getElapsedTime();
-          const scrollY = window.scrollY || window.pageYOffset;
-
-          wrapperGroup.position.y = -1.0 + (scrollY * 0.0015) + Math.sin(time * 0.4) * 0.12;
-          wrapperGroup.rotation.y += 0.005;
-
-          wrapperGroup.traverse((child) => {
-            if (child.material && child.material.uniforms && child.material.uniforms.uTime) {
-              child.material.uniforms.uTime.value = time;
-            }
-          });
-
-          renderer.render(scene, camera);
-        }
-        animate();
-      }
-    );
-  }
+      animate();
+    }
+  );
 }
 
 
 /* =========================================================
-   PORTFOLIO SECTION 3D OBJECT (initPortfolio3D) - "W" (측면 각도 및 여백 수정 버전)
+   PORTFOLIO SECTION 3D OBJECT (initPortfolio3D)
 ========================================================= */
 export function initPortfolio3D(containerId) {
   const container = document.getElementById(containerId);
@@ -550,8 +452,6 @@ export function initPortfolio3D(containerId) {
 
       const wrapperGroup = new THREE.Group();
       wrapperGroup.add(characterGroup);
-      
-      // ★ 정면이 아닌 멋스러운 측면 각도 초기 부여
       wrapperGroup.rotation.y = 0.35; 
       wrapperGroup.rotation.x = -0.08; 
 
@@ -594,19 +494,11 @@ export function initPortfolio3D(containerId) {
       animate();
     }
   );
-
-  window.addEventListener("resize", () => {
-    const newWidth = container.clientWidth || 400;
-    const newHeight = container.clientHeight || 400;
-    camera.aspect = newWidth / newHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(newWidth, newHeight);
-  });
 }
 
 
 /* =========================================================
-   SERVICE SECTION 3D FLOATING LINES (initServiceLines3D) - 신규 추가
+   SERVICE SECTION 3D FLOATING LINES (initServiceLines3D) - 수정된 선 오브젝트 함수
 ========================================================= */
 export function initServiceLines3D(containerId) {
   const container = document.getElementById(containerId);
@@ -701,7 +593,6 @@ export function initServiceLines3D(containerId) {
     group.userData = {
       material: material,
       speed: config.speed,
-      initialPos: [...config.pos],
       initialRot: [...config.rot]
     };
 
