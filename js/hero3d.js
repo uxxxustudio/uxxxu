@@ -130,7 +130,8 @@ export function initHero3D() {
     const material = new THREE.ShaderMaterial({
       uniforms: {
         uTime: { value: 0 },
-        uOffset: { value: config.offset },
+        uOffset: { value: timeOffset },
+        uIsU: { value: isU ? 1.0 : 0.0 },
       },
       vertexShader: `
         varying vec3 vPosition;
@@ -148,24 +149,20 @@ export function initHero3D() {
         varying vec3 vNormal;
 
         void main() {
-          // 1. 네온 빛 흐름 효과
           float flow = mod((vPosition.y * 0.1) + (uTime * 0.25) + uOffset, 1.0);
           float beam = smoothstep(0.18, 0.0, abs(flow - 0.5));
 
-          // 2. 밝은 배경용 컬러 셋팅 (진한 차콜 그레이 면 + 네온/진블랙 포인트)
-          vec3 darkCharcoal = vec3(0.15, 0.15, 0.18); // 오브젝트 기본 면 색상 (다크 그레이)
-          vec3 neonGreen = vec3(0.08, 0.8, 0.35);     // 흐르는 빛 포인트
-          vec3 edgeColor = mix(darkCharcoal, neonGreen, beam * 1.5);
+          vec3 darkGray = vec3(0.2, 0.2, 0.2);
+          vec3 neonGreen = vec3(0.12, 0.95, 0.45);
+          vec3 edgeColor = mix(darkGray, neonGreen, beam * 1.2);
           
-          // 3. 면의 입체감과 투명도 조절 (밝은 배경에서 눈에 띄도록 진하게 조정)
-          float fillAlpha = pow(abs(vNormal.z), 0.3) * 0.25;
-          vec3 fillColor = vec3(0.25, 0.25, 0.28);
+          float fillAlpha = pow(abs(vNormal.z), 0.3) * 0.20;
+          vec3 fillColor = vec3(0.96, 0.96, 0.96);
 
           vec3 finalColor = mix(fillColor, edgeColor, beam * 1.5);
-          float finalAlpha = max(fillAlpha, beam * 0.85);
+          float finalAlpha = max(fillAlpha, beam * 0.95);
 
-          // 4. 하단 페이드아웃
-          float normalizeY = (vPosition.y + (isMobile ? 8.0 : 11.0)) / (isMobile ? 16.0 : 22.0);
+          float normalizeY = (vPosition.y + 11.0) / 22.0;
           float fadeOut = smoothstep(0.05, 0.9, normalizeY);
           
           gl_FragColor = vec4(finalColor, finalAlpha * fadeOut);
@@ -286,9 +283,9 @@ export function initSectionObject(containerId, assetInput = "U") {
   container.appendChild(renderer.domElement);
 
   const lineMat = new THREE.LineBasicMaterial({
-    color: 0x333333, // 기존 0x555555 에서 더 진한 차콜로 변경
-    transparent: true,
-    opacity: 0.6,    // 투명도 상향
+    color: 0x111111,
+    transparent: false,
+    opacity: 1.0,
   });
 
   const loader = new FontLoader();
