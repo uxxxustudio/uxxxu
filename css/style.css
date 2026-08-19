@@ -625,7 +625,7 @@ section{
 
     gap:70px;
 
-    max-width: 780px;
+    max-width: 100%; /* PC 및 모바일 모두 가로 폭 제한 해제 (Full-width) */
 }
 
 .service-item{
@@ -1154,7 +1154,7 @@ footer{
         transform: scale(0.7);
     }
 
-    /* 모바일에서 서비스 섹션 영역 풀폭 확장 및 여백 조정 */
+    /* 모바일 서비스 섹션 영역 풀폭 확장 */
     #service .container {
         max-width: 100% !important;
         padding-left: 16px !important;
