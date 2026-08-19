@@ -1154,6 +1154,13 @@ footer{
         transform: scale(0.7);
     }
 
+    /* 모바일에서 서비스 섹션 영역 풀폭 확장 및 여백 조정 */
+    #service .container {
+        max-width: 100% !important;
+        padding-left: 16px !important;
+        padding-right: 16px !important;
+    }
+
     .service-list {
         max-width: 100%;
     }
