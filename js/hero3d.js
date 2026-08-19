@@ -98,9 +98,9 @@ export function initHero3D() {
   scene.add(gridGroup);
 
   const lineMat = new THREE.LineBasicMaterial({
-    color: 0x333333,
-    transparent: true,
-    opacity: 0.6,
+    color: 0x111111,
+    transparent: false,
+    opacity: 1.0,
   });
 
   const loader = new FontLoader();
@@ -130,8 +130,7 @@ export function initHero3D() {
     const material = new THREE.ShaderMaterial({
       uniforms: {
         uTime: { value: 0 },
-        uOffset: { value: timeOffset },
-        uIsU: { value: isU ? 1.0 : 0.0 },
+        uOffset: { value: config.offset },
       },
       vertexShader: `
         varying vec3 vPosition;
@@ -145,21 +144,31 @@ export function initHero3D() {
       fragmentShader: `
         uniform float uTime;
         uniform float uOffset;
-        uniform float uIsU;
         varying vec3 vPosition;
         varying vec3 vNormal;
 
         void main() {
-          if (abs(vNormal.z) > 0.1) { discard; }
-          float sideDir = (vPosition.x < 0.0) ? 1.0 : -1.0;
-          float flow = mod((vPosition.y * 0.2) + (uTime * 0.3 * sideDir) + (uOffset * 0.2), 1.0);
-          float beam = smoothstep(0.12, 0.0, abs(flow - 0.5));
+          // 1. 네온 빛 흐름 효과
+          float flow = mod((vPosition.y * 0.1) + (uTime * 0.25) + uOffset, 1.0);
+          float beam = smoothstep(0.18, 0.0, abs(flow - 0.5));
 
-          vec3 baseColor = vec3(0.15, 0.15, 0.18);
-          vec3 neonGreen = vec3(0.08, 0.8, 0.35);
-          vec3 finalColor = mix(baseColor, neonGreen, beam);
-          float alpha = 0.25 + beam * 0.75;
-          gl_FragColor = vec4(finalColor, alpha);
+          // 2. 밝은 배경용 컬러 셋팅 (진한 차콜 그레이 면 + 네온/진블랙 포인트)
+          vec3 darkCharcoal = vec3(0.15, 0.15, 0.18); // 오브젝트 기본 면 색상 (다크 그레이)
+          vec3 neonGreen = vec3(0.08, 0.8, 0.35);     // 흐르는 빛 포인트
+          vec3 edgeColor = mix(darkCharcoal, neonGreen, beam * 1.5);
+          
+          // 3. 면의 입체감과 투명도 조절 (밝은 배경에서 눈에 띄도록 진하게 조정)
+          float fillAlpha = pow(abs(vNormal.z), 0.3) * 0.25;
+          vec3 fillColor = vec3(0.25, 0.25, 0.28);
+
+          vec3 finalColor = mix(fillColor, edgeColor, beam * 1.5);
+          float finalAlpha = max(fillAlpha, beam * 0.85);
+
+          // 4. 하단 페이드아웃
+          float normalizeY = (vPosition.y + (isMobile ? 8.0 : 11.0)) / (isMobile ? 16.0 : 22.0);
+          float fadeOut = smoothstep(0.05, 0.9, normalizeY);
+          
+          gl_FragColor = vec4(finalColor, finalAlpha * fadeOut);
         }
       `,
       transparent: true,
@@ -277,9 +286,9 @@ export function initSectionObject(containerId, assetInput = "U") {
   container.appendChild(renderer.domElement);
 
   const lineMat = new THREE.LineBasicMaterial({
-    color: 0x333333,
+    color: 0x333333, // 기존 0x555555 에서 더 진한 차콜로 변경
     transparent: true,
-    opacity: 0.6,
+    opacity: 0.6,    // 투명도 상향
   });
 
   const loader = new FontLoader();
@@ -322,10 +331,10 @@ export function initSectionObject(containerId, assetInput = "U") {
             float flow = mod((vPosition.y * 0.2) + (uTime * 0.3 * sideDir) + (uOffset * 0.2), 1.0);
             float beam = smoothstep(0.12, 0.0, abs(flow - 0.5));
 
-            vec3 baseColor = vec3(0.15, 0.15, 0.18);
-            vec3 neonGreen = vec3(0.08, 0.8, 0.35);
+            vec3 baseColor = vec3(0.04, 0.04, 0.04);
+            vec3 neonGreen = vec3(0.12, 0.95, 0.45);
             vec3 finalColor = mix(baseColor, neonGreen, beam);
-            float alpha = 0.25 + beam * 0.75;
+            float alpha = 0.08 + beam * 0.92;
             gl_FragColor = vec4(finalColor, alpha);
           }
         `,
@@ -396,9 +405,9 @@ export function initPortfolio3D(containerId) {
   container.appendChild(renderer.domElement);
 
   const lineMat = new THREE.LineBasicMaterial({
-    color: 0x333333,
-    transparent: true,
-    opacity: 0.6,
+    color: 0x111111,
+    transparent: false,
+    opacity: 1.0,
   });
 
   const loader = new FontLoader();
@@ -441,10 +450,10 @@ export function initPortfolio3D(containerId) {
             float flow = mod((vPosition.y * 0.2) + (uTime * 0.3 * sideDir) + (uOffset * 0.2), 1.0);
             float beam = smoothstep(0.12, 0.0, abs(flow - 0.5));
 
-            vec3 baseColor = vec3(0.15, 0.15, 0.18);
-            vec3 neonGreen = vec3(0.08, 0.8, 0.35);
+            vec3 baseColor = vec3(0.04, 0.04, 0.04);
+            vec3 neonGreen = vec3(0.12, 0.95, 0.45);
             vec3 finalColor = mix(baseColor, neonGreen, beam);
-            float alpha = 0.25 + beam * 0.75;
+            float alpha = 0.08 + beam * 0.92;
             gl_FragColor = vec4(finalColor, alpha);
           }
         `,
@@ -509,7 +518,7 @@ export function initPortfolio3D(containerId) {
 
 
 /* =========================================================
-   SERVICE SECTION 3D FULL-PAGE BACKGROUND LINES (수정 완료)
+   SERVICE SECTION 3D FULL-PAGE BACKGROUND LINES (테두리 및 면 대조 수정 완료)
 ========================================================= */
 export function initServiceLines3D(containerId) {
   const container = document.getElementById(containerId);
@@ -531,11 +540,10 @@ export function initServiceLines3D(containerId) {
   renderer.setClearColor(0x000000, 0);
   container.appendChild(renderer.domElement);
 
-  // 서비스 섹션 라인 테두리 스타일 통일
   const lineMat = new THREE.LineBasicMaterial({
-    color: 0x333333,
+    color: 0x555555,
     transparent: true,
-    opacity: 0.6,
+    opacity: 0.35,
   });
 
   const masterGroup = new THREE.Group();
@@ -558,7 +566,6 @@ export function initServiceLines3D(containerId) {
   function createLineMesh(config) {
     const geometry = new THREE.BoxGeometry(config.scale[0], config.scale[1], config.scale[2]);
     
-    // 다른 오브젝트들과 동일한 ShaderMaterial 및 색상 톤 적용 (다크 면 + 네온그린 빛 흐름)
     const material = new THREE.ShaderMaterial({
       uniforms: {
         uTime: { value: 0 },
@@ -580,18 +587,27 @@ export function initServiceLines3D(containerId) {
         varying vec3 vNormal;
 
         void main() {
+          // 1. 모서리(Edge) 흐름 및 네온 컬러 계산 (어두운 테두리로 명확하게)
           float flow = mod((vPosition.y * 0.1) + (uTime * 0.25) + uOffset, 1.0);
           float beam = smoothstep(0.18, 0.0, abs(flow - 0.5));
 
-          vec3 baseColor = vec3(0.15, 0.15, 0.18);
-          vec3 neonGreen = vec3(0.08, 0.8, 0.35);
-          vec3 finalColor = mix(baseColor, neonGreen, beam);
-          float alpha = 0.25 + beam * 0.75;
+          vec3 darkGray = vec3(0.2, 0.2, 0.2); // 짙은 그레이 테두리
+          vec3 neonGreen = vec3(0.12, 0.95, 0.45); // 포인트 그린
+          vec3 edgeColor = mix(darkGray, neonGreen, beam * 1.2);
+          
+          // 2. 면(Fill) 컬러: 면과 엣지의 컬러 대비를 확실히 주기 위해 연하게 조정
+          float fillAlpha = pow(abs(vNormal.z), 0.3) * 0.20;
+          vec3 fillColor = vec3(0.96, 0.96, 0.96);
 
+          // 3. 면과 엣지의 시각적 결합
+          vec3 finalColor = mix(fillColor, edgeColor, beam * 1.5);
+          float finalAlpha = max(fillAlpha, beam * 0.95);
+
+          // 4. 하단 그라데이션 페이드아웃 적용
           float normalizeY = (vPosition.y + (isMobile ? 8.0 : 11.0)) / (isMobile ? 16.0 : 22.0);
           float fadeOut = smoothstep(0.05, 0.9, normalizeY);
           
-          gl_FragColor = vec4(finalColor, alpha * fadeOut);
+          gl_FragColor = vec4(finalColor, finalAlpha * fadeOut);
         }
       `,
       transparent: true,
@@ -601,12 +617,10 @@ export function initServiceLines3D(containerId) {
 
     const group = new THREE.Group();
     
-    // 채워진 입체 면 추가
     const fillMesh = new THREE.Mesh(geometry, material);
     group.add(fillMesh);
 
-    // 명확한 외곽선 테두리(EdgesGeometry) 결합
-    const edges = new THREE.EdgesGeometry(geometry, 25);
+    const edges = new THREE.EdgesGeometry(geometry);
     const lineSegments = new THREE.LineSegments(edges, lineMat);
     group.add(lineSegments);
 
