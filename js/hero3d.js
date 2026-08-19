@@ -511,7 +511,7 @@ export function initServiceLines3D(containerId) {
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
-  camera.position.set(0, 0, 35); // 화각을 넓게 잡아 전체 공간이 보이도록 조정
+  camera.position.set(0, 0, 35);
 
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setSize(width, height);
@@ -528,7 +528,6 @@ export function initServiceLines3D(containerId) {
   const masterGroup = new THREE.Group();
   scene.add(masterGroup);
 
-  // 서비스 페이지 전체 공간에 선들이 넓게 퍼지도록 좌표와 스케일 대폭 확장
   const lineConfigs = [
     { pos: [-10.0, 5.0, -2.0], rot: [0.3, 0.5, -0.4], scale: [0.6, 18.0, 0.6], speed: 0.5, offset: 0.0 },
     { pos: [9.0, 4.0, -4.0], rot: [-0.4, 0.2, 0.7], scale: [0.5, 20.0, 0.5], speed: 0.7, offset: 1.5 },
@@ -595,6 +594,7 @@ export function initServiceLines3D(containerId) {
     group.userData = {
       material: material,
       speed: config.speed,
+      initialPos: [...config.pos], // 초기 위치 저장 (공간 이동용)
       initialRot: [...config.rot]
     };
 
@@ -626,10 +626,18 @@ export function initServiceLines3D(containerId) {
     masterGroup.rotation.x = mouseY * 0.1;
     masterGroup.position.y = scrollOffset;
 
+    // 각 선들이 제자리를 돌 뿐만 아니라 공간을 유기적으로 유영하며 돌아다니도록 위치 좌표(X, Y, Z) 변화 로직 추가
     lineGroups.forEach((lg, i) => {
       const p = lg.userData;
-      lg.rotation.x = p.initialRot[0] + Math.sin(time * p.speed * 0.3 + i) * 0.08;
-      lg.rotation.y = p.initialRot[1] + Math.cos(time * p.speed * 0.25 + i) * 0.08;
+      
+      // 삼각함수를 활용해 각기 다른 주기로 공간 속에서 부유하듯 이동
+      lg.position.x = p.initialPos[0] + Math.sin(time * p.speed * 0.4 + i * 1.5) * 2.5;
+      lg.position.y = p.initialPos[1] + Math.cos(time * p.speed * 0.3 + i * 2.0) * 2.0;
+      lg.position.z = p.initialPos[2] + Math.sin(time * p.speed * 0.25 + i * 1.0) * 1.5;
+
+      // 회전도 유기적으로 함께 부여
+      lg.rotation.x = p.initialRot[0] + Math.sin(time * p.speed * 0.3 + i) * 0.15;
+      lg.rotation.y = p.initialRot[1] + Math.cos(time * p.speed * 0.25 + i) * 0.15;
       
       if (p.material && p.material.uniforms) {
         p.material.uniforms.uTime.value = time * p.speed;
